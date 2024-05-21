@@ -4,7 +4,7 @@
   "private": true,
   "author": "Creative Tim",
   "license": "See license in https://www.creative-tim.com/license",
-  "description": "React version of Material Dashboard 2 PRO by Creative Tim",
+  "description": "datamon2 beta",
   "bugs": {
     "url": "https://github.com/creativetimofficial/ct-material-dashboard-pro-react/issues"
   },
@@ -26,6 +26,7 @@
     "@mui/material": "5.12.3",
     "@react-jvectormap/core": "1.0.4",
     "@react-jvectormap/world": "1.1.2",
+    "axios": "^1.6.8",
     "chart.js": "4.3.0",
     "chroma-js": "2.4.2",
     "draft-convert": "^2.1.13",
@@ -34,17 +35,20 @@
     "flatpickr": "4.6.13",
     "formik": "2.2.9",
     "html-react-parser": "3.0.16",
+    "js-cookie": "^3.0.5",
     "prop-types": "15.8.1",
-    "react": "18.2.0",
+    "react": "^18.2.0",
     "react-chartjs-2": "5.2.0",
-    "react-dom": "18.2.0",
+    "react-dom": "^18.2.0",
     "react-draft-wysiwyg": "^1.15.0",
     "react-flatpickr": "3.10.13",
     "react-github-btn": "1.4.0",
+    "react-helmet": "^6.1.0",
     "react-images-viewer": "1.7.1",
     "react-router-dom": "6.11.0",
-    "react-table": "7.8.0",
     "react-scripts": "5.0.1",
+    "react-table": "7.8.0",
+    "relative": "^3.0.2",
     "stylis": "4.1.4",
     "stylis-plugin-rtl": "2.1.1",
     "uuid": "9.0.0",
@@ -52,10 +56,23 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:local": "env-cmd -f .env.local react-scripts start",
+    "start:dev": "env-cmd -f .env.development react-scripts start",
+    "start:prod": "env-cmd -f .env.production react-scripts start",
     "build": "react-scripts build",
+    "build:prod": "env-cmd -f .env.production react-scripts build",
+    "build:dev": "env-cmd -f .env.development react-scripts build",
+    "build:local": "env-cmd -f .env.local react-scripts build",
+    "postbuild": "react-snap",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start"
+  },
+  "reactSnap": {
+    "include": [
+      "/",
+      "/login"
+    ]
   },
   "eslintConfig": {
     "extends": [
@@ -76,6 +93,7 @@
     ]
   },
   "devDependencies": {
+    "env-cmd": "^10.1.0",
     "eslint": "8.39.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-import": "2.27.5",
@@ -83,7 +101,8 @@
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-react": "7.32.2",
     "eslint-plugin-react-hooks": "4.6.0",
-    "prettier": "2.8.8"
+    "prettier": "2.8.8",
+    "react-snap": "^1.23.0"
   },
   "overrides": {
     "svgo": "3.0.2"

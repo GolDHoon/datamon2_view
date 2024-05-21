@@ -24,14 +24,14 @@
 
 ### Deleted components
 
-- DefaultNavbarCategories (src/examples/Navbars/DefaultNavbar/DefaultNavbarCategories.js
-- DefaultNavbarLink (src/examples/Navbars/DefaultNavbar/DefaultNavbarLink.js
-- DefaultNavbarMenu (src/examples/Navbars/DefaultNavbar/DefaultNavbarMenu.js
-- Menus (src/examples/Navbars/DefaultNavbar/Menus)
+- DefaultNavbarCategories (src/layouts/common/Navbars/DefaultNavbar/DefaultNavbarCategories.js
+- DefaultNavbarLink (src/layouts/common/Navbars/DefaultNavbar/DefaultNavbarLink.js
+- DefaultNavbarMenu (src/layouts/common/Navbars/DefaultNavbar/DefaultNavbarMenu.js
+- Menus (src/layouts/common/Navbars/DefaultNavbar/Menus)
 
 ### Added components
 
-- DefaultNavbarDropdown (src/examples/Navbars/DefaultNavbar/DefaultNavbarDropdown.js)
+- DefaultNavbarDropdown (src/layouts/common/Navbars/DefaultNavbar/DefaultNavbarDropdown.js)
 
 ### Deleted dependencies
 
