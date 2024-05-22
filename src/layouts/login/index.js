@@ -83,6 +83,7 @@ function Login() {
       <Helmet>
         <title>DataMon2 - Login</title>
         <meta name="description" content="DataMon2 Login" />
+        <meta name="Keywords" content="login" />
       </Helmet>
       <MDBox component="form" role="form">
         <MDBox mb={2}>
