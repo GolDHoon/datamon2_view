@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -36,6 +36,7 @@ import DataTable from "layouts/common/Tables/DataTable";
 // Data
 import dataTableData from "layouts/developer/user/user-list/data/dataTableData";
 import { serverCommunicationUtil } from "../../../../common/util/serverCommunicationUtil";
+import { Helmet } from "react-helmet";
 
 function UserList() {
   const [rows, setRows] = useState([]);
@@ -78,6 +79,11 @@ function UserList() {
 
   return (
     <DashboardLayout>
+      <Helmet>
+        <title>DataMon2 - developer</title>
+        <meta name="description" content="DataMon2 developer" />
+        <meta name="Keywords" content="user" />
+      </Helmet>
       <DashboardNavbar />
       <MDBox my={3}>
         <MDBox display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
