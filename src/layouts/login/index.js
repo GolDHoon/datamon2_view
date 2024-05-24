@@ -15,7 +15,8 @@ import { serverCommunicationUtil } from "../../common/util/serverCommunicationUt
 import { useNavigate } from "react-router-dom";
 import LoginLayout from "./components";
 import { Helmet } from "react-helmet";
-import Cookies from "draft-js/lib/EditorState";
+import Cookies from "js-cookie";
+import { getConst } from "../../common/common";
 
 function Login() {
   const navigate = useNavigate();
@@ -63,9 +64,9 @@ function Login() {
         } else if (result === "error") {
           alert("서버 장애.");
         } else {
-          debugger;
-          Cookies.set("JSESSIONID", result);
-          console.log(result);
+          // Cookies.set("JSESSIONID", result);
+          // console.log(Cookies.get("JSESSIONID"));
+          // console.log(Cookies.get());
           navigate("/");
         }
       })
