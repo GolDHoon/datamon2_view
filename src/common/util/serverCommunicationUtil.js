@@ -1,9 +1,15 @@
 import axios from "axios";
 import { getConst } from "../common";
+import Cookies from "js-cookie";
+
+axios.defaults.withCredentials = true;
 
 async function getData(url, params) {
   try {
-    const response = await axios.get(`${url}`, { params, withCredentials: true });
+    const response = await axios.get(`${url}`, {
+      params,
+      withCredentials: true,
+    });
     return response.data;
   } catch (error) {
     throw error;
@@ -12,7 +18,9 @@ async function getData(url, params) {
 
 async function postData(url, data) {
   try {
-    const response = await axios.post(`${url}`, data, { withCredentials: true });
+    const response = await axios.post(`${url}`, data, {
+      withCredentials: true,
+    });
     return response.data;
   } catch (error) {
     throw error;
