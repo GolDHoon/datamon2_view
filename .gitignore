@@ -26,4 +26,3 @@ yarn.lock
 pnpm-lock.yaml
 
 commit.sh
-/ssl/
