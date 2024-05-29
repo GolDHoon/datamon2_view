@@ -15,8 +15,6 @@ import { serverCommunicationUtil } from "../../common/util/serverCommunicationUt
 import { useNavigate } from "react-router-dom";
 import LoginLayout from "./components";
 import { Helmet } from "react-helmet";
-import Cookies from "js-cookie";
-import { getConst } from "../../common/common";
 
 function Login() {
   const navigate = useNavigate();
@@ -25,22 +23,6 @@ function Login() {
   const handleSetId = (e) => setUserId(e.target.value);
   const [pw, setPw] = useState("");
   const handleSetPw = (e) => setPw(e.target.value);
-
-  useEffect(() => {
-    serverCommunicationUtil("main", "axioPost", "/sessionCheck", {})
-      .then((result) => {
-        if (result === "fail-time" || result === "fail-token") {
-          console.log("");
-        } else if (result === "error") {
-          console.log("");
-        } else {
-          navigate("/");
-        }
-      })
-      .catch((error) => {
-        console.log("");
-      });
-  }, []);
 
   const loginHandler = () => {
     if (!id) {
@@ -57,16 +39,14 @@ function Login() {
     };
     serverCommunicationUtil("main", "axioPost", "/login", data)
       .then((result) => {
-        if (result === "fail-password") {
+        debugger;
+        if (result === "login-fail:password") {
           alert("패스워드가 불일치합니다.");
-        } else if (result === "fail-userId") {
+        } else if (result === "login-fail:userId") {
           alert("해당ID가 없습니다.");
-        } else if (result === "error") {
+        } else if (result === "server-fail") {
           alert("서버 장애.");
         } else {
-          // Cookies.set("JSESSIONID", result);
-          // console.log(Cookies.get("JSESSIONID"));
-          // console.log(Cookies.get());
           navigate("/");
         }
       })

@@ -16,7 +16,7 @@ Coded by www.creative-tim.com
 import { useEffect } from "react";
 
 // react-router-dom components
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -26,10 +26,12 @@ import MDBox from "components/MDBox";
 
 // Material Dashboard 2 PRO React context
 import { useMaterialUIController, setLayout } from "context";
+import { serverCommunicationUtil } from "../../../../common/util/serverCommunicationUtil";
 
 function PageLayout({ background, children }) {
   const [, dispatch] = useMaterialUIController();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLayout(dispatch, "page");

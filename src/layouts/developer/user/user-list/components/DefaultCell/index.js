@@ -39,7 +39,7 @@ DefaultCell.defaultProps = {
 
 // Typechecking props for the DefaultCell
 DefaultCell.propTypes = {
-  value: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.oneOf([null])]),
   suffix: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
 };
 

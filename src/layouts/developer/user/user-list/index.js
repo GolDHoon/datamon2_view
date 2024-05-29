@@ -35,26 +35,42 @@ import DataTable from "layouts/common/Tables/DataTable";
 
 // Data
 import dataTableData from "layouts/developer/user/user-list/data/dataTableData";
-import { serverCommunicationUtil } from "../../../../common/util/serverCommunicationUtil";
+import {
+  serverCommunicationUtil,
+  sessionChecker,
+} from "../../../../common/util/serverCommunicationUtil";
 import { Helmet } from "react-helmet";
+import { useNavigate } from "react-router-dom";
 
 function UserList() {
+  const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const [menu, setMenu] = useState(null);
 
   const openMenu = (event) => setMenu(event.currentTarget);
   const closeMenu = () => setMenu(null);
 
+  const [showPage, setShowPage] = useState(false);
+
   useEffect(() => {
+    sessionChecker().then((checkerResult) => {
+      if (checkerResult === "success") {
+        setShowPage(true);
+      }
+    });
+
     serverCommunicationUtil("main", "axioPost", "/developer/userlist", {})
       .then((result) => {
-        debugger;
         setRows(result);
       })
       .catch((error) => {
         console.log("");
       });
   }, []);
+
+  if (!showPage) {
+    return null; // 혹은 로딩 스피너 등을 반환.
+  }
 
   const renderMenu = (
     <Menu
