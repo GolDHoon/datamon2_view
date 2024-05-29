@@ -60,7 +60,7 @@ CustomerCell.defaultProps = {
 
 // Typechecking props for the CustomerCell
 CustomerCell.propTypes = {
-  value: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.oneOf([null])]),
 };
 
 export default CustomerCell;

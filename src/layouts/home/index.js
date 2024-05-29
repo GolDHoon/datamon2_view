@@ -28,33 +28,26 @@ import booking1 from "assets/images/products/product-1-min.jpg";
 import booking2 from "assets/images/products/product-2-min.jpg";
 import booking3 from "assets/images/products/product-3-min.jpg";
 
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { serverCommunicationUtil } from "../../common/util/serverCommunicationUtil";
-import { useNavigate } from "react-router-dom";
+import { serverCommunicationUtil, sessionChecker } from "../../common/util/serverCommunicationUtil";
 
 function Home() {
-  const navigate = useNavigate();
   const { sales, tasks } = reportsLineChartData;
+  const [showPage, setShowPage] = useState(false);
+
   useEffect(() => {
-    serverCommunicationUtil("main", "axioPost", "/sessionCheck", {})
-      .then((result) => {
-        if (result === "fail-time") {
-          alert("인증 시간 만료");
-          navigate("/login");
-        } else if (result === "fail-token") {
-          alert("부적절한 유입으로 로그인화면으로 돌아갑니다.");
-          navigate("/login");
-        } else if (result === "error") {
-          console.log("");
-        } else {
-          console.log("");
-        }
-      })
-      .catch((error) => {
-        console.log("");
-      });
+    sessionChecker().then((checkerResult) => {
+      if (checkerResult === "success") {
+        setShowPage(true);
+      }
+    });
   }, []);
+
+  if (!showPage) {
+    return null; // 혹은 로딩 스피너 등을 반환.
+  }
+
   // Action buttons for the BookingCard
   const actionButtons = (
     <>

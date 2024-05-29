@@ -3,6 +3,8 @@ import React from "react";
 // Material Dashboard 2 PRO React layouts
 import Login from "layouts/login";
 import Home from "layouts/home";
+import UserList from "./layouts/developer/user/user-list";
+import Checker from "./layouts/developer/checker";
 
 // Material Dashboard 2 PRO React components
 import MDAvatar from "components/MDAvatar";
@@ -12,7 +14,6 @@ import Icon from "@mui/material/Icon";
 
 // Images
 import profilePicture from "assets/images/team-3.jpg";
-import UserList from "./layouts/developer/user/user-list";
 
 const routes = [
   {
@@ -39,6 +40,15 @@ const routes = [
     icon: <Icon fontSize="medium">U</Icon>,
     route: "/developer/UserList",
     component: <UserList />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Checker",
+    key: "Checker",
+    icon: <Icon fontSize="medium">U</Icon>,
+    route: "/developer/checker",
+    component: <Checker />,
     noCollapse: true,
   },
 ];
