@@ -39,7 +39,6 @@ function Login() {
     };
     serverCommunicationUtil("main", "axioPost", "/login", data)
       .then((result) => {
-        debugger;
         if (result === "login-fail:password") {
           alert("패스워드가 불일치합니다.");
         } else if (result === "login-fail:userId") {

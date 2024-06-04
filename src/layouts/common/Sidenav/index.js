@@ -1,22 +1,7 @@
-/**
-=========================================================
-* Material Dashboard 2 PRO React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-pro-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useEffect, useState } from "react";
 
 // react-router-dom components
-import { useLocation, NavLink } from "react-router-dom";
+import { useLocation, NavLink, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -47,6 +32,10 @@ import {
   setTransparentSidenav,
   setWhiteSidenav,
 } from "context";
+import Autocomplete from "@mui/material/Autocomplete";
+import MDInput from "../../../components/MDInput";
+import { serverCommunicationUtil } from "../../../common/util/serverCommunicationUtil";
+import { getSessionStorage, setSessionStorage } from "../../../common/common";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [openCollapse, setOpenCollapse] = useState(false);
@@ -59,6 +48,18 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const items = pathname.split("/").slice(1);
   const itemParentName = items[1];
   const itemName = items[items.length - 1];
+  const [landingPageList, setLandingPageList] = useState([]);
+  const [selectedDomain, setSelectedDomain] = useState(
+    getSessionStorage("selectedLandingPage")?.domain
+  );
+  const navigate = useNavigate();
+
+  const handleAutocompleteChange = (event, newValue) => {
+    const matchingIndex = landingPageList.findIndex((item) => item.domain === newValue);
+    setSessionStorage("selectedLandingPage", landingPageList[matchingIndex]);
+    setSelectedDomain(newValue);
+    navigate("/");
+  };
 
   let textColor = "white";
 
@@ -69,10 +70,18 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   }
 
   const closeSidenav = () => setMiniSidenav(dispatch, true);
-
   useEffect(() => {
     setOpenCollapse(collapseName);
     setOpenNestedCollapse(itemParentName);
+
+    serverCommunicationUtil("main", "axioGet", "/landingPageManage/list", {})
+      .then((result) => {
+        setLandingPageList(result);
+        setSessionStorage("landingPageList", landingPageList);
+      })
+      .catch((error) => {
+        console.log("");
+      });
   }, []);
 
   useEffect(() => {
@@ -272,6 +281,19 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
               {brandName}
             </MDTypography>
           </MDBox>
+        </MDBox>
+        <MDBox
+          style={{ width: "100%", padding: "0", paddingTop: "10%" }}
+          p={3}
+          sx={{ cursor: "pointer" }}
+          color={textColor}
+        >
+          <Autocomplete
+            value={selectedDomain}
+            options={landingPageList.map((item) => item.domain)}
+            onChange={handleAutocompleteChange}
+            renderInput={(params) => <MDInput {...params} label="domain" color={textColor} />}
+          />
         </MDBox>
       </MDBox>
       <Divider

@@ -15,11 +15,8 @@ async function getData(url, params) {
       },
     });
 
-    if (window.location.pathname !== "/login") {
-      if (serverValidation(response)) {
-        return response.data;
-      }
-    }
+    serverValidation(response);
+    return response.data;
   } catch (error) {
     throw error;
   }
@@ -36,10 +33,10 @@ async function postData(url, data) {
       },
     });
 
-    if (window.location.pathname !== "/login") {
-      if (serverValidation(response)) {
-        return response.data;
-      }
+    if (serverValidation(response)) {
+      return response.data;
+    } else {
+      debugger;
     }
   } catch (error) {
     throw error;
@@ -53,15 +50,19 @@ function serverValidation(result) {
       break;
     case "session-fail:token":
       alert("부적절한 접근입니다.");
+      window.location.href = "/login";
       break;
     case "session-fail:time":
       alert("세션시간 만료.");
+      window.location.href = "/login";
       break;
     case "auth-fail:page unregistered":
       alert("페이지 미등록.");
+      window.location.href = "/";
       break;
     case "auth-fail:page permission denied":
       alert("페이지 권한없음");
+      window.location.href = "/";
       break;
     default:
       return true;

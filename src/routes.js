@@ -14,6 +14,7 @@ import Icon from "@mui/material/Icon";
 
 // Images
 import profilePicture from "assets/images/team-3.jpg";
+import CustInfoList from "./layouts/customer/custList";
 
 const routes = [
   {
@@ -31,6 +32,16 @@ const routes = [
     icon: <Icon fontSize="medium">content_paste</Icon>,
     route: "/login",
     component: <Login />,
+  },
+  { type: "title", title: "고객정보", key: "title-고객정보" },
+  {
+    type: "collapse",
+    name: "고객정보 리스트",
+    key: "custInfoList",
+    icon: <Icon fontSize="medium">U</Icon>,
+    route: "/custInfo/list",
+    component: <CustInfoList />,
+    noCollapse: true,
   },
   { type: "title", title: "Developer", key: "title-developer" },
   {
