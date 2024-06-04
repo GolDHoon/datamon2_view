@@ -31,15 +31,19 @@ import booking3 from "assets/images/products/product-3-min.jpg";
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { serverCommunicationUtil, sessionChecker } from "../../common/util/serverCommunicationUtil";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
   const { sales, tasks } = reportsLineChartData;
   const [showPage, setShowPage] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     sessionChecker().then((checkerResult) => {
       if (checkerResult === "success") {
         setShowPage(true);
+      } else {
+        navigate("/login");
       }
     });
   }, []);

@@ -97,7 +97,7 @@ function UserList() {
     <DashboardLayout>
       <Helmet>
         <title>DataMon2 - developer</title>
-        <meta name="description" content="DataMon2 developer" />
+        <meta name="description" content="DataMon2 customer" />
         <meta name="Keywords" content="user" />
       </Helmet>
       <DashboardNavbar />
