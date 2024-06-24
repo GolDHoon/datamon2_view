@@ -87,8 +87,8 @@ const dataTableData = (data, keyList) => {
     Cell: ({ value }) => {
       let status;
 
-      if (value) status = <StatusCell status="사용" />;
-      else status = <StatusCell status="미사용" />;
+      if (value) status = <StatusCell status="사용" icon="done" color="success" />;
+      else status = <StatusCell status="미사용" icon="close" color="error" />;
 
       return status;
     },
