@@ -16,7 +16,7 @@ import MDButton from "components/MDButton";
 import DashboardLayout from "layouts/common/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "layouts/common/Navbars/DashboardNavbar";
 import Footer from "layouts/common/Footer";
-import DataTable from "layouts/common/Tables/DataTable";
+import DataTable from "layouts/customer/custList/DataTable";
 import dataTableData from "layouts/customer/custList/data/dataTableData";
 import {
   serverCommunicationUtil,
@@ -24,15 +24,20 @@ import {
 } from "../../../common/util/serverCommunicationUtil";
 import { getSessionStorage } from "../../../common/common";
 import MDDatePicker from "../../../components/MDDatePicker";
+import { useNavigate } from "react-router-dom";
+import Checkbox from "@mui/material/Checkbox";
 
 function CustInfoList() {
+  const navigate = useNavigate();
   const [menu, setMenu] = useState(null);
   const [rows, setRows] = useState([]);
   const [keyList, setKeyList] = useState([]);
   const [showPage, setShowPage] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-
+  const [sourceIsChecked, setSourceIsChecked] = useState(false);
+  const [campaignIsChecked, setCampaignIsChecked] = useState(false);
+  const [filter, setFilter] = useState({ SOURCE: sourceIsChecked, CAMPAIGN: campaignIsChecked });
   const openMenu = (event) => setMenu(event.currentTarget);
   const closeMenu = () => setMenu(null);
 
@@ -104,27 +109,54 @@ function CustInfoList() {
   }, [startDate, endDate]);
 
   useEffect(() => {
-    sessionChecker().then((checkerResult) => {
-      if (checkerResult === "success") {
-        setShowPage(true);
-      }
-    });
+    var selectedLandingPage = getSessionStorage("selectedLandingPage");
 
-    serverCommunicationUtil("main", "axioPost", "/custInfo/list", {
-      lpgeCode: getSessionStorage("selectedLandingPage").code,
-    })
-      .then((result) => {
-        setRows(result.rows);
-        setKeyList(result.keyList);
-      })
-      .catch((error) => {
-        console.log("");
+    if (selectedLandingPage === null) {
+      navigate("/");
+      alert("고객DB를 선택해주세요");
+    } else {
+      sessionChecker().then((checkerResult) => {
+        if (checkerResult === "success") {
+          setShowPage(true);
+        }
       });
+
+      serverCommunicationUtil("main", "axioPost", "/custInfo/list", {
+        lpgeCode: selectedLandingPage.code,
+      })
+        .then((result) => {
+          setRows(result.rows);
+          setKeyList(result.keyList);
+        })
+        .catch((error) => {
+          console.log("");
+        });
+    }
   }, []);
+
+  useEffect(() => {
+    setFilter({ SOURCE: sourceIsChecked, CAMPAIGN: campaignIsChecked });
+  }, [sourceIsChecked, campaignIsChecked]);
 
   if (!showPage) {
     return null; // 혹은 로딩 스피너 등을 반환.
   }
+
+  const onChangeSourceFilter = (event) => {
+    setSourceIsChecked(event.target.checked);
+  };
+
+  const onChangeCampaignFilter = (event) => {
+    setCampaignIsChecked(event.target.checked);
+  };
+
+  const onClickSourceFilter = () => {
+    setSourceIsChecked(!sourceIsChecked);
+  };
+
+  const onClickCampaignFilter = () => {
+    setCampaignIsChecked(!campaignIsChecked);
+  };
 
   const renderMenu = (
     <Menu
@@ -135,15 +167,14 @@ function CustInfoList() {
       onClose={closeMenu}
       keepMounted
     >
-      <MenuItem onClick={closeMenu}>Status: Paid</MenuItem>
-      <MenuItem onClick={closeMenu}>Status: Refunded</MenuItem>
-      <MenuItem onClick={closeMenu}>Status: Canceled</MenuItem>
-      <Divider sx={{ margin: "0.5rem 0" }} />
-      <MenuItem onClick={closeMenu}>
-        <MDTypography variant="button" color="error" fontWeight="regular">
-          Remove Filter
-        </MDTypography>
-      </MenuItem>
+      <MDBox display="flex" alignItems="center">
+        <Checkbox onChange={onChangeSourceFilter} checked={sourceIsChecked} />
+        <MenuItem onClick={onClickSourceFilter}>SOURCE</MenuItem>
+      </MDBox>
+      <MDBox display="flex" alignItems="center">
+        <Checkbox onChange={onChangeCampaignFilter} checked={campaignIsChecked} />
+        <MenuItem onClick={onClickCampaignFilter}>CAMPAIGN</MenuItem>
+      </MDBox>
     </Menu>
   );
 
@@ -151,13 +182,13 @@ function CustInfoList() {
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox my={3}>
-        <MDBox display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
-          <MDButton variant="gradient" color="info">
-            new order
-          </MDButton>
+        <MDBox display="flex" justifyContent="flex-end" alignItems="flex-start" mb={2}>
+          {/*<MDButton variant="gradient" color="info">*/}
+          {/*  new order*/}
+          {/*</MDButton>*/}
           <MDBox display="flex">
             <MDButton variant={menu ? "contained" : "outlined"} color="dark" onClick={openMenu}>
-              filters&nbsp;
+              검색필터
               <Icon>keyboard_arrow_down</Icon>
             </MDButton>
             {renderMenu}
@@ -170,7 +201,14 @@ function CustInfoList() {
           </MDBox>
         </MDBox>
         <Card>
-          {<DataTable table={dataTableData(rows, keyList)} entriesPerPage={false} canSearch />}
+          {
+            <DataTable
+              table={dataTableData(rows, keyList)}
+              entriesPerPage={true}
+              canSearch
+              filterProps={filter}
+            />
+          }
         </Card>
       </MDBox>
       <Footer />

@@ -292,7 +292,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
             value={selectedDomain}
             options={landingPageList.map((item) => item.domain)}
             onChange={handleAutocompleteChange}
-            renderInput={(params) => <MDInput {...params} label="domain" color={textColor} />}
+            renderInput={(params) => <MDInput {...params} label="고객DB" color={textColor} />}
           />
         </MDBox>
       </MDBox>
