@@ -18,6 +18,7 @@ import CustInfoList from "./layouts/customer/custList";
 import { getConst } from "./common/common";
 import UserInfoListByMaster from "./layouts/user/userListByMaster";
 import UserInfoListByMemeber from "./layouts/user/userListByMember";
+import AuthMenagement from "./layouts/user/auth";
 
 const routes = [
   {
@@ -76,7 +77,7 @@ const routes = [
     name: "유저정보 리스트(마스터)",
     key: "useInfoListByCompany",
     icon: <Icon fontSize="medium">U</Icon>,
-    route: "/master/useInfo/list/",
+    route: "/master/useInfo/list",
     component: <UserInfoListByMaster />,
     noCollapse: true,
     auth: [getConst("MAST"), getConst("INME"), getConst("DEVL")],
@@ -88,6 +89,26 @@ const routes = [
     icon: <Icon fontSize="medium">U</Icon>,
     route: "/userInfo/list",
     component: <UserInfoListByMemeber />,
+    noCollapse: true,
+    auth: [
+      getConst("MAST"),
+      getConst("DEVL"),
+      getConst("INME"),
+      getConst("CLNT"),
+      getConst("ADAC"),
+      getConst("CLME"),
+      getConst("AAME"),
+      getConst("CRAC"),
+      getConst("CAME"),
+    ],
+  },
+  {
+    type: "collapse",
+    name: "유저 권한 관리",
+    key: "useAuthMenagement",
+    icon: <Icon fontSize="medium">U</Icon>,
+    route: "/userInfo/auth",
+    component: <AuthMenagement />,
     noCollapse: true,
     auth: [
       getConst("MAST"),
