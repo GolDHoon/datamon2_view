@@ -125,6 +125,7 @@ function CustInfoList() {
         lpgeCode: selectedLandingPage.code,
       })
         .then((result) => {
+          debugger;
           setRows(result.rows);
           setKeyList(result.keyList);
         })

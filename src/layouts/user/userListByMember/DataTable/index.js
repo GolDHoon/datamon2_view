@@ -36,8 +36,12 @@ import MDInput from "components/MDInput";
 import MDPagination from "components/MDPagination";
 
 // Material Dashboard 2 PRO React examples
-import DataTableHeadCell from "layouts/customer/custList/DataTable/DataTableHeadCell";
-import DataTableBodyCell from "layouts/customer/custList/DataTable/DataTableBodyCell";
+import DataTableHeadCell from "layouts/user/userListByMember/DataTable/DataTableHeadCell";
+import DataTableBodyCell from "layouts/user/userListByMember/DataTable/DataTableBodyCell";
+import MDButton from "../../../../components/MDButton";
+import Menu from "@mui/material/Menu";
+import Checkbox from "@mui/material/Checkbox";
+import MenuItem from "@mui/material/MenuItem";
 
 function DataTable({
   entriesPerPage,
@@ -49,6 +53,12 @@ function DataTable({
   noEndBorder,
   filterProps,
 }) {
+  const [menu, setMenu] = useState(null);
+  const openMenu = (event) => setMenu(event.currentTarget);
+  const closeMenu = () => setMenu(null);
+  const [sourceIsChecked, setSourceIsChecked] = useState(false);
+  const [campaignIsChecked, setCampaignIsChecked] = useState(false);
+  const [filter, setFilter] = useState({ SOURCE: sourceIsChecked, CAMPAIGN: campaignIsChecked });
   const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10;
   const entries = entriesPerPage.entries
     ? entriesPerPage.entries.map((el) => el.toString())
@@ -77,9 +87,24 @@ function DataTable({
     nextPage,
     previousPage,
     setPageSize,
-    filter,
     state: { pageIndex, pageSize, globalFilter },
   } = tableInstance;
+
+  const onChangeSourceFilter = (event) => {
+    setSourceIsChecked(event.target.checked);
+  };
+
+  const onChangeCampaignFilter = (event) => {
+    setCampaignIsChecked(event.target.checked);
+  };
+
+  const onClickSourceFilter = () => {
+    setSourceIsChecked(!sourceIsChecked);
+  };
+
+  const onClickCampaignFilter = () => {
+    setCampaignIsChecked(!campaignIsChecked);
+  };
 
   // Set the default value for the entries per page when component mounts
   useEffect(() => setPageSize(defaultValue || 10), [defaultValue]);
@@ -112,12 +137,16 @@ function DataTable({
   // Search input value state
   const [search, setSearch] = useState(globalFilter);
 
+  useEffect(() => {
+    setFilter({ SOURCE: sourceIsChecked, CAMPAIGN: campaignIsChecked });
+  }, [sourceIsChecked, campaignIsChecked]);
+
   // Search input state handle
   const onSearchChange = (value) => {
     var newData = [];
 
     if (value != "") {
-      if (filterProps["SOURCE"]) {
+      if (filter["SOURCE"]) {
         Array.from(table.rows).forEach(function (row) {
           try {
             if (row["utmSourse"].contains(value)) {
@@ -126,7 +155,7 @@ function DataTable({
           } catch (error) {}
         });
       }
-      if (filterProps["CAMPAIGN"]) {
+      if (filter["CAMPAIGN"]) {
         Array.from(table.rows).forEach(function (row) {
           try {
             if (row["utmCampaign"].contains(value)) {
@@ -136,13 +165,33 @@ function DataTable({
         });
       }
 
-      if (filterProps["SOURCE"] || filterProps["CAMPAIGN"]) {
+      if (filter["SOURCE"] || filter["CAMPAIGN"]) {
         setData(newData);
       }
     } else {
       setData(table.rows);
     }
   };
+
+  const renderMenu = (
+    <Menu
+      anchorEl={menu}
+      anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      transformOrigin={{ vertical: "top", horizontal: "left" }}
+      open={Boolean(menu)}
+      onClose={closeMenu}
+      keepMounted
+    >
+      <MDBox display="flex" alignItems="center">
+        <Checkbox onChange={onChangeSourceFilter} checked={sourceIsChecked} />
+        <MenuItem onClick={onClickSourceFilter}>SOURCE</MenuItem>
+      </MDBox>
+      <MDBox display="flex" alignItems="center">
+        <Checkbox onChange={onChangeCampaignFilter} checked={campaignIsChecked} />
+        <MenuItem onClick={onClickCampaignFilter}>CAMPAIGN</MenuItem>
+      </MDBox>
+    </Menu>
+  );
 
   // A function that sets the sorted value for the table
   const setSortedValue = (column) => {
@@ -196,7 +245,17 @@ function DataTable({
             </MDBox>
           )}
           {canSearch && (
-            <MDBox width="12rem" ml="auto">
+            <MDBox display="flex">
+              <MDButton
+                variant={menu ? "outlined" : "contained"}
+                color="dark"
+                onClick={openMenu}
+                style={{ whiteSpace: "nowrap" }}
+              >
+                검색필터
+                <Icon>keyboard_arrow_down</Icon>
+              </MDButton>
+              {renderMenu}
               <MDInput
                 placeholder="Search..."
                 value={search}

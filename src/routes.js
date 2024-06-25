@@ -16,6 +16,8 @@ import Icon from "@mui/material/Icon";
 import profilePicture from "assets/images/team-3.jpg";
 import CustInfoList from "./layouts/customer/custList";
 import { getConst } from "./common/common";
+import UserInfoListByMaster from "./layouts/user/userListByMaster";
+import UserInfoListByMemeber from "./layouts/user/userListByMember";
 
 const routes = [
   {
@@ -74,8 +76,8 @@ const routes = [
     name: "유저정보 리스트(마스터)",
     key: "useInfoListByCompany",
     icon: <Icon fontSize="medium">U</Icon>,
-    route: "/custInfo/list",
-    component: <CustInfoList />,
+    route: "/master/useInfo/list/",
+    component: <UserInfoListByMaster />,
     noCollapse: true,
     auth: [getConst("MAST"), getConst("INME"), getConst("DEVL")],
   },
@@ -84,8 +86,8 @@ const routes = [
     name: "유저정보 리스트",
     key: "useInfoListByMember",
     icon: <Icon fontSize="medium">U</Icon>,
-    route: "/custInfo/list",
-    component: <CustInfoList />,
+    route: "/userInfo/list",
+    component: <UserInfoListByMemeber />,
     noCollapse: true,
     auth: [
       getConst("MAST"),
