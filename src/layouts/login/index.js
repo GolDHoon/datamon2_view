@@ -12,8 +12,6 @@ import IllustrationLayout from "layouts/login/components/IllustrationLayout";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 
-import logo from "assets/images/login_logo.png";
-
 function Login() {
   const navigate = useNavigate();
 
