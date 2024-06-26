@@ -18,21 +18,20 @@ import PropTypes from "prop-types";
 
 // @mui material components
 import Collapse from "@mui/material/Collapse";
+import Icon from "@mui/material/Icon";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Icon from "@mui/material/Icon";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "components/MDBox";
 
 // Custom styles for the SidenavCollapse
 import {
-  collapseItem,
-  collapseIconBox,
   collapseIcon,
+  collapseIconBox,
+  collapseItem,
   collapseText,
-  collapseArrow,
 } from "layouts/common/Sidenav/styles/sidenavCollapse";
 
 // Material Dashboard 2 PRO React context
@@ -72,22 +71,6 @@ function SidenavCollapse({ icon, name, children, active, noCollapse, open, ...re
               })
             }
           />
-
-          <Icon
-            sx={(theme) =>
-              collapseArrow(theme, {
-                noCollapse,
-                transparentSidenav,
-                whiteSidenav,
-                miniSidenav,
-                open,
-                active,
-                darkMode,
-              })
-            }
-          >
-            expand_less
-          </Icon>
         </MDBox>
       </ListItem>
       {children && (
