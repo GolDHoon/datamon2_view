@@ -49,16 +49,14 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const items = pathname.split("/").slice(1);
   const itemParentName = items[1];
   const itemName = items[items.length - 1];
-  const [landingPageList, setLandingPageList] = useState([]);
-  const [selectedDomain, setSelectedDomain] = useState(
-    getSessionStorage("selectedLandingPage")?.domain
-  );
+  const [custDBList, setCustDBList] = useState([]);
+  const [selectedCustDB, setSelectedCustDB] = useState(getSessionStorage("selectedCustDB")?.DBname);
   const navigate = useNavigate();
 
   const handleAutocompleteChange = (event, newValue) => {
-    const matchingIndex = landingPageList.findIndex((item) => item.domain === newValue);
-    setSessionStorage("selectedLandingPage", landingPageList[matchingIndex]);
-    setSelectedDomain(newValue);
+    const matchingIndex = custDBList.findIndex((item) => item.DBname === newValue);
+    setSessionStorage("selectedCustDB", custDBList[matchingIndex]);
+    setSelectedCustDB(newValue);
     navigate("/");
   };
 
@@ -75,10 +73,10 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     setOpenCollapse(collapseName);
     setOpenNestedCollapse(itemParentName);
 
-    serverCommunicationUtil("main", "axioGet", "/landingPageManage/list", {})
+    serverCommunicationUtil("main", "axioGet", "/common/DBList", {})
       .then((result) => {
-        setLandingPageList(result);
-        setSessionStorage("landingPageList", landingPageList);
+        setCustDBList(result);
+        setSessionStorage("custDBList", result.rows);
       })
       .catch((error) => {
         console.log("");
@@ -301,8 +299,8 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           color={textColor}
         >
           <Autocomplete
-            value={selectedDomain}
-            options={landingPageList.map((item) => item.domain)}
+            value={selectedCustDB}
+            options={custDBList.map((item) => item.DBName)}
             onChange={handleAutocompleteChange}
             renderInput={(params) => <MDInput {...params} label="고객DB" color={textColor} />}
           />

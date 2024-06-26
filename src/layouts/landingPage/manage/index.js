@@ -7,15 +7,15 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
 // Material Dashboard 2 PRO React components
-import MDBox from "components/MDBox";
-import MDButton from "components/MDButton";
+import MDBox from "../../../components/MDBox";
+import MDButton from "../../../components/MDButton";
 
 // Material Dashboard 2 PRO React examples
-import DashboardLayout from "layouts/common/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "layouts/common/Navbars/DashboardNavbar";
-import Footer from "layouts/common/Footer";
-import DataTable from "layouts/user/userListByMaster/DataTable";
-import dataTableData from "layouts/user/userListByMaster/data/dataTableData";
+import DashboardLayout from "../../common/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "../../common/Navbars/DashboardNavbar";
+import Footer from "../../common/Footer";
+import DataTable from "../../landingPage/manage/DataTable";
+import dataTableData from "../../landingPage/manage/data/dataTableData";
 import {
   serverCommunicationUtil,
   sessionChecker,
@@ -24,30 +24,10 @@ import { useNavigate } from "react-router-dom";
 import Checkbox from "@mui/material/Checkbox";
 import MDTypography from "../../../components/MDTypography";
 
-function UserInfoListByMaster() {
-  const navigate = useNavigate();
+function LandingPageManagement() {
   const [rows, setRows] = useState([]);
   const [keyList, setKeyList] = useState([]);
   const [showPage, setShowPage] = useState(false);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-
-  useEffect(() => {
-    if (startDate && endDate) {
-      // Convert date objects to specific datetime format or timestamp
-      const convertedStartDate = startDate.getTime();
-      const convertedEndDate = endDate.getTime();
-
-      // Filter rows based on selected date range
-      const filteredRows = rows.filter((row) => {
-        // Assuming the createDate is in timestamp format for comparison
-        const rowDate = new Date(row.createDate).getTime();
-        return rowDate >= convertedStartDate && rowDate <= convertedEndDate;
-      });
-
-      setRows(filteredRows);
-    }
-  }, [startDate, endDate]);
 
   useEffect(() => {
     sessionChecker().then((checkerResult) => {
@@ -56,9 +36,7 @@ function UserInfoListByMaster() {
       }
     });
 
-    serverCommunicationUtil("main", "axioGet", "/user/list", {
-      listType: "company",
-    })
+    serverCommunicationUtil("main", "axioGet", "/landingPageManage/list", {})
       .then((result) => {
         setRows(result.rows);
         setKeyList(result.keyList);
@@ -79,10 +57,10 @@ function UserInfoListByMaster() {
         <MDBox display="flex" justifyContent="space-between">
           <MDBox height="100%" mt={0.5} lineHeight={1} p={2}>
             <MDTypography variant="h2" fontWeight="medium">
-              유저 정보 리스트
+              랜딩페이지 관리
             </MDTypography>
             <MDTypography variant="h4" color="text" fontWeight="regular">
-              유저 정보 리스트 소개 표시 유저 정보 리스트 소개 표시
+              랜딩페이지 목록 및 랜딩페이지 관리화면입니다.
             </MDTypography>
           </MDBox>
           <MDBox display="block" style={{ textAlign: "center" }} p={2}>
@@ -97,13 +75,11 @@ function UserInfoListByMaster() {
             </MDButton>
           </MDBox>
         </MDBox>
-        <Card>
-          {<DataTable table={dataTableData(rows, keyList)} entriesPerPage={true} canSearch />}
-        </Card>
+        <Card>{<DataTable table={dataTableData(rows, keyList)} />}</Card>
       </MDBox>
       <Footer />
     </DashboardLayout>
   );
 }
 
-export default UserInfoListByMaster;
+export default LandingPageManagement;

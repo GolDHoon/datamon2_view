@@ -17,7 +17,7 @@ Coded by www.creative-tim.com
 import PropTypes from "prop-types";
 
 // Material Dashboard 2 PRO React components
-import MDBox from "components/MDBox";
+import MDBox from "../../../../../components/MDBox";
 import MDButton from "../../../../../components/MDButton";
 import { serverCommunicationUtil } from "../../../../../common/util/serverCommunicationUtil";
 

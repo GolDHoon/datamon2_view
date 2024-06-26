@@ -30,29 +30,20 @@ import Icon from "@mui/material/Icon";
 import Autocomplete from "@mui/material/Autocomplete";
 
 // Material Dashboard 2 PRO React components
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-import MDInput from "components/MDInput";
-import MDPagination from "components/MDPagination";
+import MDBox from "../../../../components/MDBox";
+import MDTypography from "../../../../components/MDTypography";
+import MDInput from "../../../../components/MDInput";
+import MDPagination from "../../../../components/MDPagination";
 
 // Material Dashboard 2 PRO React examples
-import DataTableHeadCell from "layouts/user/userListByMaster/DataTable/DataTableHeadCell";
-import DataTableBodyCell from "layouts/user/userListByMaster/DataTable/DataTableBodyCell";
+import DataTableHeadCell from "../../../landingPage/manage/DataTable/DataTableHeadCell";
+import DataTableBodyCell from "../../../landingPage/manage/DataTable/DataTableBodyCell";
 import MDButton from "../../../../components/MDButton";
 import Menu from "@mui/material/Menu";
 import Checkbox from "@mui/material/Checkbox";
 import MenuItem from "@mui/material/MenuItem";
 
-function DataTable({
-  entriesPerPage,
-  canSearch,
-  showTotalEntries,
-  table,
-  pagination,
-  isSorted,
-  noEndBorder,
-  filterProps,
-}) {
+function DataTable({ entriesPerPage, showTotalEntries, table, pagination, isSorted, noEndBorder }) {
   const [menu, setMenu] = useState(null);
   const openMenu = (event) => setMenu(event.currentTarget);
   const closeMenu = () => setMenu(null);
@@ -224,52 +215,6 @@ function DataTable({
 
   return (
     <TableContainer sx={{ boxShadow: "none" }}>
-      {entriesPerPage || canSearch ? (
-        <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-          {entriesPerPage && (
-            <MDBox display="flex" alignItems="center">
-              <Autocomplete
-                disableClearable
-                value={pageSize.toString()}
-                options={entries}
-                onChange={(event, newValue) => {
-                  setEntriesPerPage(parseInt(newValue, 10));
-                }}
-                size="small"
-                sx={{ width: "5rem" }}
-                renderInput={(params) => <MDInput {...params} />}
-              />
-              <MDTypography variant="caption" color="secondary">
-                &nbsp;&nbsp;entries per page
-              </MDTypography>
-            </MDBox>
-          )}
-          {canSearch && (
-            <MDBox display="flex">
-              <MDButton
-                variant={menu ? "outlined" : "contained"}
-                color="dark"
-                onClick={openMenu}
-                style={{ whiteSpace: "nowrap" }}
-              >
-                검색필터
-                <Icon>keyboard_arrow_down</Icon>
-              </MDButton>
-              {renderMenu}
-              <MDInput
-                placeholder="Search..."
-                value={search}
-                size="small"
-                fullWidth
-                onChange={({ currentTarget }) => {
-                  setSearch(search);
-                  onSearchChange(currentTarget.value);
-                }}
-              />
-            </MDBox>
-          )}
-        </MDBox>
-      ) : null}
       <Table {...getTableProps()}>
         <MDBox component="thead">
           {headerGroups.map((headerGroup, key) => (
@@ -358,7 +303,7 @@ function DataTable({
 
 // Setting default values for the props of DataTable
 DataTable.defaultProps = {
-  entriesPerPage: { defaultValue: 10, entries: [5, 10, 15, 20, 25] },
+  entriesPerPage: { defaultValue: 100, entries: [5, 10, 15, 20, 25] },
   canSearch: false,
   showTotalEntries: true,
   pagination: { variant: "gradient", color: "info" },

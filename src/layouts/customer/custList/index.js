@@ -109,9 +109,9 @@ function CustInfoList() {
   }, [startDate, endDate]);
 
   useEffect(() => {
-    var selectedLandingPage = getSessionStorage("selectedLandingPage");
+    var selectedCustDB = getSessionStorage("selectedCustDB");
 
-    if (selectedLandingPage === null) {
+    if (selectedCustDB === null) {
       navigate("/");
       alert("고객DB를 선택해주세요");
     } else {
@@ -122,7 +122,7 @@ function CustInfoList() {
       });
 
       serverCommunicationUtil("main", "axioPost", "/custInfo/list", {
-        lpgeCode: selectedLandingPage.code,
+        lpgeCode: selectedCustDB.code,
       })
         .then((result) => {
           debugger;

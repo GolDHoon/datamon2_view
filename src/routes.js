@@ -19,6 +19,7 @@ import { getConst } from "./common/common";
 import UserInfoListByMaster from "./layouts/user/userListByMaster";
 import UserInfoListByMemeber from "./layouts/user/userListByMember";
 import AuthMenagement from "./layouts/user/auth";
+import LandingPageManagement from "./layouts/landingPage/manage";
 
 const routes = [
   {
@@ -175,9 +176,9 @@ const routes = [
     type: "collapse",
     name: "랜딩페이지 관리",
     key: "landingPageList",
-    icon: <Icon fontSize="medium">C</Icon>,
+    icon: <Icon fontSize="medium">L</Icon>,
     route: "/cust-db/landing-page/list",
-    component: <CustInfoList />,
+    component: <LandingPageManagement />,
     noCollapse: true,
     auth: [
       getConst("MAST"),

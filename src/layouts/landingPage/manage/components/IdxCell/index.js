@@ -5,26 +5,24 @@ import PropTypes from "prop-types";
 import Checkbox from "@mui/material/Checkbox";
 
 // Material Dashboard 2 PRO React components
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
+import MDBox from "../../../../../components/MDBox";
+import MDTypography from "../../../../../components/MDTypography";
 import MDButton from "../../../../../components/MDButton";
 import Icon from "@mui/material/Icon";
 
 function IdxCell({ idx }) {
   return (
     <MDBox display="flex" alignItems="center">
-      <MDButton>
-        <MDTypography fontWeight="bold" color="error">
-          <Icon fontSize="large">delete</Icon>
-          &nbsp;삭제
-        </MDTypography>
-      </MDButton>
-      <MDButton>
-        <MDTypography fontWeight="bold">
-          <Icon fontSize="large">create</Icon>
-          &nbsp;수정
-        </MDTypography>
-      </MDButton>
+      <MDBox m={"6px"}>
+        <MDButton color={"dark"} variant={"outlined"}>
+          차단Ip
+        </MDButton>
+      </MDBox>
+      <MDBox m={"6px"}>
+        <MDButton color={"dark"} variant={"outlined"}>
+          차단키워드
+        </MDButton>
+      </MDBox>
     </MDBox>
   );
 }
