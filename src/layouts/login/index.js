@@ -1,20 +1,18 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "components/MDBox";
-import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
-import MDAlert from "components/MDAlert";
+import MDInput from "components/MDInput";
 
 // Authentication layout components
-
-// Image
-import bgImage from "assets/images/illustrations/illustration-reset.jpg";
 import { serverCommunicationUtil } from "../../common/util/serverCommunicationUtil";
-
-import { useNavigate } from "react-router-dom";
-import LoginLayout from "./components";
+// Authentication layout components
+import IllustrationLayout from "layouts/login/components/IllustrationLayout";
 import { Helmet } from "react-helmet";
+import { useNavigate } from "react-router-dom";
+
+import logo from "assets/images/login_logo.png";
 
 function Login() {
   const navigate = useNavigate();
@@ -54,38 +52,39 @@ function Login() {
         alert("서버 장애.");
       });
   };
+
   return (
-    <LoginLayout
-      title="로그인"
-      description="Enter your ID and password to sign in"
-      illustration={bgImage}
-    >
-      <Helmet>
-        <title>DataMon2 - Login</title>
-        <meta name="description" content="DataMon2 Login" />
-        <meta name="Keywords" content="login" />
-      </Helmet>
-      <MDBox component="form" role="form">
-        <MDBox mb={2}>
-          <MDInput type="text" label="ID" fullWidth value={id} onChange={handleSetId} required />
+    <MDBox>
+      <IllustrationLayout title="로그인" description="데이터몬에 오신것을 환영합니다.">
+        <Helmet>
+          <title>DataMon2 - Login</title>
+          <meta name="description" content="DataMon2 Login" />
+          <meta name="Keywords" content="login" />
+        </Helmet>
+        <MDBox component="form" role="form">
+          <MDBox mb={2}>
+            <MDInput type="text" label="ID" fullWidth value={id} onChange={handleSetId} required />
+          </MDBox>
+          <MDBox mb={2}>
+            <MDBox mb={2}>
+              <MDInput
+                type="password"
+                label="Password"
+                fullWidth
+                value={pw}
+                onChange={handleSetPw}
+                required
+              />
+            </MDBox>
+          </MDBox>
+          <MDBox mt={4} mb={1}>
+            <MDButton variant="gradient" color="info" size="large" fullWidth onClick={loginHandler}>
+              로그인
+            </MDButton>
+          </MDBox>
         </MDBox>
-        <MDBox mb={2}>
-          <MDInput
-            type="password"
-            label="Password"
-            fullWidth
-            value={pw}
-            onChange={handleSetPw}
-            required
-          />
-        </MDBox>
-        <MDBox mt={4} mb={1}>
-          <MDButton variant="gradient" color="info" size="large" fullWidth onClick={loginHandler}>
-            sign in
-          </MDButton>
-        </MDBox>
-      </MDBox>
-    </LoginLayout>
+      </IllustrationLayout>
+    </MDBox>
   );
 }
 
