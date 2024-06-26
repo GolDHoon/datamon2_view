@@ -5,27 +5,25 @@ import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import Divider from "@mui/material/Divider";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
+import MDTypography from "../../../components/MDTypography";
 
 // Material Dashboard 2 PRO React examples
+import Checkbox from "@mui/material/Checkbox";
+import Footer from "layouts/common/Footer";
 import DashboardLayout from "layouts/common/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "layouts/common/Navbars/DashboardNavbar";
-import Footer from "layouts/common/Footer";
 import DataTable from "layouts/customer/custList/DataTable";
 import dataTableData from "layouts/customer/custList/data/dataTableData";
+import { useNavigate } from "react-router-dom";
+import { getSessionStorage } from "../../../common/common";
 import {
   serverCommunicationUtil,
   sessionChecker,
 } from "../../../common/util/serverCommunicationUtil";
-import { getSessionStorage } from "../../../common/common";
-import MDDatePicker from "../../../components/MDDatePicker";
-import { useNavigate } from "react-router-dom";
-import Checkbox from "@mui/material/Checkbox";
 
 function CustInfoList() {
   const navigate = useNavigate();
@@ -183,15 +181,22 @@ function CustInfoList() {
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox my={3}>
-        <MDBox display="flex" justifyContent="flex-end" alignItems="flex-start" mb={2}>
-          {/*<MDButton variant="gradient" color="info">*/}
-          {/*  new order*/}
-          {/*</MDButton>*/}
+        <MDBox display="flex" justifyContent="space-between" alignItems="center">
+          <MDBox height="100%" mt={0.5} lineHeight={1} p={2}>
+            <MDTypography variant="h4" fontWeight="medium">
+              고객 정보 리스트
+            </MDTypography>
+            <MDTypography variant="body2" color="text" fontWeight="regular">
+              고객 정보 리스트 소개 표시 유고객저 정보 리스트 소개 표시
+            </MDTypography>
+          </MDBox>
           <MDBox display="flex">
-            <MDButton variant={menu ? "contained" : "outlined"} color="dark" onClick={openMenu}>
-              검색필터
-              <Icon>keyboard_arrow_down</Icon>
-            </MDButton>
+            <MDBox ml={1}>
+              <MDButton variant={menu ? "contained" : "outlined"} color="dark" onClick={openMenu}>
+                검색필터
+                <Icon>keyboard_arrow_down</Icon>
+              </MDButton>
+            </MDBox>
             {renderMenu}
             <MDBox ml={1}>
               <MDButton variant="outlined" color="dark" onClick={() => exportToCsv(rows, keyList)}>

@@ -250,7 +250,7 @@ function DataTable({
                 variant={menu ? "outlined" : "contained"}
                 color="dark"
                 onClick={openMenu}
-                style={{ whiteSpace: "nowrap" }}
+                style={{ whiteSpace: "nowrap", marginRight: "2%" }}
               >
                 검색필터
                 <Icon>keyboard_arrow_down</Icon>
@@ -319,7 +319,7 @@ function DataTable({
         {showTotalEntries && (
           <MDBox mb={{ xs: 3, sm: 0 }}>
             <MDTypography variant="button" color="secondary" fontWeight="regular">
-              {entriesStart} 부터 {entriesEnd} 개 항목중 {rows.length} 표시중
+              {entriesStart} 부터 {entriesEnd}개 항목중 {rows.length}개 표시중
             </MDTypography>
           </MDBox>
         )}
