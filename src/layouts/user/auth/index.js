@@ -6,7 +6,8 @@ import MDBox from "components/MDBox";
 
 // Settings page components
 import Header from "layouts/user/auth/components/Header";
-import Notifications from "layouts/user/auth/components/Notifications";
+import dataTableData from "layouts/user/auth/data/dataTableData";
+import DataTable from "layouts/user/auth/DataTable/index";
 import DashboardLayout from "../../common/LayoutContainers/DashboardLayout";
 import Card from "@mui/material/Card";
 import CategoriesList from "layouts/user/auth/components/CategoriesList";
@@ -20,22 +21,20 @@ import { Modal } from "@mui/material";
 function AuthMenagement() {
   const [cdbtList, setCdbtList] = useState([]);
   const [selectedCdbt, setSelectedCdbt] = useState("");
+  const [rows, setRows] = useState([]);
+  const [keyList, setKeyList] = useState([]);
   const onRowClick = (code) => {
     setSelectedCdbt(code);
-    console.log(code);
     serverCommunicationUtil("main", "axioPost", "/userAuth/userListByCdbtCode", {
       cdbtCode: code,
     })
       .then((result) => {
-        debugger;
+        setRows(result.rows);
+        setKeyList(result.keyList);
       })
       .catch((error) => {
         console.log("");
       });
-  };
-  const clickButton = () => {
-    var body = document.querySelector("#app");
-    body.innerHTML = "<div>test!!!</div>" + body.innerHTML;
   };
 
   useEffect(() => {
@@ -81,10 +80,10 @@ function AuthMenagement() {
             <MDBox mb={3}>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <Header />
+                  <Header selectedCdbt={selectedCdbt} />
                 </Grid>
                 <Grid item xs={12}>
-                  <Notifications />
+                  <DataTable table={dataTableData(rows, keyList)} entriesPerPage={true} canSearch />
                 </Grid>
               </Grid>
             </MDBox>
