@@ -10,6 +10,7 @@ import MDTypography from "components/MDTypography";
 
 // NewUser page components
 import FormField from "../FormField";
+import { useState } from "react";
 
 // eslint-disable-next-line react/prop-types
 function UserInfo({ formData, valueMap }) {
@@ -26,6 +27,14 @@ function UserInfo({ formData, valueMap }) {
     email: emailV = "",
   } = values;
 
+  const [modValue, setModValue] = useState(values);
+
+  const setIdHandler = (event) => {
+    console.log(event.target.value);
+    console.log(modValue);
+    setModValue({ ...modValue, ID: event.target.value });
+    console.log(modValue);
+  };
   return (
     <MDBox>
       <MDBox>
@@ -44,6 +53,7 @@ function UserInfo({ formData, valueMap }) {
               value={IDV}
               error={errors.ID && touched.ID}
               success={IDV.length > 0 && !errors.ID}
+              onChange={(evnet) => setIdHandler(evnet)}
             />
           </Grid>
           <Grid item xs={12} sm={6}>

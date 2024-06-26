@@ -36,7 +36,6 @@ function DataTable({
   pagination,
   isSorted,
   noEndBorder,
-  filterProps,
 }) {
   const [menu, setMenu] = useState(null);
   const openMenu = (event) => setMenu(event.currentTarget);
