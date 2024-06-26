@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 // @mui material components
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "components/MDBox";
@@ -36,38 +34,26 @@ import initialValues from "./schemas/initialValues";
 import validations from "./schemas/validations";
 
 function UserInfoListByMaster() {
-  const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const [keyList, setKeyList] = useState([]);
   const [showPage, setShowPage] = useState(false);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-
   const { formId, formField } = form;
 
+  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
   const handleSubmit = (values, actions) => {};
 
-  useEffect(() => {
-    if (startDate && endDate) {
-      // Convert date objects to specific datetime format or timestamp
-      const convertedStartDate = startDate.getTime();
-      const convertedEndDate = endDate.getTime();
-
-      // Filter rows based on selected date range
-      const filteredRows = rows.filter((row) => {
-        // Assuming the createDate is in timestamp format for comparison
-        const rowDate = new Date(row.createDate).getTime();
-        return rowDate >= convertedStartDate && rowDate <= convertedEndDate;
-      });
-
-      setRows(filteredRows);
-    }
-  }, [startDate, endDate]);
+  serverCommunicationUtil("main", "axioGet", "/user/list", {
+    listType: "company",
+  })
+    .then((result) => {
+      setRows(result.rows);
+      setKeyList(result.keyList);
+    })
+    .catch((error) => {
+      console.log("Error occurred while fetching the user list: ", error);
+    });
 
   useEffect(() => {
     sessionChecker().then((checkerResult) => {
@@ -75,17 +61,6 @@ function UserInfoListByMaster() {
         setShowPage(true);
       }
     });
-
-    serverCommunicationUtil("main", "axioGet", "/user/list", {
-      listType: "company",
-    })
-      .then((result) => {
-        setRows(result.rows);
-        setKeyList(result.keyList);
-      })
-      .catch((error) => {
-        console.log("");
-      });
   }, []);
 
   if (!showPage) {

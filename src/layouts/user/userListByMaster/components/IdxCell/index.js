@@ -10,7 +10,7 @@ import MDTypography from "components/MDTypography";
 import MDButton from "../../../../../components/MDButton";
 import Icon from "@mui/material/Icon";
 
-function IdxCell({ idx }) {
+function IdxCell({ value }) {
   return (
     <MDBox display="flex" alignItems="center">
       <MDButton>
@@ -31,7 +31,7 @@ function IdxCell({ idx }) {
 
 // Typechecking props for the IdCell
 IdxCell.propTypes = {
-  idx: PropTypes.string.isRequired,
+  value: PropTypes.string,
 };
 
 export default IdxCell;
