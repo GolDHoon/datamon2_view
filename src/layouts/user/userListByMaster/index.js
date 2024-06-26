@@ -38,11 +38,15 @@ function UserInfoListByMaster() {
   const [keyList, setKeyList] = useState([]);
   const [showPage, setShowPage] = useState(false);
   const [open, setOpen] = useState(false);
+  const [valueMap, setValueMap] = useState();
   const { formId, formField } = form;
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleSubmit = (values, actions) => {};
+  const saveHandler = () => {
+    console.log(form);
+  };
 
   serverCommunicationUtil("main", "axioGet", "/user/list", {
     listType: "company",
@@ -74,7 +78,6 @@ function UserInfoListByMaster() {
     transform: "translate(-50%, -50%)",
     width: "50%",
     bgcolor: "background.paper",
-    "border-radius": "15px",
     boxShadow: 24,
     p: 4,
   };
@@ -116,23 +119,31 @@ function UserInfoListByMaster() {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={style} id="popup">
+          <Card sx={style} id="popup">
             <Grid container justifyContent="center" alignItems="center">
               <Grid width="100%">
                 <Formik
                   initialValues={initialValues}
-                  validationSchema={validations}
+                  validationSchema={validations[0]}
                   onSubmit={handleSubmit}
                 >
                   {({ values, errors, touched, isSubmitting }) => (
                     <Form id={formId} autoComplete="off">
                       <MDBox>
-                        <UserInfo formData={{ values, touched, formField, errors }} />
+                        <UserInfo
+                          formData={{ values, touched, formField, errors }}
+                          valueMap={valueMap}
+                        />
                         <MDBox mt={2} width="100%" display="flex" justifyContent="flex-end">
-                          <MDButton variant="gradient" color="info" style={{ margin: "0 2% 0 0" }}>
+                          <MDButton
+                            variant="gradient"
+                            color="info"
+                            style={{ margin: "0 2% 0 0" }}
+                            onClick={saveHandler}
+                          >
                             완료
                           </MDButton>
-                          <MDButton MDButton color="black" onClick={handleClose}>
+                          <MDButton color="dark" onClick={handleClose}>
                             취소
                           </MDButton>
                         </MDBox>
@@ -142,7 +153,7 @@ function UserInfoListByMaster() {
                 </Formik>
               </Grid>
             </Grid>
-          </Box>
+          </Card>
         </Modal>
       </div>
     </DashboardLayout>

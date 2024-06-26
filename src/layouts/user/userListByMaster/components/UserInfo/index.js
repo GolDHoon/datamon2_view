@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 PRO React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-pro-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 // prop-type is a library for typechecking of props
 import PropTypes from "prop-types";
 
@@ -26,16 +11,19 @@ import MDTypography from "components/MDTypography";
 // NewUser page components
 import FormField from "../FormField";
 
-function UserInfo({ formData }) {
+// eslint-disable-next-line react/prop-types
+function UserInfo({ formData, valueMap }) {
   const { formField, values, errors, touched } = formData;
-  const { firstName, lastName, company, email, password, repeatPassword } = formField;
+  const { ID, PW, company, corporateNumber, name, item, status, email } = formField;
   const {
-    firstName: firstNameV,
-    lastName: lastNameV,
-    company: companyV,
-    email: emailV,
-    password: passwordV,
-    repeatPassword: repeatPasswordV,
+    ID: IDV = "",
+    PW: PWV = "",
+    company: companyV = "",
+    corporateNumber: corporateNumberV = "",
+    name: nameV = "",
+    item: itemV = "",
+    status: statusV = "",
+    email: emailV = "",
   } = values;
 
   return (
@@ -50,24 +38,22 @@ function UserInfo({ formData }) {
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
             <FormField
-              type={firstName.type}
-              label={firstName.label}
-              name={firstName.name}
-              value={firstNameV}
-              placeholder={firstName.placeholder}
-              error={errors.firstName && touched.firstName}
-              success={firstNameV.length > 0 && !errors.firstName}
+              type={ID.type}
+              label={ID.label}
+              name={ID.name}
+              value={IDV}
+              error={errors.ID && touched.ID}
+              success={IDV.length > 0 && !errors.ID}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormField
-              type={lastName.type}
-              label={lastName.label}
-              name={lastName.name}
-              value={lastNameV}
-              placeholder={lastName.placeholder}
-              error={errors.lastName && touched.lastName}
-              success={lastNameV.length > 0 && !errors.lastName}
+              type={PW.type}
+              label={PW.label}
+              name={PW.name}
+              value={PWV}
+              error={errors.PW && touched.PW}
+              success={PWV.length > 0 && !errors.PW}
             />
           </Grid>
         </Grid>
@@ -78,7 +64,52 @@ function UserInfo({ formData }) {
               label={company.label}
               name={company.name}
               value={companyV}
-              placeholder={company.placeholder}
+              error={errors.company && touched.company}
+              success={companyV.length > 0 && !errors.company}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormField
+              type={corporateNumber.type}
+              label={corporateNumber.label}
+              name={corporateNumber.name}
+              value={corporateNumberV}
+              error={errors.corporateNumber && touched.corporateNumber}
+              success={corporateNumberV.length > 0 && !errors.corporateNumber}
+            />
+          </Grid>
+        </Grid>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <FormField
+              type={name.type}
+              label={name.label}
+              name={name.name}
+              value={nameV}
+              error={errors.name && touched.name}
+              success={nameV.length > 0 && !errors.name}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormField
+              type={item.type}
+              label={item.label}
+              name={item.name}
+              value={itemV}
+              error={errors.item && touched.item}
+              success={itemV.length > 0 && !errors.item}
+            />
+          </Grid>
+        </Grid>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <FormField
+              type={status.type}
+              label={status.label}
+              name={status.name}
+              value={statusV}
+              error={errors.status && touched.status}
+              success={statusV.length > 0 && !errors.status}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -87,35 +118,8 @@ function UserInfo({ formData }) {
               label={email.label}
               name={email.name}
               value={emailV}
-              placeholder={email.placeholder}
               error={errors.email && touched.email}
               success={emailV.length > 0 && !errors.email}
-            />
-          </Grid>
-        </Grid>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6}>
-            <FormField
-              type={password.type}
-              label={password.label}
-              name={password.name}
-              value={passwordV}
-              placeholder={password.placeholder}
-              error={errors.password && touched.password}
-              success={passwordV.length > 0 && !errors.password}
-              inputProps={{ autoComplete: "" }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormField
-              type={repeatPassword.type}
-              label={repeatPassword.label}
-              name={repeatPassword.name}
-              value={repeatPasswordV}
-              placeholder={repeatPassword.placeholder}
-              error={errors.repeatPassword && touched.repeatPassword}
-              success={repeatPasswordV.length > 0 && !errors.repeatPassword}
-              inputProps={{ autoComplete: "" }}
             />
           </Grid>
         </Grid>

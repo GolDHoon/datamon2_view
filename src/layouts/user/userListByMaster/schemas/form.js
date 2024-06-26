@@ -1,153 +1,62 @@
-/**
-=========================================================
-* Material Dashboard 2 PRO React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-pro-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 const form = {
-  formId: "new-user-form",
+  formId: "userList-master",
   formField: {
-    firstName: {
-      name: "firstName",
-      label: "First Name",
+    ID: {
+      name: "ID",
+      label: "ID",
       type: "text",
-      errorMsg: "아이디z를 입력해 주세요.",
+      errorMsg: "아이디를 입력해 주세요.",
     },
-    lastName: {
-      name: "lastName",
-      label: "Last Name",
-      type: "text",
+    PW: {
+      name: "PW",
+      label: "PW",
+      type: "password",
       errorMsg: "비밀번호를 입력해 주세요.",
     },
     company: {
       name: "company",
-      label: "Company",
+      label: "상호",
       type: "text",
+      errorMsg: "상호를 입력해 주세요.",
+    },
+    corporateNumber: {
+      name: "corporateNumber",
+      label: "사업자등록번호",
+      type: "text",
+      errorMsg: "사업자등록번호를 입력해 주세요.",
+      invalidMsg: "숫자만 입력해주세요.",
+    },
+    name: {
+      name: "name",
+      label: "대표자명",
+      type: "text",
+      errorMsg: "대표자명을 입력해 주세요",
+    },
+    address: {
+      name: "address",
+      label: "주소",
+      type: "text",
+      errorMsg: "주소를 입력해 주세요",
+    },
+    item: {
+      name: "item",
+      label: "품목",
+      type: "text",
+      errorMsg: "품목을 입력해 주세요",
+    },
+    status: {
+      name: "status",
+      label: "업태",
+      type: "text",
+      errorMsg: "업태를 입력해 주세요",
     },
     email: {
       name: "email",
-      label: "Email Address",
+      label: "메일",
       type: "email",
-      errorMsg: "소속명을 입력해 주세요.",
-      invalidMsg: "Your email address is invalid",
-    },
-    password: {
-      name: "password",
-      label: "Password",
-      type: "password",
-      errorMsg: "",
-      invalidMsg: "Your password should be more than 6 characters.",
-    },
-    repeatPassword: {
-      name: "repeatPassword",
-      label: "Repeat Password",
-      type: "password",
-      errorMsg: "Password is required.",
-      invalidMsg: "Your password doesn't match.",
-    },
-    address1: {
-      name: "address1",
-      label: "Address 1",
-      type: "text",
-      errorMsg: "Address is required.",
-    },
-    address2: {
-      name: "address2",
-      label: "Address 2",
-      type: "text",
-    },
-    city: {
-      name: "city",
-      label: "City",
-      type: "text",
-      errorMsg: "City is required.",
-    },
-    zip: {
-      name: "zip",
-      label: "Zip",
-      type: "number",
-      errorMsg: "Zip is required.",
-      invalidMsg: "Zipcode is not valie (e.g. 70000).",
-    },
-    twitter: {
-      name: "twitter",
-      label: "Twitter Handle",
-      type: "text",
-      errorMsg: "Twitter profile is required.",
-    },
-    facebook: {
-      name: "facebook",
-      label: "Facebook Account",
-      type: "text",
-    },
-    instagram: {
-      name: "instagram",
-      label: "Instagram Account",
-      type: "text",
-    },
-    publicEmail: {
-      name: "publicEmail",
-      label: "Public Email",
-      type: "email",
-    },
-    bio: {
-      name: "bio",
-      label: "Bio",
+      errorMsg: "메일을 입력해 주세요.",
     },
   },
 };
-
-// const form = {
-//   formId: "new-user-form",
-//   formField: {
-//     firstName: {
-//       name: "firstName",
-//       label: "First Name",
-//       type: "text",
-//       errorMsg: "아이디z를 입력해 주세요.",
-//     },
-//     lastName: {
-//       name: "lastName",
-//       label: "Last Name",
-//       type: "text",
-//       errorMsg: "비밀번호를 입력해 주세요.",
-//     },
-//     company: {
-//       name: "company",
-//       label: "Company",
-//       type: "text",
-//     },
-//     email: {
-//       name: "email",
-//       label: "Email Address",
-//       type: "email",
-//       errorMsg: "상호명을 입력해 주세요.",
-//       invalidMsg: "Your email address is invalid",
-//     },
-//     password: {
-//       name: "password",
-//       label: "Password",
-//       type: "password",
-//       errorMsg: "사업자등록번호를 입력해 주세요.",
-//       invalidMsg: "Your password should be more than 6 characters.",
-//     },
-//     repeatPassword: {
-//       name: "repeatPassword",
-//       label: "Repeat Password",
-//       type: "password",
-//       errorMsg: "대표명을 입력해 주세요.",
-//       invalidMsg: "Your password doesn't match.",
-//     },
-//   },
-// };
 
 export default form;
