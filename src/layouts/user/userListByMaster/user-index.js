@@ -3,37 +3,28 @@ import { useEffect, useState } from "react";
 // @mui material components
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import NewUser from "layouts/login/components/pages/users/new-user";
+import * as React from "react";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 
 // Material Dashboard 2 PRO React examples
+import Footer from "layouts/common/Footer";
 import DashboardLayout from "layouts/common/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "layouts/common/Navbars/DashboardNavbar";
-import Footer from "layouts/common/Footer";
 import DataTable from "layouts/user/userListByMaster/DataTable";
 import dataTableData from "layouts/user/userListByMaster/data/dataTableData";
+import { useNavigate } from "react-router-dom";
 import {
   serverCommunicationUtil,
   sessionChecker,
 } from "../../../common/util/serverCommunicationUtil";
-import { useNavigate } from "react-router-dom";
-import Checkbox from "@mui/material/Checkbox";
 import MDTypography from "../../../components/MDTypography";
-
-import { Modal } from "@mui/material";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import { Form, Formik } from "formik";
-
-import UserInfo from "./components/UserInfo";
-
-import form from "./schemas/form";
-import initialValues from "./schemas/initialValues";
-import validations from "./schemas/validations";
 
 function UserInfoListByMaster() {
   const navigate = useNavigate();
@@ -43,14 +34,8 @@ function UserInfoListByMaster() {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
-
-  const { formId, formField } = form;
-
-  const handleClose = () => setOpen(false);
-
-  const handleSubmit = (values, actions) => {};
 
   useEffect(() => {
     if (startDate && endDate) {
@@ -142,31 +127,7 @@ function UserInfoListByMaster() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style} id="popup">
-            <Grid container justifyContent="center" alignItems="center">
-              <Grid width="100%">
-                <Formik
-                  initialValues={initialValues}
-                  validationSchema={validations}
-                  onSubmit={handleSubmit}
-                >
-                  {({ values, errors, touched, isSubmitting }) => (
-                    <Form id={formId} autoComplete="off">
-                      <MDBox>
-                        <UserInfo formData={{ values, touched, formField, errors }} />
-                        <MDBox mt={2} width="100%" display="flex" justifyContent="flex-end">
-                          <MDButton variant="gradient" color="info" style={{ margin: "0 2% 0 0" }}>
-                            완료
-                          </MDButton>
-                          <MDButton MDButton color="black" onClick={handleClose}>
-                            취소
-                          </MDButton>
-                        </MDBox>
-                      </MDBox>
-                    </Form>
-                  )}
-                </Formik>
-              </Grid>
-            </Grid>
+            <NewUser></NewUser>
           </Box>
         </Modal>
       </div>
