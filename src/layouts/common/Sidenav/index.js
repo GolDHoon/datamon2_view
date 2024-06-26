@@ -290,7 +290,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
               src={logo}
               alt="logo"
               width="1.5rem"
-              style={{ "margin-right": "3%" }}
+              style={{ marginRight: "3%" }}
             />
           )}
           <MDBox

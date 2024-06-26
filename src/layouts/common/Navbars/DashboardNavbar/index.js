@@ -91,6 +91,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
+  const handleLogOut = () => {};
 
   // Render the notifications menu
   const renderMenu = () => (
@@ -184,10 +185,8 @@ function DashboardNavbar({ absolute, light, isMini }) {
                   <Icon sx={iconsStyle}>notifications</Icon>
                 </MDBadge>
               </IconButton>
-              <IconButton onClick={""}>
-                <IconButton sx={navbarIconButton} size="small" disableRipple>
-                  <Icon sx={iconsStyle}>logout</Icon>
-                </IconButton>
+              <IconButton sx={navbarIconButton} onClick={handleLogOut} size="small" disableRipple>
+                <Icon sx={iconsStyle}>logout</Icon>
               </IconButton>
               {renderMenu()}
             </MDBox>

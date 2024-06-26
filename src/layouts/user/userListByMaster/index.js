@@ -45,16 +45,18 @@ function UserInfoListByMaster() {
     console.log(form);
   };
 
-  serverCommunicationUtil("main", "axioGet", "/user/list", {
-    listType: "company",
-  })
-    .then((result) => {
-      setRows(result.rows);
-      setKeyList(result.keyList);
+  useEffect(() => {
+    serverCommunicationUtil("main", "axioGet", "/user/list", {
+      listType: "company",
     })
-    .catch((error) => {
-      console.log("Error occurred while fetching the user list: ", error);
-    });
+      .then((result) => {
+        setRows(result.rows);
+        setKeyList(result.keyList);
+      })
+      .catch((error) => {
+        console.log("Error occurred while fetching the user list: ", error);
+      });
+  }, [setRows, setKeyList]);
 
   useEffect(() => {
     sessionChecker().then((checkerResult) => {
