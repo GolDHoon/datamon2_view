@@ -1,21 +1,15 @@
-import React from "react";
-
 // Material Dashboard 2 PRO React layouts
-import Login from "layouts/login";
 import Home from "layouts/home";
-import UserList from "./layouts/developer/user/user-list";
-import Checker from "./layouts/developer/checker";
+import Login from "layouts/login";
 
 // Material Dashboard 2 PRO React components
-import MDAvatar from "components/MDAvatar";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
 
 // Images
-import profilePicture from "assets/images/team-3.jpg";
-import CustInfoList from "./layouts/customer/custList";
 import { getConst } from "./common/common";
+import CustInfoList from "./layouts/customer/custList";
 import UserInfoListByMaster from "./layouts/user/userListByMaster";
 import UserInfoListByMemeber from "./layouts/user/userListByMember";
 import AuthMenagement from "./layouts/user/auth";
@@ -77,8 +71,8 @@ const routes = [
     type: "collapse",
     name: "유저정보 목록(마스터)",
     key: "useInfoListByCompany",
-    icon: <Icon fontSize="medium">U</Icon>,
-    route: "/master/use-info/list",
+    icon: <Icon fontSize="medium">person</Icon>,
+    route: "/master/user-info/list",
     component: <UserInfoListByMaster />,
     noCollapse: true,
     auth: [getConst("MAST"), getConst("INME"), getConst("DEVL")],
@@ -88,7 +82,7 @@ const routes = [
     name: "유저정보 목록",
     key: "useInfoListByMember",
     icon: <Icon fontSize="medium">U</Icon>,
-    route: "/use-info/list",
+    route: "/user-info/list",
     component: <UserInfoListByMemeber />,
     noCollapse: true,
     auth: [
@@ -140,7 +134,7 @@ const routes = [
     type: "collapse",
     name: "고객정보 목록",
     key: "custInfoList",
-    icon: <Icon fontSize="medium">C</Icon>,
+    icon: <Icon fontSize="medium">person</Icon>,
     route: "/cust-info/list",
     component: <CustInfoList />,
     noCollapse: true,
