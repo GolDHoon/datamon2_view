@@ -13,31 +13,31 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useMemo, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
 // react-table components
-import { useTable, usePagination, useGlobalFilter, useAsyncDebounce, useSortBy } from "react-table";
+import { useAsyncDebounce, useGlobalFilter, usePagination, useSortBy, useTable } from "react-table";
 
 // @mui material components
+import Autocomplete from "@mui/material/Autocomplete";
+import Icon from "@mui/material/Icon";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
-import Icon from "@mui/material/Icon";
-import Autocomplete from "@mui/material/Autocomplete";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDPagination from "components/MDPagination";
+import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 PRO React examples
-import DataTableHeadCell from "layouts/common/Tables/DataTable/DataTableHeadCell";
 import DataTableBodyCell from "layouts/common/Tables/DataTable/DataTableBodyCell";
+import DataTableHeadCell from "layouts/common/Tables/DataTable/DataTableHeadCell";
 
 function DataTable({
   entriesPerPage,
@@ -163,7 +163,7 @@ function DataTable({
                 renderInput={(params) => <MDInput {...params} />}
               />
               <MDTypography variant="caption" color="secondary">
-                &nbsp;&nbsp;entries per page
+                &nbsp;&nbsp;페이지 표시 선택
               </MDTypography>
             </MDBox>
           )}
@@ -232,7 +232,7 @@ function DataTable({
         {showTotalEntries && (
           <MDBox mb={{ xs: 3, sm: 0 }}>
             <MDTypography variant="button" color="secondary" fontWeight="regular">
-              Showing {entriesStart} to {entriesEnd} of {rows.length} entries
+              {entriesStart} 부터 {entriesEnd}개 항목중 {rows.length}개 표시중
             </MDTypography>
           </MDBox>
         )}

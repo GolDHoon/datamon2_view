@@ -5,18 +5,16 @@ import Grid from "@mui/material/Grid";
 import MDBox from "components/MDBox";
 
 // Settings page components
+import Card from "@mui/material/Card";
+import DataTable from "layouts/user/auth/DataTable/index";
+import CategoriesList from "layouts/user/auth/components/CategoriesList";
 import Header from "layouts/user/auth/components/Header";
 import dataTableData from "layouts/user/auth/data/dataTableData";
-import DataTable from "layouts/user/auth/DataTable/index";
-import DashboardLayout from "../../common/LayoutContainers/DashboardLayout";
-import Card from "@mui/material/Card";
-import CategoriesList from "layouts/user/auth/components/CategoriesList";
-import MDTypography from "../../../components/MDTypography";
-import DashboardNavbar from "../../common/Navbars/DashboardNavbar";
 import { useEffect, useState } from "react";
 import { serverCommunicationUtil } from "../../../common/util/serverCommunicationUtil";
-import MDButton from "../../../components/MDButton";
-import { Modal } from "@mui/material";
+import MDTypography from "../../../components/MDTypography";
+import DashboardLayout from "../../common/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "../../common/Navbars/DashboardNavbar";
 
 function AuthMenagement() {
   const [cdbtList, setCdbtList] = useState([]);
@@ -58,10 +56,10 @@ function AuthMenagement() {
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox height="100%" mt={0.5} lineHeight={1} p={2}>
-        <MDTypography variant="h2" fontWeight="medium">
+        <MDTypography variant="h4" fontWeight="medium">
           권한 관리자
         </MDTypography>
-        <MDTypography variant="h4" color="text" fontWeight="regular">
+        <MDTypography variant="body2" color="text" fontWeight="regular">
           유저의 고객DB 권한을 관리하는 페이지입니다.
         </MDTypography>
       </MDBox>

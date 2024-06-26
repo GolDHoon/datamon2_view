@@ -10,10 +10,10 @@ import Icon from "@mui/material/Icon";
 // Images
 import { getConst } from "./common/common";
 import CustInfoList from "./layouts/customer/custList";
+import LandingPageManagement from "./layouts/landingPage/manage";
+import AuthMenagement from "./layouts/user/auth";
 import UserInfoListByMaster from "./layouts/user/userListByMaster";
 import UserInfoListByMemeber from "./layouts/user/userListByMember";
-import AuthMenagement from "./layouts/user/auth";
-import LandingPageManagement from "./layouts/landingPage/manage";
 
 const routes = [
   {
@@ -101,7 +101,7 @@ const routes = [
     type: "collapse",
     name: "유저 권한 관리",
     key: "useAuthMenagement",
-    icon: <Icon fontSize="medium">person</Icon>,
+    icon: <Icon fontSize="medium">https</Icon>,
     route: "/use-info/auth",
     component: <AuthMenagement />,
     noCollapse: true,
@@ -170,7 +170,7 @@ const routes = [
     type: "collapse",
     name: "랜딩페이지 관리",
     key: "landingPageList",
-    icon: <Icon fontSize="medium">L</Icon>,
+    icon: <Icon fontSize="medium">newspaper</Icon>,
     route: "/cust-db/landing-page/list",
     component: <LandingPageManagement />,
     noCollapse: true,

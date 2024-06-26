@@ -320,7 +320,9 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
             value={selectedCustDB}
             options={custDBList.map((item) => item.DBName)}
             onChange={handleAutocompleteChange}
-            renderInput={(params) => <MDInput {...params} label="고객DB" color={textColor} />}
+            renderInput={(params) => (
+              <MDInput {...params} placeholder="고객DB 입력" color={textColor} />
+            )}
           />
         </MDBox>
       </MDBox>

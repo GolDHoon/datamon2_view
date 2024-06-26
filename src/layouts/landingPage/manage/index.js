@@ -3,26 +3,22 @@ import { useEffect, useState } from "react";
 // @mui material components
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "../../../components/MDBox";
 import MDButton from "../../../components/MDButton";
 
 // Material Dashboard 2 PRO React examples
-import DashboardLayout from "../../common/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "../../common/Navbars/DashboardNavbar";
-import Footer from "../../common/Footer";
-import DataTable from "../../landingPage/manage/DataTable";
-import dataTableData from "../../landingPage/manage/data/dataTableData";
 import {
   serverCommunicationUtil,
   sessionChecker,
 } from "../../../common/util/serverCommunicationUtil";
-import { useNavigate } from "react-router-dom";
-import Checkbox from "@mui/material/Checkbox";
 import MDTypography from "../../../components/MDTypography";
+import Footer from "../../common/Footer";
+import DashboardLayout from "../../common/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "../../common/Navbars/DashboardNavbar";
+import DataTable from "../../landingPage/manage/DataTable";
+import dataTableData from "../../landingPage/manage/data/dataTableData";
 
 function LandingPageManagement() {
   const [rows, setRows] = useState([]);
@@ -56,10 +52,10 @@ function LandingPageManagement() {
       <MDBox my={3}>
         <MDBox display="flex" justifyContent="space-between">
           <MDBox height="100%" mt={0.5} lineHeight={1} p={2}>
-            <MDTypography variant="h2" fontWeight="medium">
+            <MDTypography variant="h4" fontWeight="medium">
               랜딩페이지 관리
             </MDTypography>
-            <MDTypography variant="h4" color="text" fontWeight="regular">
+            <MDTypography variant="body2" color="text" fontWeight="regular">
               랜딩페이지 목록 및 랜딩페이지 관리화면입니다.
             </MDTypography>
           </MDBox>

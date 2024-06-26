@@ -3,25 +3,22 @@ import { useEffect, useState } from "react";
 // @mui material components
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 
 // Material Dashboard 2 PRO React examples
+import Footer from "layouts/common/Footer";
 import DashboardLayout from "layouts/common/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "layouts/common/Navbars/DashboardNavbar";
-import Footer from "layouts/common/Footer";
 import DataTable from "layouts/user/userListByMember/DataTable";
 import dataTableData from "layouts/user/userListByMember/data/dataTableData";
+import { useNavigate } from "react-router-dom";
 import {
   serverCommunicationUtil,
   sessionChecker,
 } from "../../../common/util/serverCommunicationUtil";
-import { useNavigate } from "react-router-dom";
-import Checkbox from "@mui/material/Checkbox";
 import MDTypography from "../../../components/MDTypography";
 
 function UserInfoListByMemeber() {
@@ -78,10 +75,10 @@ function UserInfoListByMemeber() {
       <MDBox my={3}>
         <MDBox display="flex" justifyContent="space-between">
           <MDBox height="100%" mt={0.5} lineHeight={1} p={2}>
-            <MDTypography variant="h2" fontWeight="medium">
+            <MDTypography variant="h4" fontWeight="medium">
               유저 정보 리스트
             </MDTypography>
-            <MDTypography variant="h4" color="text" fontWeight="regular">
+            <MDTypography variant="body2" color="text" fontWeight="regular">
               유저 정보 리스트 소개 표시 유저 정보 리스트 소개 표시
             </MDTypography>
           </MDBox>
