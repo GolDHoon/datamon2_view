@@ -81,7 +81,11 @@ function AuthMenagement() {
                   <Header selectedCdbt={selectedCdbt} />
                 </Grid>
                 <Grid item xs={12}>
-                  <DataTable table={dataTableData(rows, keyList)} entriesPerPage={true} canSearch />
+                  <DataTable
+                    table={dataTableData(rows, keyList, selectedCdbt)}
+                    entriesPerPage={true}
+                    canSearch
+                  />
                 </Grid>
               </Grid>
             </MDBox>

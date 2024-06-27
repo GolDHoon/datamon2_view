@@ -2,7 +2,7 @@ import IdxCell from "layouts/user/auth/components/IdxCell";
 import DefaultCell from "layouts/user/auth/components/DefaultCell";
 import StatusCell from "layouts/user/auth/components/StatusCell";
 
-const dataTableData = (data, keyList) => {
+const dataTableData = (data, keyList, selectedCdbt) => {
   let columns = keyList.map((key) => {
     if (["전체열람", "열람", "수정"].includes(key)) {
       return {
@@ -27,7 +27,7 @@ const dataTableData = (data, keyList) => {
     Header: "",
     accessor: "userIdx",
     /* eslint-disable react/prop-types */
-    Cell: ({ value }) => <IdxCell idx={value} />,
+    Cell: ({ value }) => <IdxCell idx={value} selectedCdbt={selectedCdbt} />,
     /* eslint-enable react/prop-types */
   });
 

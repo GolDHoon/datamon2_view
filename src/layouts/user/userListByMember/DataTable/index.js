@@ -53,6 +53,9 @@ function DataTable({
   noEndBorder,
   filterProps,
 }) {
+  if (!table.rows || table.rows.length === 0) {
+    return null; // or you might want to return some fallback UI here
+  }
   const [menu, setMenu] = useState(null);
   const openMenu = (event) => setMenu(event.currentTarget);
   const closeMenu = () => setMenu(null);
