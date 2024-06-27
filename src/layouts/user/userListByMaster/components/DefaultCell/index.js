@@ -23,11 +23,6 @@ function DefaultCell({ value, suffix }) {
   return (
     <MDTypography variant="caption" fontWeight="medium" color="text">
       {value}
-      {suffix && (
-        <MDTypography variant="caption" fontWeight="medium" color="secondary">
-          &nbsp;&nbsp;{suffix}
-        </MDTypography>
-      )}
     </MDTypography>
   );
 }

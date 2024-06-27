@@ -15,7 +15,7 @@ import { useState } from "react";
 // eslint-disable-next-line react/prop-types
 function UserInfo({ formData, valueMap, setValueMap }) {
   const { formField, values, errors, touched } = formData;
-  const { ID, PW, company, corporateNumber, name, item, status, email, address } = formField;
+  const { ID, PW, name, role, contactPhone, email } = formField;
   return (
     <MDBox>
       <MDBox>
@@ -56,36 +56,6 @@ function UserInfo({ formData, valueMap, setValueMap }) {
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
             <FormField
-              type={company.type}
-              label={company.label}
-              name={company.name}
-              /* eslint-disable-next-line react/prop-types */
-              value={valueMap.companyValue}
-              error={errors.company && touched.company}
-              /* eslint-disable-next-line react/prop-types */
-              success={valueMap.companyValue.length > 0 && !errors.company}
-              onChange={(event) => setValueMap({ ...valueMap, companyValue: event.target.value })}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormField
-              type={corporateNumber.type}
-              label={corporateNumber.label}
-              name={corporateNumber.name}
-              /* eslint-disable-next-line react/prop-types */
-              value={valueMap.corporateNumberValue}
-              error={errors.corporateNumber && touched.corporateNumber}
-              /* eslint-disable-next-line react/prop-types */
-              success={valueMap.corporateNumberValue.length > 0 && !errors.corporateNumber}
-              onChange={(event) =>
-                setValueMap({ ...valueMap, corporateNumberValue: event.target.value })
-              }
-            />
-          </Grid>
-        </Grid>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6}>
-            <FormField
               type={name.type}
               label={name.label}
               name={name.name}
@@ -99,47 +69,34 @@ function UserInfo({ formData, valueMap, setValueMap }) {
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormField
-              type={address.type}
-              label={address.label}
-              name={address.name}
+              type={role.type}
+              label={role.label}
+              name={role.name}
               /* eslint-disable-next-line react/prop-types */
-              value={valueMap.addressValue}
-              error={errors.address && touched.address}
+              value={valueMap.roleValue}
+              error={errors.role && touched.role}
               /* eslint-disable-next-line react/prop-types */
-              success={valueMap.addressValue.length > 0 && !errors.address}
-              onChange={(event) => setValueMap({ ...valueMap, addressValue: event.target.value })}
+              success={valueMap.roleValue.length > 0 && !errors.role}
+              onChange={(event) => setValueMap({ ...valueMap, roleValue: event.target.value })}
             />
           </Grid>
         </Grid>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
             <FormField
-              type={item.type}
-              label={item.label}
-              name={item.name}
+              type={contactPhone.type}
+              label={contactPhone.label}
+              name={contactPhone.name}
               /* eslint-disable-next-line react/prop-types */
-              value={valueMap.itemValue}
-              error={errors.item && touched.item}
+              value={valueMap.contactPhoneValue}
+              error={errors.contactPhone && contactPhone.item}
               /* eslint-disable-next-line react/prop-types */
-              success={valueMap.itemValue.length > 0 && !errors.item}
-              onChange={(event) => setValueMap({ ...valueMap, itemValue: event.target.value })}
+              success={valueMap.contactPhoneValue.length > 0 && !errors.contactPhone}
+              onChange={(event) =>
+                setValueMap({ ...valueMap, contactPhoneValue: event.target.value })
+              }
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <FormField
-              type={status.type}
-              label={status.label}
-              name={status.name}
-              /* eslint-disable-next-line react/prop-types */
-              value={valueMap.statusValue}
-              error={errors.status && touched.status}
-              /* eslint-disable-next-line react/prop-types */
-              success={valueMap.statusValue.length > 0 && !errors.PW}
-              onChange={(event) => setValueMap({ ...valueMap, statusValue: event.target.value })}
-            />
-          </Grid>
-        </Grid>
-        <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
             <FormField
               type={email.type}
