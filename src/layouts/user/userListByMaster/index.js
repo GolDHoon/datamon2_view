@@ -35,14 +35,38 @@ function UserInfoListByMaster() {
   const [keyList, setKeyList] = useState([]);
   const [showPage, setShowPage] = useState(false);
   const [open, setOpen] = useState(false);
-  const [valueMap, setValueMap] = useState();
+  const [valueMap, setValueMap] = useState({
+    idValue: "",
+    pwValue: "",
+    companyValue: "",
+    corporateNumberValue: "",
+    nameValue: "",
+    addressValue: "",
+    itemValue: "",
+    statusValue: "",
+    emailValue: "",
+  });
   const { formId, formField } = form;
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleSubmit = (values, actions) => {};
   const saveHandler = () => {
-    console.log(form);
+    serverCommunicationUtil("main", "axioPost", "/user/createCompanyUser", {
+      userId: valueMap.idValue,
+      pw: valueMap.pwValue,
+      name: valueMap.companyValue,
+      ceo: valueMap.nameValue,
+      corporateNumber: valueMap.corporateNumberValue,
+      corporateAddress: valueMap.addressValue,
+      corporateMail: valueMap.emailValue,
+      businessStatus: valueMap.statusValue,
+      businessItem: valueMap.itemValue,
+    })
+      .then((result) => {})
+      .catch((error) => {
+        console.log("Error occurred while fetching the user list: ", error);
+      });
   };
 
   useEffect(() => {
@@ -132,6 +156,7 @@ function UserInfoListByMaster() {
                         <UserInfo
                           formData={{ values, touched, formField, errors }}
                           valueMap={valueMap}
+                          setValueMap={setValueMap}
                         />
                         <MDBox mt={2} width="100%" display="flex" justifyContent="flex-end">
                           <MDButton

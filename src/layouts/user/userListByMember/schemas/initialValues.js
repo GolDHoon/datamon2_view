@@ -1,17 +1,15 @@
 import checkout from "./form";
 
 const {
-  formField: { ID, PW, company, corporateNumber, name, item, status, email, address },
+  formField: { ID, PW, name, role, contactPhone, email },
 } = checkout;
 
 const initialValues = {
   [ID.name]: "",
   [PW.name]: "",
-  [company.name]: "",
-  [corporateNumber.name]: "1",
   [name.name]: "",
-  [item.name]: "",
-  [status.name]: "",
+  [role.name]: "",
+  [contactPhone.name]: "",
   [email.name]: "",
 };
 

@@ -20,31 +20,46 @@ import {
   sessionChecker,
 } from "../../../common/util/serverCommunicationUtil";
 import MDTypography from "../../../components/MDTypography";
+import { Modal } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import { Form, Formik } from "formik";
+import initialValues from "../userListByMember/schemas/initialValues";
+import validations from "../userListByMember/schemas/validations";
+import UserInfo from "../userListByMember/components/UserInfo";
+import form from "../userListByMember/schemas/form";
 
 function UserInfoListByMemeber() {
-  const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const [keyList, setKeyList] = useState([]);
   const [showPage, setShowPage] = useState(false);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [valueMap, setValueMap] = useState({
+    idValue: "",
+    pwValue: "",
+    nameValue: "",
+    roleValue: "",
+    contactPhoneValue: "",
+    emailValue: "",
+  });
+  const { formId, formField } = form;
 
-  useEffect(() => {
-    if (startDate && endDate) {
-      // Convert date objects to specific datetime format or timestamp
-      const convertedStartDate = startDate.getTime();
-      const convertedEndDate = endDate.getTime();
-
-      // Filter rows based on selected date range
-      const filteredRows = rows.filter((row) => {
-        // Assuming the createDate is in timestamp format for comparison
-        const rowDate = new Date(row.createDate).getTime();
-        return rowDate >= convertedStartDate && rowDate <= convertedEndDate;
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const handleSubmit = (values, actions) => {};
+  const saveHandler = () => {
+    serverCommunicationUtil("main", "axioPost", "/user/createMemberUser", {
+      userId: valueMap.idValue,
+      pw: valueMap.pwVaue,
+      name: valueMap.namValue,
+      role: valueMap.rolValue,
+      contactPhone: valuMap.contactPhoneValue,
+      mail: valueMap.emalValue,
+    })
+      .then((result) => {})
+      .catch((error) => {
+        console.log("Error occurred while fetching the user list: ", error);
       });
-
-      setRows(filteredRows);
-    }
-  }, [startDate, endDate]);
+  };
 
   useEffect(() => {
     sessionChecker().then((checkerResult) => {
@@ -69,6 +84,17 @@ function UserInfoListByMemeber() {
     return null; // 혹은 로딩 스피너 등을 반환.
   }
 
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "50%",
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 4,
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -88,6 +114,7 @@ function UserInfoListByMemeber() {
               color="info"
               style={{ whiteSpace: "nowrap", marginTop: "20%" }}
               size="large"
+              onClick={handleOpen}
             >
               <Icon>add</Icon>
               &nbsp;신규 생성
@@ -99,6 +126,50 @@ function UserInfoListByMemeber() {
         </Card>
       </MDBox>
       <Footer />
+      <div style={{ margin: "25%" }}>
+        <Modal
+          open={open}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Card sx={style} id="popup">
+            <Grid container justifyContent="center" alignItems="center">
+              <Grid width="100%">
+                <Formik
+                  initialValues={initialValues}
+                  validationSchema={validations[0]}
+                  onSubmit={handleSubmit}
+                >
+                  {({ values, errors, touched, isSubmitting }) => (
+                    <Form id={formId} autoComplete="off">
+                      <MDBox>
+                        <UserInfo
+                          formData={{ values, touched, formField, errors }}
+                          valueMap={valueMap}
+                          setValueMap={setValueMap}
+                        />
+                        <MDBox mt={2} width="100%" display="flex" justifyContent="flex-end">
+                          <MDButton
+                            variant="gradient"
+                            color="info"
+                            style={{ margin: "0 2% 0 0" }}
+                            onClick={saveHandler}
+                          >
+                            완료
+                          </MDButton>
+                          <MDButton color="dark" onClick={handleClose}>
+                            취소
+                          </MDButton>
+                        </MDBox>
+                      </MDBox>
+                    </Form>
+                  )}
+                </Formik>
+              </Grid>
+            </Grid>
+          </Card>
+        </Modal>
+      </div>
     </DashboardLayout>
   );
 }
