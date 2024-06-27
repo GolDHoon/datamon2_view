@@ -27,14 +27,18 @@ const listStyle = {
   padding: "1vw 0",
   "border-bottom": "1px solid lightgray",
   background: "#fff",
-  width: "96%",
+  width: "100%",
 };
 
 const gridStyle = {
   height: "25vw",
   overflowY: "scroll",
   overflowX: "hidden",
-  width: "105%",
+  width: "100%",
+  scrollbarWidth: "none",
+  "&::-webkit-scrollbar": {
+    display: "none",
+  },
 };
 
 const registStyle = {
