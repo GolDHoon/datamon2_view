@@ -237,7 +237,7 @@ function DataTable({
                 variant={menu ? "outlined" : "contained"}
                 color="dark"
                 onClick={openMenu}
-                style={{ whiteSpace: "nowrap", marginRight: "2%" }}
+                style={{ whiteSpace: "nowrap" }}
               >
                 검색필터
                 <Icon>keyboard_arrow_down</Icon>
