@@ -42,6 +42,9 @@ import DataTableBodyCell from "../../../landingPage/manage/DataTable/DataTableBo
 import DataTableHeadCell from "../../../landingPage/manage/DataTable/DataTableHeadCell";
 
 function DataTable({ entriesPerPage, showTotalEntries, table, pagination, isSorted, noEndBorder }) {
+  if (!table.rows || table.rows.length === 0) {
+    return null; // or you might want to return some fallback UI here
+  }
   const [menu, setMenu] = useState(null);
   const openMenu = (event) => setMenu(event.currentTarget);
   const closeMenu = () => setMenu(null);

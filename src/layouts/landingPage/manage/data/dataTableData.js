@@ -40,7 +40,7 @@ const dataTableData = (data, keyList) => {
   columns.push({
     Header: "",
     accessor: "code",
-    Cell: ({ value }) => <IdxCell idx={value} />,
+    Cell: ({ value }) => <IdxCell code={value} />,
   });
 
   result.columns = columns;

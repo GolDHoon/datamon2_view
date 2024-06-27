@@ -25,7 +25,7 @@ import Grid from "@mui/material/Grid";
 import { Form, Formik } from "formik";
 import initialValues from "../userListByMember/schemas/initialValues";
 import validations from "../userListByMember/schemas/validations";
-import UserInfo from "../userListByMember/components/UserInfo";
+import UserInfo from "./components/UserInfo";
 import form from "../userListByMember/schemas/form";
 
 function UserInfoListByMemeber() {

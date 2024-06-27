@@ -9,13 +9,18 @@ import MDButton from "../../../../../components/MDButton";
 import { Modal } from "@mui/material";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import BlackInfo from "../BlackInfo";
+import BlackInfo from "../BlockedIpInfo";
 import { useState } from "react";
+import BlockedIpInfo from "../BlockedIpInfo";
+import BlackKeyword from "../BlackKeyword";
 
-function IdxCell({ idx }) {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+function IdxCell({ code }) {
+  const [ipOpen, setIpOpen] = useState(false);
+  const [keywordOpen, setKeywordOpen] = useState(false);
+  const handleIpOpen = () => setIpOpen(true);
+  const handleIpClose = () => setIpOpen(false);
+  const handleKeywordOpen = () => setKeywordOpen(true);
+  const handleKeywordClose = () => setKeywordOpen(false);
 
   const style = {
     position: "absolute",
@@ -31,13 +36,13 @@ function IdxCell({ idx }) {
   return (
     <MDBox display="flex" alignItems="center">
       <MDBox m={"6px"}>
-        <MDButton color={"dark"} variant={"outlined"} onClick={handleOpen}>
+        <MDButton color={"dark"} variant={"outlined"} onClick={handleIpOpen}>
           차단Ip
         </MDButton>
       </MDBox>
       {/* 차단 IP ------------------------------------------*/}
       <Modal
-        open={open}
+        open={ipOpen}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -45,19 +50,19 @@ function IdxCell({ idx }) {
           <Grid container justifyContent="center" alignItems="center">
             <Grid width="100%">
               <MDBox>
-                <BlackInfo />
+                <BlockedIpInfo code={code} />
                 <MDBox mt={2} width="100%" display="flex" justifyContent="flex-end">
                   <MDButton
                     variant="gradient"
                     color="info"
                     style={{ margin: "0 2% 0 0" }}
-                    // onClick={saveHandler}
+                    onClick={handleIpClose}
                   >
                     완료
                   </MDButton>
-                  <MDButton color="dark" onClick={handleClose}>
-                    취소
-                  </MDButton>
+                  {/*<MDButton color="dark" onClick={handleIpClose}>*/}
+                  {/*  취소*/}
+                  {/*</MDButton>*/}
                 </MDBox>
               </MDBox>
             </Grid>
@@ -66,17 +71,47 @@ function IdxCell({ idx }) {
       </Modal>
       {/* 차단 IP ------------------------------------------ */}
       <MDBox m={"6px"}>
-        <MDButton color={"dark"} variant={"outlined"}>
+        <MDButton color={"dark"} variant={"outlined"} onClick={handleKeywordOpen}>
           차단키워드
         </MDButton>
       </MDBox>
+      {/* 차단 키워드 ------------------------------------------*/}
+      <Modal
+        open={keywordOpen}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Card sx={style} id="popup" style={{ height: "fit-content" }}>
+          <Grid container justifyContent="center" alignItems="center">
+            <Grid width="100%">
+              <MDBox>
+                <BlackKeyword code={code} />
+                <MDBox mt={2} width="100%" display="flex" justifyContent="flex-end">
+                  <MDButton
+                    variant="gradient"
+                    color="info"
+                    style={{ margin: "0 2% 0 0" }}
+                    onClick={handleKeywordClose}
+                  >
+                    완료
+                  </MDButton>
+                  {/*<MDButton color="dark" onClick={handleIpClose}>*/}
+                  {/*  취소*/}
+                  {/*</MDButton>*/}
+                </MDBox>
+              </MDBox>
+            </Grid>
+          </Grid>
+        </Card>
+      </Modal>
+      {/* 차단 키워드 ------------------------------------------ */}
     </MDBox>
   );
 }
 
 // Typechecking props for the IdCell
 IdxCell.propTypes = {
-  idx: PropTypes.string.isRequired,
+  code: PropTypes.string.isRequired,
 };
 
 export default IdxCell;

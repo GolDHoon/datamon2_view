@@ -10,14 +10,9 @@ import * as React from "react";
 import MDBox from "../../../../../components/MDBox";
 import MDButton from "../../../../../components/MDButton";
 import MDTypography from "../../../../../components/MDTypography";
-
-function generate(element) {
-  return [0, 1, 2, 3, 4, 5, 6].map((value) =>
-    React.cloneElement(element, {
-      key: value,
-    })
-  );
-}
+import { useEffect, useState } from "react";
+import { serverCommunicationUtil } from "../../../../../common/util/serverCommunicationUtil";
+import PropTypes from "prop-types";
 
 const Demo = styled("div")(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -55,37 +50,95 @@ const textfieldStyle = {
   "font-size": "2vw",
 };
 
-export default function BlackInfo() {
+export default function BlackKeyword({ code }) {
   const [dense, setDense] = React.useState(false);
   const [secondary, setSecondary] = React.useState(false);
+  const [keyword, setKeyword] = useState("");
+  const [keywordList, setKeywordList] = useState([]);
+
+  const getList = () => {
+    serverCommunicationUtil("main", "axioGet", "/landingPageManage/blockedKeywordList", {
+      lpgeCode: code,
+    })
+      .then((result) => {
+        setKeywordList(result);
+      })
+      .catch((error) => {
+        console.log("");
+      });
+  };
+
+  useEffect(() => {
+    getList();
+  }, []);
+
+  const createHandler = () => {
+    serverCommunicationUtil("main", "axioPost", "/landingPageManage/createBlockedKeyword", {
+      lpgeCode: code,
+      keyword: keyword,
+    })
+      .then((result) => {
+        getList();
+      })
+      .catch((error) => {
+        console.log("");
+      });
+  };
+
+  const deleteHandler = (keyword) => {
+    serverCommunicationUtil("main", "axioPost", "/landingPageManage/deleteBlockedKeyword", {
+      lpgeCode: code,
+      keyword: keyword,
+    })
+      .then((result) => {
+        getList();
+      })
+      .catch((error) => {
+        console.log("");
+      });
+  };
 
   return (
     <MDBox mt={1.625}>
       <MDBox>
         <MDTypography variant="h5" style={{ "margin-bottom": "5%" }}>
-          차단 IP 설정
+          차단 키워드 설정
         </MDTypography>
       </MDBox>
       <MDBox style={{ position: "relative" }}>
         <TextField
-          label="차단 IP"
+          label="차단 키워드"
           id="standard-size-small"
           variant="standard"
+          value={keyword}
           fullWidth
-          placeholder="등록하실 차단 IP를 입력해 주세요."
+          placeholder="등록하실 차단 키워드를 입력해 주세요."
           style={textfieldStyle}
+          onChange={(event) => {
+            setKeyword(event.target.value);
+          }}
           focused
         />
-        <MDButton style={registStyle}>등록</MDButton>
+        <MDButton style={registStyle} onClick={createHandler}>
+          등록
+        </MDButton>
       </MDBox>
       <Grid item style={gridStyle} id="isGrid">
         <Demo style={{ background: "none" }}>
           <List dense={dense}>
-            {generate(
+            {keywordList.map((keyword, index) => (
               <ListItem
+                key={index}
                 style={listStyle}
                 secondaryAction={
-                  <IconButton edge="end" aria-label="delete" style={{ cursor: "pointer" }}>
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      deleteHandler(keyword);
+                    }}
+                  >
                     <DeleteIcon />
                   </IconButton>
                 }
@@ -93,14 +146,17 @@ export default function BlackInfo() {
                 <ListItemText
                   primaryTypographyProps={{ fontSize: "15px" }}
                   id="isText"
-                  primary="차단 IP"
+                  primary={`${keyword}`}
                   secondary={secondary ? "Secondary text" : null}
                 />
               </ListItem>
-            )}
+            ))}
           </List>
         </Demo>
       </Grid>
     </MDBox>
   );
 }
+BlackKeyword.propTypes = {
+  code: PropTypes.string.isRequired,
+};

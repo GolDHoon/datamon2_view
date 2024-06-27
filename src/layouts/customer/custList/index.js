@@ -123,7 +123,6 @@ function CustInfoList() {
         lpgeCode: selectedCustDB.code,
       })
         .then((result) => {
-          debugger;
           setRows(result.rows);
           setKeyList(result.keyList);
         })

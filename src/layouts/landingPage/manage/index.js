@@ -21,21 +21,32 @@ import DashboardLayout from "../../common/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "../../common/Navbars/DashboardNavbar";
 import DataTable from "../../landingPage/manage/DataTable";
 import dataTableData from "../../landingPage/manage/data/dataTableData";
-
-import BlackInfo from "../../landingPage/manage/components/BlackInfo";
+import MDInput from "../../../components/MDInput";
 
 function LandingPageManagement() {
   const [rows, setRows] = useState([]);
   const [keyList, setKeyList] = useState([]);
   const [showPage, setShowPage] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [domain, setDomain] = useState("");
+  const [description, setDescription] = useState("");
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const saveHandler = () => {
+    serverCommunicationUtil("main", "axioPost", "/landingPageManage/createLpge", {
+      domain: domain,
+      description: description,
+    })
+      .then((result) => {
+        getList();
+        handleClose();
+      })
+      .catch((error) => {
+        console.log("");
+      });
+  };
 
-  useEffect(() => {
-    sessionChecker().then((checkerResult) => {
-      if (checkerResult === "success") {
-        setShowPage(true);
-      }
-    });
-
+  const getList = () => {
     serverCommunicationUtil("main", "axioGet", "/landingPageManage/list", {})
       .then((result) => {
         setRows(result.rows);
@@ -44,11 +55,32 @@ function LandingPageManagement() {
       .catch((error) => {
         console.log("");
       });
+  };
+
+  useEffect(() => {
+    sessionChecker().then((checkerResult) => {
+      if (checkerResult === "success") {
+        setShowPage(true);
+      }
+    });
+    getList();
   }, []);
 
   if (!showPage) {
     return null; // 혹은 로딩 스피너 등을 반환.
   }
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "50%",
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 4,
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -68,6 +100,7 @@ function LandingPageManagement() {
               color="info"
               style={{ whiteSpace: "nowrap", marginTop: "20%" }}
               size="large"
+              onClick={handleOpen}
             >
               <Icon>add</Icon>
               &nbsp;신규 생성
@@ -77,6 +110,56 @@ function LandingPageManagement() {
         <Card>{<DataTable table={dataTableData(rows, keyList)} />}</Card>
       </MDBox>
       <Footer />
+      <div style={{ margin: "25%" }}>
+        <Modal
+          open={open}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Card sx={style} id="popup">
+            <Grid container justifyContent="center" alignItems="center">
+              <Grid width="100%">
+                <MDBox mt={2} display="flex">
+                  <MDInput
+                    type="url"
+                    label="도메인"
+                    value={domain}
+                    fullWidth
+                    onChange={(event) => {
+                      setDomain(event.target.value);
+                    }}
+                  />
+                </MDBox>
+                <MDBox mt={2} display="flex">
+                  <MDInput
+                    label="설명"
+                    value={description}
+                    multiline
+                    rows={5}
+                    fullWidth
+                    onChange={(event) => {
+                      setDescription(event.target.value);
+                    }}
+                  />
+                </MDBox>
+                <MDBox mt={2} display="flex" justifyContent="end">
+                  <MDButton
+                    variant="gradient"
+                    color="info"
+                    style={{ margin: "0 2% 0 0" }}
+                    onClick={saveHandler}
+                  >
+                    완료
+                  </MDButton>
+                  <MDButton color="dark" onClick={handleClose}>
+                    취소
+                  </MDButton>
+                </MDBox>
+              </Grid>
+            </Grid>
+          </Card>
+        </Modal>
+      </div>
     </DashboardLayout>
   );
 }
