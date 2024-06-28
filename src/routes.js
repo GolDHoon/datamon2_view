@@ -102,7 +102,7 @@ const routes = [
     name: "유저 권한 관리",
     key: "useAuthMenagement",
     icon: <Icon fontSize="medium">https</Icon>,
-    route: "/use-info/auth",
+    route: "/user-info/auth",
     component: <AuthMenagement />,
     noCollapse: true,
     auth: [
