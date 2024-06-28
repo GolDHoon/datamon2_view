@@ -96,7 +96,7 @@ function CustInfoList() {
 
   useEffect(() => {
     getList();
-  }, [getList]);
+  }, []);
 
   useEffect(() => {
     if (getSessionStorage("selectedCustDB") === null) {

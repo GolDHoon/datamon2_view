@@ -16,7 +16,7 @@ Coded by www.creative-tim.com
 import { useEffect, useState } from "react";
 
 // react-router components
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -53,8 +53,10 @@ import {
   setTransparentNavbar,
   useMaterialUIController,
 } from "context";
+import { serverCommunicationUtil } from "../../../../common/util/serverCommunicationUtil";
 
 function DashboardNavbar({ absolute, light, isMini }) {
+  const navigate = useNavigate();
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
@@ -91,7 +93,17 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
-  const handleLogOut = () => {};
+  const handleLogOut = () => {
+    serverCommunicationUtil("main", "axioPost", "/logout", {})
+      .then((result) => {
+        if (result === "success") {
+          navigate("/login");
+        }
+      })
+      .catch((error) => {
+        console.log("");
+      });
+  };
 
   // Render the notifications menu
   const renderMenu = () => (
