@@ -27,6 +27,10 @@ import {
 
 function CustInfoList() {
   const navigate = useNavigate();
+  if (getSessionStorage("selectedCustDB") === null) {
+    navigate("/");
+    alert("고객DB를 선택해주세요");
+  }
   const [rows, setRows] = useState([]);
   const [keyList, setKeyList] = useState([]);
   const [showPage, setShowPage] = useState(false);
@@ -99,16 +103,11 @@ function CustInfoList() {
   }, []);
 
   useEffect(() => {
-    if (getSessionStorage("selectedCustDB") === null) {
-      navigate("/");
-      alert("고객DB를 선택해주세요");
-    } else {
-      sessionChecker().then((checkerResult) => {
-        if (checkerResult === "success") {
-          setShowPage(true);
-        }
-      });
-    }
+    sessionChecker().then((checkerResult) => {
+      if (checkerResult === "success") {
+        setShowPage(true);
+      }
+    });
   }, []);
 
   if (!showPage) {

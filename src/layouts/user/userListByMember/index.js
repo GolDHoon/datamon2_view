@@ -55,19 +55,16 @@ function UserInfoListByMemeber() {
       contactPhone: valuMap.contactPhoneValue,
       mail: valueMap.emalValue,
     })
-      .then((result) => {})
+      .then((result) => {
+        getList();
+        handleClose();
+      })
       .catch((error) => {
         console.log("Error occurred while fetching the user list: ", error);
       });
   };
 
-  useEffect(() => {
-    sessionChecker().then((checkerResult) => {
-      if (checkerResult === "success") {
-        setShowPage(true);
-      }
-    });
-
+  const getList = () => {
     serverCommunicationUtil("main", "axioGet", "/user/list", {
       listType: "user",
     })
@@ -78,6 +75,15 @@ function UserInfoListByMemeber() {
       .catch((error) => {
         console.log("");
       });
+  };
+
+  useEffect(() => {
+    sessionChecker().then((checkerResult) => {
+      if (checkerResult === "success") {
+        setShowPage(true);
+      }
+    });
+    getList();
   }, []);
 
   if (!showPage) {

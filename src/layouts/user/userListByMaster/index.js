@@ -63,13 +63,16 @@ function UserInfoListByMaster() {
       businessStatus: valueMap.statusValue,
       businessItem: valueMap.itemValue,
     })
-      .then((result) => {})
+      .then((result) => {
+        getList();
+        handleClose();
+      })
       .catch((error) => {
         console.log("Error occurred while fetching the user list: ", error);
       });
   };
 
-  useEffect(() => {
+  const getList = () => {
     serverCommunicationUtil("main", "axioGet", "/user/list", {
       listType: "company",
     })
@@ -80,7 +83,7 @@ function UserInfoListByMaster() {
       .catch((error) => {
         console.log("Error occurred while fetching the user list: ", error);
       });
-  }, [setRows, setKeyList]);
+  };
 
   useEffect(() => {
     sessionChecker().then((checkerResult) => {
@@ -88,6 +91,8 @@ function UserInfoListByMaster() {
         setShowPage(true);
       }
     });
+
+    getList();
   }, []);
 
   if (!showPage) {
