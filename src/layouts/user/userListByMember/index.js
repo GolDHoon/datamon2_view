@@ -49,11 +49,11 @@ function UserInfoListByMemeber() {
   const saveHandler = () => {
     serverCommunicationUtil("main", "axioPost", "/user/createMemberUser", {
       userId: valueMap.idValue,
-      pw: valueMap.pwVaue,
-      name: valueMap.namValue,
-      role: valueMap.rolValue,
-      contactPhone: valuMap.contactPhoneValue,
-      mail: valueMap.emalValue,
+      pw: valueMap.pwValue,
+      name: valueMap.nameValue,
+      role: valueMap.roleValue,
+      contactPhone: valueMap.contactPhoneValue,
+      mail: valueMap.emailValue,
     })
       .then((result) => {
         getList();
