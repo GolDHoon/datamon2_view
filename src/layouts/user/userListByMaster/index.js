@@ -86,13 +86,15 @@ function UserInfoListByMaster() {
   };
 
   useEffect(() => {
+    getList();
+  }, []);
+
+  useEffect(() => {
     sessionChecker().then((checkerResult) => {
       if (checkerResult === "success") {
         setShowPage(true);
       }
     });
-
-    getList();
   }, []);
 
   if (!showPage) {
