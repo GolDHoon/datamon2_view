@@ -52,11 +52,11 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const itemParentName = items[1];
   const itemName = items[items.length - 1];
   const [custDBList, setCustDBList] = useState([]);
-  const [selectedCustDB, setSelectedCustDB] = useState(getSessionStorage("selectedCustDB")?.DBname);
+  const [selectedCustDB, setSelectedCustDB] = useState(getSessionStorage("selectedCustDB")?.DBName);
   const navigate = useNavigate();
 
   const handleAutocompleteChange = (event, newValue) => {
-    const matchingIndex = custDBList.findIndex((item) => item.DBname === newValue);
+    const matchingIndex = custDBList.findIndex((item) => item.DBName === newValue);
     setSessionStorage("selectedCustDB", custDBList[matchingIndex]);
     setSelectedCustDB(newValue);
     navigate("/");

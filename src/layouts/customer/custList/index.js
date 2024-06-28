@@ -27,17 +27,9 @@ import {
 
 function CustInfoList() {
   const navigate = useNavigate();
-  const [menu, setMenu] = useState(null);
   const [rows, setRows] = useState([]);
   const [keyList, setKeyList] = useState([]);
   const [showPage, setShowPage] = useState(false);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [sourceIsChecked, setSourceIsChecked] = useState(false);
-  const [campaignIsChecked, setCampaignIsChecked] = useState(false);
-  const [filter, setFilter] = useState({ SOURCE: sourceIsChecked, CAMPAIGN: campaignIsChecked });
-  const openMenu = (event) => setMenu(event.currentTarget);
-  const closeMenu = () => setMenu(null);
 
   function exportToCsv(rows, originalKeys) {
     let keys = [...originalKeys];
@@ -89,27 +81,25 @@ function CustInfoList() {
     document.body.removeChild(link);
   }
 
-  useEffect(() => {
-    if (startDate && endDate) {
-      // Convert date objects to specific datetime format or timestamp
-      const convertedStartDate = startDate.getTime();
-      const convertedEndDate = endDate.getTime();
-
-      // Filter rows based on selected date range
-      const filteredRows = rows.filter((row) => {
-        // Assuming the createDate is in timestamp format for comparison
-        const rowDate = new Date(row.createDate).getTime();
-        return rowDate >= convertedStartDate && rowDate <= convertedEndDate;
+  const getList = () => {
+    serverCommunicationUtil("main", "axioPost", "/custInfo/list", {
+      lpgeCode: getSessionStorage("selectedCustDB").code,
+    })
+      .then((result) => {
+        setRows(result.rows);
+        setKeyList(result.keyList);
+      })
+      .catch((error) => {
+        console.log("");
       });
-
-      setRows(filteredRows);
-    }
-  }, [startDate, endDate]);
+  };
 
   useEffect(() => {
-    var selectedCustDB = getSessionStorage("selectedCustDB");
+    getList();
+  }, [getList]);
 
-    if (selectedCustDB === null) {
+  useEffect(() => {
+    if (getSessionStorage("selectedCustDB") === null) {
       navigate("/");
       alert("고객DB를 선택해주세요");
     } else {
@@ -118,63 +108,12 @@ function CustInfoList() {
           setShowPage(true);
         }
       });
-
-      serverCommunicationUtil("main", "axioPost", "/custInfo/list", {
-        lpgeCode: selectedCustDB.code,
-      })
-        .then((result) => {
-          setRows(result.rows);
-          setKeyList(result.keyList);
-        })
-        .catch((error) => {
-          console.log("");
-        });
     }
   }, []);
-
-  useEffect(() => {
-    setFilter({ SOURCE: sourceIsChecked, CAMPAIGN: campaignIsChecked });
-  }, [sourceIsChecked, campaignIsChecked]);
 
   if (!showPage) {
     return null; // 혹은 로딩 스피너 등을 반환.
   }
-
-  const onChangeSourceFilter = (event) => {
-    setSourceIsChecked(event.target.checked);
-  };
-
-  const onChangeCampaignFilter = (event) => {
-    setCampaignIsChecked(event.target.checked);
-  };
-
-  const onClickSourceFilter = () => {
-    setSourceIsChecked(!sourceIsChecked);
-  };
-
-  const onClickCampaignFilter = () => {
-    setCampaignIsChecked(!campaignIsChecked);
-  };
-
-  const renderMenu = (
-    <Menu
-      anchorEl={menu}
-      anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-      transformOrigin={{ vertical: "top", horizontal: "left" }}
-      open={Boolean(menu)}
-      onClose={closeMenu}
-      keepMounted
-    >
-      <MDBox display="flex" alignItems="center">
-        <Checkbox onChange={onChangeSourceFilter} checked={sourceIsChecked} />
-        <MenuItem onClick={onClickSourceFilter}>SOURCE</MenuItem>
-      </MDBox>
-      <MDBox display="flex" alignItems="center">
-        <Checkbox onChange={onChangeCampaignFilter} checked={campaignIsChecked} />
-        <MenuItem onClick={onClickCampaignFilter}>CAMPAIGN</MenuItem>
-      </MDBox>
-    </Menu>
-  );
 
   return (
     <DashboardLayout>
@@ -191,13 +130,6 @@ function CustInfoList() {
           </MDBox>
           <MDBox display="flex">
             <MDBox ml={1}>
-              <MDButton variant={menu ? "contained" : "outlined"} color="dark" onClick={openMenu}>
-                검색필터
-                <Icon>keyboard_arrow_down</Icon>
-              </MDButton>
-            </MDBox>
-            {renderMenu}
-            <MDBox ml={1}>
               <MDButton variant="outlined" color="dark" onClick={() => exportToCsv(rows, keyList)}>
                 <Icon>description</Icon>
                 &nbsp;export csv
@@ -206,14 +138,7 @@ function CustInfoList() {
           </MDBox>
         </MDBox>
         <Card>
-          {
-            <DataTable
-              table={dataTableData(rows, keyList)}
-              entriesPerPage={true}
-              canSearch
-              filterProps={filter}
-            />
-          }
+          {<DataTable table={dataTableData(rows, keyList)} entriesPerPage={true} canSearch />}
         </Card>
       </MDBox>
       <Footer />

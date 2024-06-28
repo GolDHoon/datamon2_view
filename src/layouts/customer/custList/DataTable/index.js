@@ -38,6 +38,10 @@ import MDTypography from "components/MDTypography";
 // Material Dashboard 2 PRO React examples
 import DataTableBodyCell from "layouts/customer/custList/DataTable/DataTableBodyCell";
 import DataTableHeadCell from "layouts/customer/custList/DataTable/DataTableHeadCell";
+import MDButton from "../../../../components/MDButton";
+import Menu from "@mui/material/Menu";
+import Checkbox from "@mui/material/Checkbox";
+import MenuItem from "@mui/material/MenuItem";
 
 function DataTable({
   entriesPerPage,
@@ -47,8 +51,16 @@ function DataTable({
   pagination,
   isSorted,
   noEndBorder,
-  filterProps,
 }) {
+  if (!table.rows || table.rows.length === 0) {
+    return null; // or you might want to return some fallback UI here
+  }
+  const [menu, setMenu] = useState(null);
+  const [sourceIsChecked, setSourceIsChecked] = useState(false);
+  const [campaignIsChecked, setCampaignIsChecked] = useState(false);
+  const [filter, setFilter] = useState({ SOURCE: sourceIsChecked, CAMPAIGN: campaignIsChecked });
+  const openMenu = (event) => setMenu(event.currentTarget);
+  const closeMenu = () => setMenu(null);
   const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10;
   const entries = entriesPerPage.entries
     ? entriesPerPage.entries.map((el) => el.toString())
@@ -77,7 +89,6 @@ function DataTable({
     nextPage,
     previousPage,
     setPageSize,
-    filter,
     state: { pageIndex, pageSize, globalFilter },
   } = tableInstance;
 
@@ -117,7 +128,7 @@ function DataTable({
     var newData = [];
 
     if (value != "") {
-      if (filterProps["SOURCE"]) {
+      if (filter["SOURCE"]) {
         Array.from(table.rows).forEach(function (row) {
           try {
             if (row["utmSourse"].contains(value)) {
@@ -126,7 +137,7 @@ function DataTable({
           } catch (error) {}
         });
       }
-      if (filterProps["CAMPAIGN"]) {
+      if (filter["CAMPAIGN"]) {
         Array.from(table.rows).forEach(function (row) {
           try {
             if (row["utmCampaign"].contains(value)) {
@@ -136,7 +147,7 @@ function DataTable({
         });
       }
 
-      if (filterProps["SOURCE"] || filterProps["CAMPAIGN"]) {
+      if (filter["SOURCE"] || filter["CAMPAIGN"]) {
         setData(newData);
       }
     } else {
@@ -173,6 +184,46 @@ function DataTable({
     entriesEnd = pageSize * (pageIndex + 1);
   }
 
+  useEffect(() => {
+    setFilter({ SOURCE: sourceIsChecked, CAMPAIGN: campaignIsChecked });
+  }, [sourceIsChecked, campaignIsChecked]);
+
+  const onChangeSourceFilter = (event) => {
+    setSourceIsChecked(event.target.checked);
+  };
+
+  const onChangeCampaignFilter = (event) => {
+    setCampaignIsChecked(event.target.checked);
+  };
+
+  const onClickSourceFilter = () => {
+    setSourceIsChecked(!sourceIsChecked);
+  };
+
+  const onClickCampaignFilter = () => {
+    setCampaignIsChecked(!campaignIsChecked);
+  };
+
+  const renderMenu = (
+    <Menu
+      anchorEl={menu}
+      anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      transformOrigin={{ vertical: "top", horizontal: "left" }}
+      open={Boolean(menu)}
+      onClose={closeMenu}
+      keepMounted
+    >
+      <MDBox display="flex" alignItems="center">
+        <Checkbox onChange={onChangeSourceFilter} checked={sourceIsChecked} />
+        <MenuItem onClick={onClickSourceFilter}>SOURCE</MenuItem>
+      </MDBox>
+      <MDBox display="flex" alignItems="center">
+        <Checkbox onChange={onChangeCampaignFilter} checked={campaignIsChecked} />
+        <MenuItem onClick={onClickCampaignFilter}>CAMPAIGN</MenuItem>
+      </MDBox>
+    </Menu>
+  );
+
   return (
     <TableContainer sx={{ boxShadow: "none" }}>
       {entriesPerPage || canSearch ? (
@@ -196,17 +247,33 @@ function DataTable({
             </MDBox>
           )}
           {canSearch && (
-            <MDBox width="12rem" ml="auto">
-              <MDInput
-                placeholder="Search..."
-                value={search}
-                size="small"
-                fullWidth
-                onChange={({ currentTarget }) => {
-                  setSearch(search);
-                  onSearchChange(currentTarget.value);
-                }}
-              />
+            <MDBox width="24rem" ml="auto" display="flex" justifyContent="end">
+              <MDBox sx={{ marginRight: "5px" }}>
+                <MDBox ml={1}>
+                  <MDButton
+                    variant={menu ? "outlined" : "contained"}
+                    color="dark"
+                    onClick={openMenu}
+                    sx={{ whiteSpace: "nowrap" }}
+                  >
+                    검색필터
+                    <Icon>keyboard_arrow_down</Icon>
+                  </MDButton>
+                </MDBox>
+                {renderMenu}
+              </MDBox>
+              <MDBox>
+                <MDInput
+                  placeholder="Search..."
+                  value={search}
+                  size="small"
+                  fullWidth
+                  onChange={({ currentTarget }) => {
+                    setSearch(search);
+                    onSearchChange(currentTarget.value);
+                  }}
+                />
+              </MDBox>
             </MDBox>
           )}
         </MDBox>
@@ -334,10 +401,6 @@ DataTable.propTypes = {
   }),
   isSorted: PropTypes.bool,
   noEndBorder: PropTypes.bool,
-  filterProps: PropTypes.shape({
-    SOURCE: PropTypes.bool,
-    CAMPAIGN: PropTypes.bool,
-  }),
 };
 
 export default DataTable;
