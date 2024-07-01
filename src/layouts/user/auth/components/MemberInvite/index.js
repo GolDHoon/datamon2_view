@@ -91,18 +91,22 @@ export default function MemberInvite({ selectedCdbt, saveUserList, setSaveUserLi
                 />
               }
             >
-              <ListItemText
-                primaryTypographyProps={{ fontSize: "15px", fontWeight: "bold" }}
-                id="isText"
-                primary="계정"
-                secondary={secondary ? "Secondary text" : null}
-              />
-              <ListItemText
-                primaryTypographyProps={{ fontSize: "15px", fontWeight: "bold" }}
-                id="isText"
-                primary="이름"
-                secondary={secondary ? "Secondary text" : null}
-              />
+              <MDBox display={"flex"}>
+                <ListItemText
+                  primaryTypographyProps={{ fontSize: "15px", fontWeight: "bold" }}
+                  id="isText"
+                  primary="계정"
+                  secondary={secondary ? "Secondary text" : null}
+                  sx={{ width: "100px", textAlign: "center" }}
+                />
+                <ListItemText
+                  primaryTypographyProps={{ fontSize: "15px", fontWeight: "bold" }}
+                  id="isText"
+                  primary="이름"
+                  secondary={secondary ? "Secondary text" : null}
+                  sx={{ width: "100px", textAlign: "center" }}
+                />
+              </MDBox>
             </ListItem>
           </List>
           <List>
@@ -118,18 +122,20 @@ export default function MemberInvite({ selectedCdbt, saveUserList, setSaveUserLi
                   />
                 }
               >
-                <ListItemText
-                  primaryTypographyProps={{ fontSize: "15px", fontWeight: "bold" }}
-                  id="isText"
-                  primary={user.Id}
-                  secondary={secondary ? "Secondary text" : null}
-                />
-                <ListItemText
-                  primaryTypographyProps={{ fontSize: "15px" }}
-                  id="isText"
-                  primary={user.name}
-                  secondary={secondary ? "Secondary text" : null}
-                />
+                <MDBox display={"flex"}>
+                  <ListItemText
+                    primaryTypographyProps={{ fontSize: "15px", fontWeight: "bold" }}
+                    primary={user.Id}
+                    secondary={secondary ? "Secondary text" : null}
+                    sx={{ width: "100px", textAlign: "center" }}
+                  />
+                  <ListItemText
+                    primaryTypographyProps={{ fontSize: "15px" }}
+                    primary={user.name}
+                    secondary={secondary ? "Secondary text" : null}
+                    sx={{ width: "100px", textAlign: "center" }}
+                  />
+                </MDBox>
               </ListItem>
             ))}
           </List>
