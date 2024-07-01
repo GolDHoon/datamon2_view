@@ -1,6 +1,15 @@
 const config = {
   main_server_url: process.env.REACT_APP_MAIN_SERVER_BASE_URL,
   encription_key: process.env.REACT_APP_MAIN_AES_KEY,
+  MAST: process.env.REACT_APP_MAST,
+  DEVL: process.env.REACT_APP_DEVL,
+  INME: process.env.REACT_APP_INME,
+  CLNT: process.env.REACT_APP_CLNT,
+  ADAC: process.env.REACT_APP_ADAC,
+  CLME: process.env.REACT_APP_CLME,
+  AAME: process.env.REACT_APP_AAME,
+  CRAC: process.env.REACT_APP_CRAC,
+  CAME: process.env.REACT_APP_CAME,
 };
 
 let variable = {};

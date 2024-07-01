@@ -18,15 +18,15 @@ import PropTypes from "prop-types";
 
 // @mui material components
 import Collapse from "@mui/material/Collapse";
+import Icon from "@mui/material/Icon";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import Icon from "@mui/material/Icon";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "components/MDBox";
 
 // Custom styles for the SidenavItem
-import { item, itemContent, itemArrow } from "layouts/common/Sidenav/styles/sidenavItem";
+import { item, itemArrow, itemContent } from "layouts/common/Sidenav/styles/sidenavItem";
 
 // Material Dashboard 2 PRO React contexts
 import { useMaterialUIController } from "context";

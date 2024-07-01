@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 
 // react-router-dom components
-import { useLocation, NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
 
 // @mui material components
-import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
-import Link from "@mui/material/Link";
 import Icon from "@mui/material/Icon";
+import Link from "@mui/material/Link";
+import List from "@mui/material/List";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "components/MDBox";
@@ -18,26 +18,29 @@ import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 PRO React examples
 import SidenavCollapse from "layouts/common/Sidenav/SidenavCollapse";
-import SidenavList from "layouts/common/Sidenav/SidenavList";
 import SidenavItem from "layouts/common/Sidenav/SidenavItem";
+import SidenavList from "layouts/common/Sidenav/SidenavList";
 
 // Custom styles for the Sidenav
 import SidenavRoot from "layouts/common/Sidenav/SidenavRoot";
 import sidenavLogoLabel from "layouts/common/Sidenav/styles/sidenav";
 
 // Material Dashboard 2 PRO React context
+import Autocomplete from "@mui/material/Autocomplete";
 import {
-  useMaterialUIController,
   setMiniSidenav,
   setTransparentSidenav,
   setWhiteSidenav,
+  useMaterialUIController,
 } from "context";
-import Autocomplete from "@mui/material/Autocomplete";
-import MDInput from "../../../components/MDInput";
-import { serverCommunicationUtil } from "../../../common/util/serverCommunicationUtil";
 import { getSessionStorage, setSessionStorage } from "../../../common/common";
+import { serverCommunicationUtil } from "../../../common/util/serverCommunicationUtil";
+import MDInput from "../../../components/MDInput";
+
+import logo from "assets/images/logo.png";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
+  const [userType, setUserType] = useState("");
   const [openCollapse, setOpenCollapse] = useState(false);
   const [openNestedCollapse, setOpenNestedCollapse] = useState(false);
   const [controller, dispatch] = useMaterialUIController();
@@ -48,16 +51,14 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const items = pathname.split("/").slice(1);
   const itemParentName = items[1];
   const itemName = items[items.length - 1];
-  const [landingPageList, setLandingPageList] = useState([]);
-  const [selectedDomain, setSelectedDomain] = useState(
-    getSessionStorage("selectedLandingPage")?.domain
-  );
+  const [custDBList, setCustDBList] = useState([]);
+  const [selectedCustDB, setSelectedCustDB] = useState(getSessionStorage("selectedCustDB")?.DBName);
   const navigate = useNavigate();
 
   const handleAutocompleteChange = (event, newValue) => {
-    const matchingIndex = landingPageList.findIndex((item) => item.domain === newValue);
-    setSessionStorage("selectedLandingPage", landingPageList[matchingIndex]);
-    setSelectedDomain(newValue);
+    const matchingIndex = custDBList.findIndex((item) => item.DBName === newValue);
+    setSessionStorage("selectedCustDB", custDBList[matchingIndex]);
+    setSelectedCustDB(newValue);
     navigate("/");
   };
 
@@ -74,15 +75,23 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     setOpenCollapse(collapseName);
     setOpenNestedCollapse(itemParentName);
 
-    serverCommunicationUtil("main", "axioGet", "/landingPageManage/list", {})
+    serverCommunicationUtil("main", "axioGet", "/common/DBList", {})
       .then((result) => {
-        setLandingPageList(result);
-        setSessionStorage("landingPageList", landingPageList);
+        setCustDBList(result);
+        setSessionStorage("custDBList", result.rows);
       })
       .catch((error) => {
         console.log("");
       });
-  }, []);
+
+    serverCommunicationUtil("main", "axioGet", "/common/routingInfo", {})
+      .then((result) => {
+        setUserType(result.userType);
+      })
+      .catch((error) => {
+        console.log("");
+      });
+  }, [setUserType]);
 
   useEffect(() => {
     // A function that sets the mini state of the sidenav.
@@ -170,84 +179,87 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
   const renderRoutes = routes.map(
-    ({ type, name, icon, title, collapse, noCollapse, key, href, route }) => {
-      let returnValue;
-
-      if (type === "collapse") {
-        if (href) {
-          returnValue = (
-            <Link
-              href={href}
-              key={key}
-              target="_blank"
-              rel="noreferrer"
-              sx={{ textDecoration: "none" }}
-            >
+    ({ type, name, icon, title, collapse, noCollapse, key, href, route, auth }) => {
+      if (auth.includes(userType)) {
+        let returnValue;
+        if (type === "collapse") {
+          if (href) {
+            returnValue = (
+              <Link
+                href={href}
+                key={key}
+                target="_blank"
+                rel="noreferrer"
+                sx={{ textDecoration: "none" }}
+              >
+                <SidenavCollapse
+                  name={name}
+                  icon={icon}
+                  active={key === collapseName}
+                  noCollapse={noCollapse}
+                />
+              </Link>
+            );
+          } else if (noCollapse && route) {
+            returnValue = (
+              <NavLink to={route} key={key}>
+                <SidenavCollapse
+                  name={name}
+                  icon={icon}
+                  noCollapse={noCollapse}
+                  active={key === collapseName}
+                >
+                  {collapse ? renderCollapse(collapse) : null}
+                </SidenavCollapse>
+              </NavLink>
+            );
+          } else {
+            returnValue = (
               <SidenavCollapse
+                key={key}
                 name={name}
                 icon={icon}
                 active={key === collapseName}
-                noCollapse={noCollapse}
-              />
-            </Link>
-          );
-        } else if (noCollapse && route) {
-          returnValue = (
-            <NavLink to={route} key={key}>
-              <SidenavCollapse
-                name={name}
-                icon={icon}
-                noCollapse={noCollapse}
-                active={key === collapseName}
+                open={openCollapse === key}
+                onClick={() =>
+                  openCollapse === key ? setOpenCollapse(false) : setOpenCollapse(key)
+                }
               >
                 {collapse ? renderCollapse(collapse) : null}
               </SidenavCollapse>
-            </NavLink>
-          );
-        } else {
+            );
+          }
+        } else if (type === "title") {
           returnValue = (
-            <SidenavCollapse
+            <MDTypography
               key={key}
-              name={name}
-              icon={icon}
-              active={key === collapseName}
-              open={openCollapse === key}
-              onClick={() => (openCollapse === key ? setOpenCollapse(false) : setOpenCollapse(key))}
+              color={textColor}
+              display="block"
+              variant="caption"
+              fontWeight="bold"
+              textTransform="uppercase"
+              pl={3}
+              mt={2}
+              mb={1}
+              ml={1}
             >
-              {collapse ? renderCollapse(collapse) : null}
-            </SidenavCollapse>
+              {title}
+            </MDTypography>
+          );
+        } else if (type === "divider") {
+          returnValue = (
+            <Divider
+              key={key}
+              light={
+                (!darkMode && !whiteSidenav && !transparentSidenav) ||
+                (darkMode && !transparentSidenav && whiteSidenav)
+              }
+            />
           );
         }
-      } else if (type === "title") {
-        returnValue = (
-          <MDTypography
-            key={key}
-            color={textColor}
-            display="block"
-            variant="caption"
-            fontWeight="bold"
-            textTransform="uppercase"
-            pl={3}
-            mt={2}
-            mb={1}
-            ml={1}
-          >
-            {title}
-          </MDTypography>
-        );
-      } else if (type === "divider") {
-        returnValue = (
-          <Divider
-            key={key}
-            light={
-              (!darkMode && !whiteSidenav && !transparentSidenav) ||
-              (darkMode && !transparentSidenav && whiteSidenav)
-            }
-          />
-        );
-      }
 
-      return returnValue;
+        return returnValue;
+      }
     }
   );
 
@@ -272,7 +284,15 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           </MDTypography>
         </MDBox>
         <MDBox component={NavLink} to="/" display="flex" alignItems="center">
-          {brand && <MDBox component="img" src={brand} alt="Brand" width="2rem" />}
+          {brand && (
+            <MDBox
+              component="img"
+              src={logo}
+              alt="logo"
+              width="1.5rem"
+              style={{ marginRight: "3%" }}
+            />
+          )}
           <MDBox
             width={!brandName && "100%"}
             sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
@@ -289,10 +309,20 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           color={textColor}
         >
           <Autocomplete
-            value={selectedDomain}
-            options={landingPageList.map((item) => item.domain)}
+            disablePortal
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                background: "#fff",
+              },
+              "& legend": { display: "none" },
+              "& fieldset": { top: 0 },
+            }}
+            value={selectedCustDB}
+            options={custDBList.map((item) => item.DBName)}
             onChange={handleAutocompleteChange}
-            renderInput={(params) => <MDInput {...params} label="domain" color={textColor} />}
+            renderInput={(params) => (
+              <MDInput {...params} placeholder="고객DB 입력" color={textColor} />
+            )}
           />
         </MDBox>
       </MDBox>

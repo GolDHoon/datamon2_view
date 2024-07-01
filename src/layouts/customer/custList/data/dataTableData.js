@@ -40,31 +40,31 @@ const dataTableData = (data, keyList) => {
   }
 
   columns.push({
-    Header: "utmSourse",
+    Header: "Sourse",
     accessor: "utmSourse",
     Cell: ({ value }) => <DefaultCell value={value} />,
   });
 
   columns.push({
-    Header: "utmMedium",
+    Header: "Medium",
     accessor: "utmMedium",
     Cell: ({ value }) => <DefaultCell value={value} />,
   });
 
   columns.push({
-    Header: "utmCampaign",
+    Header: "Campaign",
     accessor: "utmCampaign",
     Cell: ({ value }) => <DefaultCell value={value} />,
   });
 
   columns.push({
-    Header: "utmTerm",
+    Header: "Term",
     accessor: "utmTerm",
     Cell: ({ value }) => <DefaultCell value={value} />,
   });
 
   columns.push({
-    Header: "utmContent",
+    Header: "Content",
     accessor: "utmContent",
     Cell: ({ value }) => <DefaultCell value={value} />,
   });
@@ -87,8 +87,8 @@ const dataTableData = (data, keyList) => {
     Cell: ({ value }) => {
       let status;
 
-      if (value) status = <StatusCell status="사용" />;
-      else status = <StatusCell status="미사용" />;
+      if (value) status = <StatusCell status="사용" icon="done" color="success" />;
+      else status = <StatusCell status="미사용" icon="close" color="error" />;
 
       return status;
     },

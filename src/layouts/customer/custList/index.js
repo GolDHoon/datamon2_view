@@ -5,36 +5,35 @@ import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import Divider from "@mui/material/Divider";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
+import MDTypography from "../../../components/MDTypography";
 
 // Material Dashboard 2 PRO React examples
+import Checkbox from "@mui/material/Checkbox";
+import Footer from "layouts/common/Footer";
 import DashboardLayout from "layouts/common/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "layouts/common/Navbars/DashboardNavbar";
-import Footer from "layouts/common/Footer";
-import DataTable from "layouts/common/Tables/DataTable";
+import DataTable from "layouts/customer/custList/DataTable";
 import dataTableData from "layouts/customer/custList/data/dataTableData";
+import { useNavigate } from "react-router-dom";
+import { getSessionStorage } from "../../../common/common";
 import {
   serverCommunicationUtil,
   sessionChecker,
 } from "../../../common/util/serverCommunicationUtil";
-import { getSessionStorage } from "../../../common/common";
-import MDDatePicker from "../../../components/MDDatePicker";
 
 function CustInfoList() {
-  const [menu, setMenu] = useState(null);
+  const navigate = useNavigate();
+  if (getSessionStorage("selectedCustDB") === null) {
+    navigate("/");
+    alert("고객DB를 선택해주세요");
+  }
   const [rows, setRows] = useState([]);
   const [keyList, setKeyList] = useState([]);
   const [showPage, setShowPage] = useState(false);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-
-  const openMenu = (event) => setMenu(event.currentTarget);
-  const closeMenu = () => setMenu(null);
 
   function exportToCsv(rows, originalKeys) {
     let keys = [...originalKeys];
@@ -86,32 +85,9 @@ function CustInfoList() {
     document.body.removeChild(link);
   }
 
-  useEffect(() => {
-    if (startDate && endDate) {
-      // Convert date objects to specific datetime format or timestamp
-      const convertedStartDate = startDate.getTime();
-      const convertedEndDate = endDate.getTime();
-
-      // Filter rows based on selected date range
-      const filteredRows = rows.filter((row) => {
-        // Assuming the createDate is in timestamp format for comparison
-        const rowDate = new Date(row.createDate).getTime();
-        return rowDate >= convertedStartDate && rowDate <= convertedEndDate;
-      });
-
-      setRows(filteredRows);
-    }
-  }, [startDate, endDate]);
-
-  useEffect(() => {
-    sessionChecker().then((checkerResult) => {
-      if (checkerResult === "success") {
-        setShowPage(true);
-      }
-    });
-
+  const getList = () => {
     serverCommunicationUtil("main", "axioPost", "/custInfo/list", {
-      lpgeCode: getSessionStorage("selectedLandingPage").code,
+      lpgeCode: getSessionStorage("selectedCustDB").code,
     })
       .then((result) => {
         setRows(result.rows);
@@ -120,47 +96,38 @@ function CustInfoList() {
       .catch((error) => {
         console.log("");
       });
+  };
+
+  useEffect(() => {
+    getList();
+  }, []);
+
+  useEffect(() => {
+    sessionChecker().then((checkerResult) => {
+      if (checkerResult === "success") {
+        setShowPage(true);
+      }
+    });
   }, []);
 
   if (!showPage) {
     return null; // 혹은 로딩 스피너 등을 반환.
   }
 
-  const renderMenu = (
-    <Menu
-      anchorEl={menu}
-      anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-      transformOrigin={{ vertical: "top", horizontal: "left" }}
-      open={Boolean(menu)}
-      onClose={closeMenu}
-      keepMounted
-    >
-      <MenuItem onClick={closeMenu}>Status: Paid</MenuItem>
-      <MenuItem onClick={closeMenu}>Status: Refunded</MenuItem>
-      <MenuItem onClick={closeMenu}>Status: Canceled</MenuItem>
-      <Divider sx={{ margin: "0.5rem 0" }} />
-      <MenuItem onClick={closeMenu}>
-        <MDTypography variant="button" color="error" fontWeight="regular">
-          Remove Filter
-        </MDTypography>
-      </MenuItem>
-    </Menu>
-  );
-
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox my={3}>
-        <MDBox display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
-          <MDButton variant="gradient" color="info">
-            new order
-          </MDButton>
+        <MDBox display="flex" justifyContent="space-between" alignItems="center">
+          <MDBox height="100%" mt={0.5} lineHeight={1} p={2}>
+            <MDTypography variant="h4" fontWeight="medium">
+              고객 정보 리스트
+            </MDTypography>
+            <MDTypography variant="body2" color="text" fontWeight="regular">
+              고객 정보 리스트 소개 표시 유고객저 정보 리스트 소개 표시
+            </MDTypography>
+          </MDBox>
           <MDBox display="flex">
-            <MDButton variant={menu ? "contained" : "outlined"} color="dark" onClick={openMenu}>
-              filters&nbsp;
-              <Icon>keyboard_arrow_down</Icon>
-            </MDButton>
-            {renderMenu}
             <MDBox ml={1}>
               <MDButton variant="outlined" color="dark" onClick={() => exportToCsv(rows, keyList)}>
                 <Icon>description</Icon>
@@ -170,7 +137,7 @@ function CustInfoList() {
           </MDBox>
         </MDBox>
         <Card>
-          {<DataTable table={dataTableData(rows, keyList)} entriesPerPage={false} canSearch />}
+          {<DataTable table={dataTableData(rows, keyList)} entriesPerPage={true} canSearch />}
         </Card>
       </MDBox>
       <Footer />

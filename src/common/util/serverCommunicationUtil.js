@@ -3,10 +3,10 @@ import { getConst } from "../common";
 
 axios.defaults.withCredentials = true;
 
-async function getData(url, params) {
+async function getData(url, param) {
   try {
     const response = await axios.get(`${url}`, {
-      params,
+      params: param,
       withCredentials: true,
       headers: {
         URL: window.location.href,
@@ -15,8 +15,10 @@ async function getData(url, params) {
       },
     });
 
-    serverValidation(response);
-    return response.data;
+    if (serverValidation(response)) {
+      return response.data;
+    } else {
+    }
   } catch (error) {
     throw error;
   }
@@ -36,7 +38,6 @@ async function postData(url, data) {
     if (serverValidation(response)) {
       return response.data;
     } else {
-      debugger;
     }
   } catch (error) {
     throw error;

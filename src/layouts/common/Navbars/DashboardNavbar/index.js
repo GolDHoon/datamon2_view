@@ -13,25 +13,24 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // react-router components
-import { useLocation, Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
 
 // @material-ui core components
 import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
+import Icon from "@mui/material/Icon";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
-import Icon from "@mui/material/Icon";
+import Toolbar from "@mui/material/Toolbar";
 
 // Material Dashboard 2 PRO React components
-import MDBox from "components/MDBox";
-import MDInput from "components/MDInput";
 import MDBadge from "components/MDBadge";
+import MDBox from "components/MDBox";
 
 // Material Dashboard 2 PRO React examples
 import Breadcrumbs from "layouts/common/Breadcrumbs";
@@ -41,21 +40,23 @@ import NotificationItem from "layouts/common/Items/NotificationItem";
 import {
   navbar,
   navbarContainer,
-  navbarRow,
-  navbarIconButton,
   navbarDesktopMenu,
+  navbarIconButton,
   navbarMobileMenu,
+  navbarRow,
 } from "layouts/common/Navbars/DashboardNavbar/styles";
 
 // Material Dashboard 2 PRO React context
 import {
-  useMaterialUIController,
-  setTransparentNavbar,
   setMiniSidenav,
   setOpenConfigurator,
+  setTransparentNavbar,
+  useMaterialUIController,
 } from "context";
+import { serverCommunicationUtil } from "../../../../common/util/serverCommunicationUtil";
 
 function DashboardNavbar({ absolute, light, isMini }) {
+  const navigate = useNavigate();
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
@@ -92,6 +93,17 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
+  const handleLogOut = () => {
+    serverCommunicationUtil("main", "axioPost", "/logout", {})
+      .then((result) => {
+        if (result === "success") {
+          navigate("/login");
+        }
+      })
+      .catch((error) => {
+        console.log("");
+      });
+  };
 
   // Render the notifications menu
   const renderMenu = () => (
@@ -142,27 +154,27 @@ function DashboardNavbar({ absolute, light, isMini }) {
         </MDBox>
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            <MDBox pr={1}>
+            {/* <MDBox pr={1}>
               <MDInput label="Search here" />
-            </MDBox>
+            </MDBox> */}
             <MDBox color={light ? "white" : "inherit"}>
-              <Link to="/authentication/sign-in/basic">
-                <IconButton sx={navbarIconButton} size="small" disableRipple>
-                  <Icon sx={iconsStyle}>account_circle</Icon>
-                </IconButton>
-              </Link>
-              <IconButton
-                size="small"
-                disableRipple
-                color="inherit"
-                sx={navbarMobileMenu}
-                onClick={handleMiniSidenav}
-              >
-                <Icon sx={iconsStyle} fontSize="medium">
-                  {miniSidenav ? "menu_open" : "menu"}
-                </Icon>
-              </IconButton>
-              <IconButton
+              {/*<Link to="/authentication/sign-in/basic">*/}
+              {/*  <IconButton sx={navbarIconButton} size="small" disableRipple>*/}
+              {/*    <Icon sx={iconsStyle}>account_circle</Icon>*/}
+              {/*  </IconButton>*/}
+              {/*</Link>*/}
+              {/*<IconButton*/}
+              {/*  size="small"*/}
+              {/*  disableRipple*/}
+              {/*  color="inherit"*/}
+              {/*  sx={navbarMobileMenu}*/}
+              {/*  onClick={handleMiniSidenav}*/}
+              {/*>*/}
+              {/*  <Icon sx={iconsStyle} fontSize="medium">*/}
+              {/*    {miniSidenav ? "menu_open" : "menu"}*/}
+              {/*  </Icon>*/}
+              {/*</IconButton>*/}
+              {/* <IconButton
                 size="small"
                 disableRipple
                 color="inherit"
@@ -170,20 +182,23 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 onClick={handleConfiguratorOpen}
               >
                 <Icon sx={iconsStyle}>settings</Icon>
-              </IconButton>
-              <IconButton
-                size="small"
-                disableRipple
-                color="inherit"
-                sx={navbarIconButton}
-                aria-controls="notification-menu"
-                aria-haspopup="true"
-                variant="contained"
-                onClick={handleOpenMenu}
-              >
-                <MDBadge badgeContent={9} color="error" size="xs" circular>
-                  <Icon sx={iconsStyle}>notifications</Icon>
-                </MDBadge>
+              </IconButton> */}
+              {/*<IconButton*/}
+              {/*  size="small"*/}
+              {/*  disableRipple*/}
+              {/*  color="inherit"*/}
+              {/*  sx={navbarIconButton}*/}
+              {/*  aria-controls="notification-menu"*/}
+              {/*  aria-haspopup="true"*/}
+              {/*  variant="contained"*/}
+              {/*  onClick={handleOpenMenu}*/}
+              {/*>*/}
+              {/*  <MDBadge badgeContent={9} color="error" size="xs" circular>*/}
+              {/*    <Icon sx={iconsStyle}>notifications</Icon>*/}
+              {/*  </MDBadge>*/}
+              {/*</IconButton>*/}
+              <IconButton sx={navbarIconButton} onClick={handleLogOut} size="small" disableRipple>
+                <Icon sx={iconsStyle}>logout</Icon>
               </IconButton>
               {renderMenu()}
             </MDBox>
