@@ -4,7 +4,7 @@ import StatusCell from "layouts/user/auth/components/StatusCell";
 
 const dataTableData = (data, keyList, selectedCdbt) => {
   let columns = keyList.map((key) => {
-    if (["전체열람", "열람", "수정"].includes(key)) {
+    if (["권한", "전체조회", "마스킹 해제"].includes(key)) {
       return {
         Header: key,
         accessor: key,
