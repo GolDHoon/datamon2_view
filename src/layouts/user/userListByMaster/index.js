@@ -29,10 +29,18 @@ import UserInfo from "./components/UserInfo";
 import form from "./schemas/form";
 import initialValues from "./schemas/initialValues";
 import validations from "./schemas/validations";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import TableBody from "@mui/material/TableBody";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import DrivenTable from "../../../components/DrivenTable";
+import { column } from "stylis";
 
 function UserInfoListByMaster() {
   const [rows, setRows] = useState([]);
   const [keyList, setKeyList] = useState([]);
+  const [columns, setCoulumns] = useState([]);
   const [showPage, setShowPage] = useState(false);
   const [open, setOpen] = useState(false);
   const [valueMap, setValueMap] = useState({
@@ -66,6 +74,7 @@ function UserInfoListByMaster() {
       .then((result) => {
         getList();
         handleClose();
+        // location.reload();
       })
       .catch((error) => {
         console.log("Error occurred while fetching the user list: ", error);
@@ -78,6 +87,15 @@ function UserInfoListByMaster() {
     })
       .then((result) => {
         setRows(result.rows);
+
+        var columnsData = [];
+        for (var i = 0; i < result.keyList.length; i++) {
+          var key = result.keyList[i];
+          columnsData.push({ name: key, width: "10%" });
+        }
+
+        setCoulumns(columnsData);
+
         setKeyList(result.keyList);
       })
       .catch((error) => {
@@ -139,7 +157,16 @@ function UserInfoListByMaster() {
           </MDBox>
         </MDBox>
         <Card>
-          {<DataTable table={dataTableData(rows, keyList)} entriesPerPage={true} canSearch />}
+          {/*<DrivenTable*/}
+          {/*  rows={rows}*/}
+          {/*  columns={columns}*/}
+          {/*  useDel={false}*/}
+          {/*  useModify={false}*/}
+          {/*  useSearch={true}*/}
+          {/*  useSort={true}*/}
+          {/*  usePaging={true}*/}
+          {/*/>*/}
+          <DataTable table={dataTableData(rows, keyList)} entriesPerPage={true} canSearch />
         </Card>
       </MDBox>
       <Footer />
