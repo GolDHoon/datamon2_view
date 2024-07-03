@@ -14,6 +14,7 @@ import LandingPageManagement from "./layouts/landingPage/manage";
 import AuthMenagement from "./layouts/user/auth";
 import UserInfoListByMaster from "./layouts/user/userListByMaster";
 import UserInfoListByMemeber from "./layouts/user/userListByMember";
+import MyPage from "./layouts/myPage";
 
 const routes = [
   {
@@ -42,6 +43,25 @@ const routes = [
     icon: <Icon fontSize="medium">content_paste</Icon>,
     route: "/login",
     component: <Login />,
+    auth: [
+      getConst("MAST"),
+      getConst("DEVL"),
+      getConst("INME"),
+      getConst("CLNT"),
+      getConst("ADAC"),
+      getConst("CLME"),
+      getConst("AAME"),
+      getConst("CRAC"),
+      getConst("CAME"),
+    ],
+  },
+  {
+    title: "DataMon2 - MyPage",
+    name: "MyPage",
+    key: "MyPage",
+    icon: <Icon fontSize="medium">content_paste</Icon>,
+    route: "/myPage",
+    component: <MyPage />,
     auth: [
       getConst("MAST"),
       getConst("DEVL"),

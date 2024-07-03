@@ -155,7 +155,7 @@ function UserInfoListByMaster() {
   };
 
   return (
-    <DashboardLayout sx={{ display: "relative" }}>
+    <DashboardLayout>
       {useAlert && <DrivenAlert alertColor={alertColor} alertText={alertText} />}
       <DashboardNavbar />
       <MDBox my={3}>
