@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -29,15 +30,14 @@ import UserInfo from "./components/UserInfo";
 import form from "./schemas/form";
 import initialValues from "./schemas/initialValues";
 import validations from "./schemas/validations";
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableBody from "@mui/material/TableBody";
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
 import DrivenTable from "../../../components/DrivenTable";
-import { column } from "stylis";
+import MDAlert from "../../../components/MDAlert";
+import DrivenAlert from "../../../components/DrivenAlert";
 
 function UserInfoListByMaster() {
+  const [alertColor, setAlertColor] = useState("info");
+  const [alertText, setAlertText] = useState("");
+  const [useAlert, setUseAlert] = useState(false);
   const [rows, setRows] = useState([]);
   const [keyList, setKeyList] = useState([]);
   const [columns, setCoulumns] = useState([]);
@@ -55,6 +55,7 @@ function UserInfoListByMaster() {
     emailValue: "",
   });
   const { formId, formField } = form;
+  let alertRender = null;
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -74,7 +75,30 @@ function UserInfoListByMaster() {
       .then((result) => {
         getList();
         handleClose();
-        // location.reload();
+        setAlertColor("success");
+        setAlertText("생성이 완료되었습니다.");
+        setUseAlert(true);
+        setTimeout(() => {
+          setUseAlert(false);
+        }, 3000);
+      })
+      .catch((error) => {
+        console.log("Error occurred while fetching the user list: ", error);
+      });
+  };
+
+  const deleteHandler = (idx) => {
+    serverCommunicationUtil("main", "axioPost", "/user/deleteCompanyUser", {
+      idx: idx,
+    })
+      .then((result) => {
+        getList();
+        setAlertColor("success");
+        setAlertText("삭제가 완료되었습니다.");
+        setUseAlert(true);
+        setTimeout(() => {
+          setUseAlert(false);
+        }, 3000);
       })
       .catch((error) => {
         console.log("Error occurred while fetching the user list: ", error);
@@ -131,7 +155,8 @@ function UserInfoListByMaster() {
   };
 
   return (
-    <DashboardLayout>
+    <DashboardLayout sx={{ display: "relative" }}>
+      {useAlert && <DrivenAlert alertColor={alertColor} alertText={alertText} />}
       <DashboardNavbar />
       <MDBox my={3}>
         <MDBox display="flex" justifyContent="space-between">
@@ -157,16 +182,17 @@ function UserInfoListByMaster() {
           </MDBox>
         </MDBox>
         <Card>
-          {/*<DrivenTable*/}
-          {/*  rows={rows}*/}
-          {/*  columns={columns}*/}
-          {/*  useDel={false}*/}
-          {/*  useModify={false}*/}
-          {/*  useSearch={true}*/}
-          {/*  useSort={true}*/}
-          {/*  usePaging={true}*/}
-          {/*/>*/}
-          <DataTable table={dataTableData(rows, keyList)} entriesPerPage={true} canSearch />
+          <DrivenTable
+            rows={rows}
+            columns={columns}
+            useDel={true}
+            handleDel={deleteHandler}
+            useModify={false}
+            useSearch={true}
+            useSort={true}
+            usePaging={true}
+          />
+          {/*<DataTable table={dataTableData(rows, keyList)} entriesPerPage={true} canSearch />*/}
         </Card>
       </MDBox>
       <Footer />

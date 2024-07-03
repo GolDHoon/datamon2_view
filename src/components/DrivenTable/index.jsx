@@ -458,12 +458,24 @@ export default function DrivenTable(props) {
                     }}
                   >
                     {useDel && (
-                      <MDButton color={"error"} size={"small"} onClick={handleDel(row.idx)}>
+                      <MDButton
+                        color={"error"}
+                        size={"small"}
+                        onClick={() => {
+                          handleDel(row.idx);
+                        }}
+                      >
                         삭제
                       </MDButton>
                     )}
                     {useModify && (
-                      <MDButton color={"info"} size={"small"} onClick={handleModify(row.idx)}>
+                      <MDButton
+                        color={"info"}
+                        size={"small"}
+                        onClick={() => {
+                          handleModify(row.idx);
+                        }}
+                      >
                         수정
                       </MDButton>
                     )}
