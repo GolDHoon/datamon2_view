@@ -277,7 +277,7 @@ export default function DrivenTable(props) {
     }
   };
 
-  const headWidthCss = () => {
+  const widthCss = (key) => {
     var width = 0;
     columns.forEach((column) => {
       if (!column.width.includes("%")) {
@@ -293,11 +293,19 @@ export default function DrivenTable(props) {
       widthStr = width + "px";
     }
 
-    return {
-      width: widthStr,
-      display: "flex",
-      justifyContent: "space-between",
-    };
+    if (key === "head") {
+      return {
+        width: widthStr,
+        display: "flex",
+        justifyContent: "space-between",
+      };
+    } else if (key === "common") {
+      return {
+        width: widthStr,
+      };
+    } else {
+      return null;
+    }
   };
 
   return (
@@ -309,8 +317,8 @@ export default function DrivenTable(props) {
       ) : (
         <>
           <MDBox>
-            <MDBox sx={headWidthCss}>
-              <MDBox display="flex" alignItems="center">
+            <MDBox sx={widthCss("head")}>
+              <MDBox>
                 {usePaging && (
                   <>
                     <Autocomplete
@@ -386,7 +394,7 @@ export default function DrivenTable(props) {
             </MDBox>
           </MDBox>
           {useSearch && (
-            <MDBox>
+            <MDBox sx={widthCss("common")}>
               <MDBox sx={{ marginLeft: "16px" }}>
                 {filterList.map((filter) => (
                   <MDBadge
@@ -407,7 +415,7 @@ export default function DrivenTable(props) {
               </MDBox>
             </MDBox>
           )}
-          <MDBox>
+          <MDBox sx={widthCss("common")}>
             <Table sx={{ overflowX: "scroll" }}>
               <TableHead>
                 <TableRow style={tableRow}>
@@ -625,7 +633,12 @@ export default function DrivenTable(props) {
               </TableBody>
             </Table>
           </MDBox>
-          <MDBox display={"flex"} justifyContent={"space-between"} sx={{ marginTop: "20px" }}>
+          <MDBox
+            display={"flex"}
+            justifyContent={"space-between"}
+            sx={{ marginTop: "20px" }}
+            style={widthCss("common")}
+          >
             <MDBox>
               <MDTypography variant="button" color="secondary" fontWeight="regular">
                 총 {rowsData.length} 개 데이터, {pagination.length} 페이지 중 {selectedPage} 페이지
