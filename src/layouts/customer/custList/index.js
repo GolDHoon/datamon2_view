@@ -74,7 +74,7 @@ function CustInfoList() {
 
     rows.forEach((row) => {
       columns.forEach((column) => {
-        if (!(column.name === "사용여부" || column.name === "IP" || column.name === "삭제여부")) {
+        if (!(column.name === "허수여부" || column.name === "IP" || column.name === "삭제여부")) {
           var cell = row[column.name] !== " " ? row[column.name].toString() : "";
           csvContent = csvContent + cell + ",";
         }
@@ -136,7 +136,7 @@ function CustInfoList() {
             delYnSwitch(switchParam, rowIdx, switchValue),
         });
         columnsData.push({ name: "생성일", width: "200px", type: "text" });
-        // columnsData.push({ name: "수정일", width: "200px", type: "text" });
+        columnsData.push({ name: "수정일", width: "200px", type: "text" });
 
         setColumns(columnsData);
       })
