@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import MDBox from "../MDBox";
 import MDAlert from "../MDAlert";
@@ -14,7 +14,8 @@ const AlertContent = ({ alertColor, alertText }) => (
       dismissible={false}
       fullWidth
       style={{
-        position: "relative",
+        top: "5px",
+        position: "absolute",
         zIndex: "9999",
         textAlign: "center",
       }}
@@ -28,20 +29,34 @@ const AlertContent = ({ alertColor, alertText }) => (
 const DrivenAlert = ({ alertColor, alertText }) => {
   // ref를 사용하여 컨테이너 div를 핸들링
   const containerDiv = useRef(document.createElement("div"));
+  const [isVisible, setVisible] = useState(false); // 추가: isVisible 상태
 
   useEffect(() => {
-    // componentDidMount: body의 첫번째 자식으로 삽입
-    document.body.insertBefore(containerDiv.current, document.body.firstChild);
+    if (alertText) {
+      setVisible(true);
+      // 0.5s 후에 서서히 사라지는 경우를 처리합니다.
+      const invisibleTimer = setTimeout(() => setVisible(false), 500);
+      return () => clearTimeout(invisibleTimer);
+    }
+  }, [alertText]);
 
-    // componentWillUnmount: Container div 삭제
+  useEffect(() => {
+    document.body.insertBefore(containerDiv.current, document.body.firstChild);
     return () => {
       document.body.removeChild(containerDiv.current);
     };
-  }, []); // 빈 dependency array를 전달하여 이 effect가 mount와 unmount 시에만 실행되게 합니다.
+  }, []);
+
+  const transitionStyle = {
+    opacity: isVisible ? 1 : 0, // isVisible이 참이면 opacity는 1, 아니면 0
+    transition: isVisible ? "none" : "opacity 1s ease-out",
+  };
 
   return ReactDOM.createPortal(
-    <AlertContent alertColor={alertColor} alertText={alertText} />,
-    containerDiv.current // 새로 생성한 div에 AlertContent를 렌더링합니다.
+    <div style={transitionStyle}>
+      <AlertContent alertColor={alertColor} alertText={alertText} />
+    </div>,
+    containerDiv.current
   );
 };
 

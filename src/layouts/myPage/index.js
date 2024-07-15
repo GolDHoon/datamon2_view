@@ -47,7 +47,7 @@ function MyPage() {
         setUseAlert(true);
         setTimeout(() => {
           setUseAlert(false);
-        }, 3000);
+        }, 1500);
       })
       .catch((error) => {
         console.log("Error occurred while fetching the user list: ", error);

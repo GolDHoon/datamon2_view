@@ -103,8 +103,8 @@ function Home() {
   return (
     <DashboardLayout>
       <Helmet>
-        <title>DataMon2</title>
-        <meta name="description" content="DataMon2 Home" />
+        <title>데이터몬</title>
+        <meta name="description" content="데이터몬 홈페이지" />
       </Helmet>
       <DashboardNavbar />
       {statistics.map((statistic) => (

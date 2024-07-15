@@ -27,10 +27,16 @@ import initialValues from "../userListByMember/schemas/initialValues";
 import validations from "../userListByMember/schemas/validations";
 import UserInfo from "./components/UserInfo";
 import form from "../userListByMember/schemas/form";
+import DrivenTable from "../../../components/DrivenTable";
+import DrivenAlert from "../../../components/DrivenAlert";
 
 function UserInfoListByMemeber() {
+  const [alertColor, setAlertColor] = useState("info");
+  const [alertText, setAlertText] = useState("");
+  const [useAlert, setUseAlert] = useState(false);
   const [rows, setRows] = useState([]);
-  const [keyList, setKeyList] = useState([]);
+  // const [keyList, setKeyList] = useState([]);
+  const [columns, setCoulumns] = useState([]);
   const [showPage, setShowPage] = useState(false);
   const [open, setOpen] = useState(false);
   const [valueMap, setValueMap] = useState({
@@ -58,6 +64,30 @@ function UserInfoListByMemeber() {
       .then((result) => {
         getList();
         handleClose();
+        setAlertColor("success");
+        setAlertText("생성이 완료되었습니다.");
+        setUseAlert(true);
+        setTimeout(() => {
+          setUseAlert(false);
+        }, 1500);
+      })
+      .catch((error) => {
+        console.log("Error occurred while fetching the user list: ", error);
+      });
+  };
+
+  const deleteHandler = (idx) => {
+    serverCommunicationUtil("main", "axioPost", "/user/deleteMemberUser", {
+      idx: idx,
+    })
+      .then((result) => {
+        getList();
+        setAlertColor("success");
+        setAlertText("삭제가 완료되었습니다.");
+        setUseAlert(true);
+        setTimeout(() => {
+          setUseAlert(false);
+        }, 1500);
       })
       .catch((error) => {
         console.log("Error occurred while fetching the user list: ", error);
@@ -70,7 +100,14 @@ function UserInfoListByMemeber() {
     })
       .then((result) => {
         setRows(result.rows);
-        setKeyList(result.keyList);
+
+        var columnsData = [];
+        for (var i = 0; i < result.keyList.length; i++) {
+          var key = result.keyList[i];
+          columnsData.push({ name: key, width: "10%", type: "text" });
+        }
+
+        setCoulumns(columnsData);
       })
       .catch((error) => {
         console.log("");
@@ -106,6 +143,7 @@ function UserInfoListByMemeber() {
 
   return (
     <DashboardLayout>
+      {useAlert && <DrivenAlert alertColor={alertColor} alertText={alertText} />}
       <DashboardNavbar />
       <MDBox my={3}>
         <MDBox display="flex" justifyContent="space-between">
@@ -131,7 +169,17 @@ function UserInfoListByMemeber() {
           </MDBox>
         </MDBox>
         <Card>
-          {<DataTable table={dataTableData(rows, keyList)} entriesPerPage={true} canSearch />}
+          <DrivenTable
+            rows={rows}
+            columns={columns}
+            useDel={true}
+            handleDel={deleteHandler}
+            useModify={false}
+            useSearch={true}
+            useSort={true}
+            usePaging={true}
+          />
+          {/*{<DataTable table={dataTableData(rows, keyList)} entriesPerPage={true} canSearch />}*/}
         </Card>
       </MDBox>
       <Footer />

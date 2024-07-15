@@ -15,12 +15,110 @@ import { serverCommunicationUtil } from "../../../common/util/serverCommunicatio
 import MDTypography from "../../../components/MDTypography";
 import DashboardLayout from "../../common/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "../../common/Navbars/DashboardNavbar";
+import DrivenTable from "../../../components/DrivenTable";
+import MDButton from "../../../components/MDButton";
+import DrivenAlert from "../../../components/DrivenAlert";
 
 function AuthMenagement() {
+  const [alertColor, setAlertColor] = useState("info");
+  const [alertText, setAlertText] = useState("");
+  const [useAlert, setUseAlert] = useState(false);
   const [cdbtList, setCdbtList] = useState([]);
   const [selectedCdbt, setSelectedCdbt] = useState("");
   const [rows, setRows] = useState([]);
-  const [keyList, setKeyList] = useState([]);
+  const [columns, setColumns] = useState([]);
+
+  const maskingViewSwitch = (param, idx, switchValue) => {
+    serverCommunicationUtil("main", "axioPost", "/userAuth/modifyUserAuth", {
+      idx: idx,
+      usatCode: "AUTH_USAT_0000000004",
+      cdbtLowCode: param[0],
+      value: switchValue,
+    })
+      .then((result) => {
+        onRowClick(param[0]);
+        setAlertColor("success");
+        setAlertText("권한수정이 완료되었습니다.");
+        setUseAlert(true);
+        setTimeout(() => {
+          setUseAlert(false);
+        }, 1500);
+      })
+      .catch((error) => {
+        console.log("");
+      });
+  };
+
+  const totalViewSwitch = (param, idx, switchValue) => {
+    serverCommunicationUtil("main", "axioPost", "/userAuth/modifyUserAuth", {
+      idx: idx,
+      usatCode: "AUTH_USAT_0000000005",
+      cdbtLowCode: param[0],
+      value: switchValue,
+    })
+      .then((result) => {
+        onRowClick(param[0]);
+        setAlertColor("success");
+        setAlertText("권한수정이 완료되었습니다.");
+        setUseAlert(true);
+        setTimeout(() => {
+          setUseAlert(false);
+        }, 1500);
+      })
+      .catch((error) => {
+        console.log("");
+      });
+  };
+
+  const selectAuth = (param, idx, auth) => {
+    serverCommunicationUtil("main", "axioPost", "/userAuth/modifyUserAuth", {
+      idx: idx,
+      usatCode: auth,
+      cdbtLowCode: param[0],
+    })
+      .then((result) => {
+        onRowClick(param[0]);
+        setAlertColor("success");
+        setAlertText("권한수정이 완료되었습니다.");
+        setUseAlert(true);
+        setTimeout(() => {
+          setUseAlert(false);
+        }, 1500);
+      })
+      .catch((error) => {
+        console.log("");
+      });
+  };
+
+  const outHandler = (param, idx) => {
+    serverCommunicationUtil("main", "axioPost", "/userAuth/deleteUserCdbtMappingByCopanyAndCdbt", {
+      userId: idx,
+      cdbtCode: param[0],
+    })
+      .then((result) => {
+        onRowClick(param[0]);
+        setAlertColor("success");
+        setAlertText("맴버삭제가 완료되었습니다.");
+        setUseAlert(true);
+        setTimeout(() => {
+          setUseAlert(false);
+        }, 1500);
+      })
+      .catch((error) => {
+        console.log("");
+      });
+  };
+
+  const customCellContents = (param, idx) => {
+    return (
+      <MDBox display="flex" justifyContent={"space-evenly"}>
+        <MDButton variant="outlined" color="dark" onClick={(evnet) => outHandler(param, idx)}>
+          내보내기
+        </MDButton>
+      </MDBox>
+    );
+  };
+
   const onRowClick = (code) => {
     setSelectedCdbt(code);
     serverCommunicationUtil("main", "axioPost", "/userAuth/userListByCdbtCode", {
@@ -28,7 +126,61 @@ function AuthMenagement() {
     })
       .then((result) => {
         setRows(result.rows);
-        setKeyList(result.keyList);
+
+        var columnsData = [];
+        for (var i = 0; i < result.keyList.length; i++) {
+          var key = result.keyList[i];
+          switch (key) {
+            case "권한":
+              columnsData.push({
+                name: key,
+                width: "20%",
+                type: "select",
+                selectParam: [code],
+                selectList: [
+                  { value: "AUTH_USAT_0000000001", text: "관리자" },
+                  { value: "AUTH_USAT_0000000002", text: "편집자" },
+                  { value: "AUTH_USAT_0000000003", text: "뷰어" },
+                ],
+                selectFunction: (cdbtCode, rowIdx, selectedValue) =>
+                  selectAuth(cdbtCode, rowIdx, selectedValue),
+              });
+              break;
+            case "전체조회":
+              columnsData.push({
+                name: key,
+                width: "20%",
+                type: "switch",
+                switchParam: [code],
+                switchFunction: (cdbtCode, rowIdx, switchValue) =>
+                  totalViewSwitch(cdbtCode, rowIdx, switchValue),
+              });
+              break;
+            case "마스킹 해제":
+              columnsData.push({
+                name: key,
+                width: "20%",
+                type: "switch",
+                switchParam: [code],
+                switchFunction: (cdbtCode, rowIdx, switchValue) =>
+                  maskingViewSwitch(cdbtCode, rowIdx, switchValue),
+              });
+              break;
+            default:
+              columnsData.push({ name: key, width: "20%", type: "text" });
+              break;
+          }
+        }
+
+        columnsData.push({
+          name: "맴버관리",
+          width: "20%",
+          type: "customCell",
+          customCellParam: [code],
+          customCellContent: customCellContents,
+        });
+
+        setColumns(columnsData);
       })
       .catch((error) => {
         console.log("");
@@ -52,8 +204,10 @@ function AuthMenagement() {
         console.log("");
       });
   }, [setCdbtList]);
+
   return (
     <DashboardLayout>
+      {useAlert && <DrivenAlert alertColor={alertColor} alertText={alertText} />}
       <DashboardNavbar />
       <MDBox height="100%" mt={0.5} lineHeight={1} p={2}>
         <MDTypography variant="h4" fontWeight="medium">
@@ -78,14 +232,26 @@ function AuthMenagement() {
             <MDBox mb={3}>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <Header selectedCdbt={selectedCdbt} />
+                  <Header
+                    selectedCdbt={selectedCdbt}
+                    reLoadHandler={() => onRowClick(selectedCdbt)}
+                  />
                 </Grid>
                 <Grid item xs={12}>
-                  <DataTable
-                    table={dataTableData(rows, keyList, selectedCdbt)}
-                    entriesPerPage={true}
-                    canSearch
-                  />
+                  <Card>
+                    {selectedCdbt && (
+                      <DrivenTable
+                        rows={rows}
+                        columns={columns}
+                        useDel={false}
+                        useModify={false}
+                        useSearch={true}
+                        useSort={true}
+                        usePaging={true}
+                        useCustomCell={true}
+                      />
+                    )}
+                  </Card>
                 </Grid>
               </Grid>
             </MDBox>

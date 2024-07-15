@@ -3,8 +3,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-import { useEffect, useState } from "react";
-import DataTable from "../../layouts/user/userListByMaster/DataTable";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import MDBox from "../MDBox";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -12,12 +11,12 @@ import MDInput from "../MDInput";
 import MDTypography from "../MDTypography";
 import MDPagination from "../MDPagination";
 import Icon from "@mui/material/Icon";
-import { debug } from "prettier/doc";
 import MDButton from "../MDButton";
 import Menu from "@mui/material/Menu";
-import Checkbox from "@mui/material/Checkbox";
 import MenuItem from "@mui/material/MenuItem";
 import MDBadge from "../MDBadge";
+import { NativeSelect } from "@mui/material";
+import Switch from "@mui/material/Switch";
 
 const tableCellStyle = (wdith) => ({
   width: `${wdith}`,
@@ -45,6 +44,7 @@ export default function DrivenTable(props) {
     useModify,
     handleModify,
     useSort,
+    useCustomCell,
   } = props;
 
   if (Object.keys(columns).length === 0) {
@@ -203,6 +203,7 @@ export default function DrivenTable(props) {
   useEffect(() => {
     if (useDel) setUseDataFunction(true);
     if (useModify) setUseDataFunction(true);
+    if (!useDel && !useModify) setUseDataFunction(false);
 
     setRowsData(rows);
     setEntriesData(entries);
@@ -276,263 +277,350 @@ export default function DrivenTable(props) {
 
   return (
     <MDBox sx={{ padding: "16px", overflowX: "auto" }}>
-      <MDBox>
-        <MDBox display="flex" justifyContent={"space-between"}>
-          <MDBox display="flex" alignItems="center">
-            {usePaging && (
-              <>
-                <Autocomplete
-                  disableClearable
-                  value={pageSize.toString()}
-                  options={entries}
-                  onChange={(event, newValue) => {
-                    setPageSize(newValue);
-                  }}
-                  size="small"
-                  sx={{ marginLeft: "16px", width: "5rem" }}
-                  renderInput={(params) => <MDInput {...params} />}
-                />
-                <MDTypography variant="caption" color="secondary">
-                  &nbsp;&nbsp;페이지 표시 선택
-                </MDTypography>
-              </>
-            )}
-          </MDBox>
+      {rows.length === 0 ? (
+        <MDBox display={"flex"} justifyContent={"space-evenly"}>
+          <MDTypography>데이터가 없습니다.</MDTypography>
+        </MDBox>
+      ) : (
+        <>
           <MDBox>
-            {useSearch && (
-              <MDBox display="flex">
-                <MDButton
-                  variant={menu ? "outlined" : "contained"}
-                  color="dark"
-                  onClick={openMenu}
-                  style={{ whiteSpace: "nowrap", marginRight: "10px" }}
-                >
-                  검색필터
-                  <Icon>keyboard_arrow_down</Icon>
-                </MDButton>
-                <Menu
-                  anchorEl={menu}
-                  anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                  transformOrigin={{ vertical: "top", horizontal: "left" }}
-                  open={Boolean(menu)}
-                  onClose={closeMenu}
-                  keepMounted
-                >
-                  <MDBox>
-                    {columnsData.map((column) => (
-                      <MenuItem
-                        key={column.name}
-                        onClick={() => {
-                          setSelectSearch(column.name);
-                          closeMenu();
+            <MDBox display="flex" justifyContent={"space-between"}>
+              <MDBox display="flex" alignItems="center">
+                {usePaging && (
+                  <>
+                    <Autocomplete
+                      disableClearable
+                      value={pageSize.toString()}
+                      options={entries}
+                      onChange={(event, newValue) => {
+                        setPageSize(newValue);
+                      }}
+                      size="small"
+                      sx={{ marginLeft: "16px", width: "5rem" }}
+                      renderInput={(params) => <MDInput {...params} />}
+                    />
+                    <MDTypography variant="caption" color="secondary">
+                      &nbsp;&nbsp;페이지 표시 선택
+                    </MDTypography>
+                  </>
+                )}
+              </MDBox>
+              <MDBox>
+                {useSearch && (
+                  <MDBox display="flex">
+                    <MDButton
+                      variant={menu ? "outlined" : "contained"}
+                      color="dark"
+                      onClick={openMenu}
+                      style={{ whiteSpace: "nowrap", marginRight: "10px" }}
+                    >
+                      검색필터
+                      <Icon>keyboard_arrow_down</Icon>
+                    </MDButton>
+                    <Menu
+                      anchorEl={menu}
+                      anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                      transformOrigin={{ vertical: "top", horizontal: "left" }}
+                      open={Boolean(menu)}
+                      onClose={closeMenu}
+                      keepMounted
+                    >
+                      <MDBox>
+                        {columnsData.map((column) => (
+                          <MenuItem
+                            key={column.name}
+                            onClick={() => {
+                              setSelectSearch(column.name);
+                              closeMenu();
+                            }}
+                          >
+                            {column.name}
+                          </MenuItem>
+                        ))}
+                      </MDBox>
+                    </Menu>
+                    <MDInput
+                      placeholder={
+                        selectSearch
+                          ? `${selectSearch} 키워드 입력 후 enter`
+                          : "검색필터를 선택해 주세요"
+                      }
+                      size="small"
+                      disabled={!selectSearch}
+                      fullWidth
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") {
+                          handleSerchFilterAdd(event.target.value);
+                          event.target.value = "";
+                        }
+                      }}
+                    />
+                  </MDBox>
+                )}
+              </MDBox>
+            </MDBox>
+          </MDBox>
+          {useSearch && (
+            <MDBox>
+              <MDBox sx={{ marginLeft: "16px" }}>
+                {filterList.map((filter) => (
+                  <MDBadge
+                    key={`${filter.column} : ${filter.keyword}`}
+                    badgeContent={`${filter.column} : ${filter.keyword}\u00A0\u00A0\u00A0X`}
+                    sx={{
+                      marginRight: "5px",
+                      display: "point",
+                      cursor: "pointer",
+                      userSelect: "none",
+                    }}
+                    onClick={() => {
+                      handleSerchFilterDelete(filter);
+                    }}
+                    container
+                  />
+                ))}
+              </MDBox>
+            </MDBox>
+          )}
+          <MDBox sx={{ overflowX: "auto" }}>
+            <Table>
+              <TableHead>
+                <TableRow style={tableRow}>
+                  {columnsData.map((item, index) => (
+                    <React.Fragment key={index}>
+                      {item.type !== "customCell" ? (
+                        <>
+                          <TableCell key={item.name} style={tableCellStyle(item.width)}>
+                            <MDBox display={"flex"} justifyContent={"space-between"}>
+                              {item.name}
+                              <MDBox>{renderBadge(item.name)}</MDBox>
+                            </MDBox>
+                          </TableCell>
+                          {useSort && (
+                            <MDBox position="relative">
+                              <MDBox
+                                position="absolute"
+                                top={"30%"}
+                                right={"20px"}
+                                sx={({ typography: { size } }) => ({
+                                  fontSize: size.lg,
+                                })}
+                              >
+                                <MDBox
+                                  position="absolute"
+                                  top={-6}
+                                  color={item.sort === "asc" ? "text" : "secondary"}
+                                  opacity={item.sort === "asc" ? 1 : 0.5}
+                                  onClick={() => {
+                                    handelAscSort(index);
+                                  }}
+                                >
+                                  <Icon>arrow_drop_up</Icon>
+                                </MDBox>
+                                <MDBox
+                                  position="absolute"
+                                  top={0}
+                                  color={item.sort === "desc" ? "text" : "secondary"}
+                                  opacity={item.sort === "desc" ? 1 : 0.5}
+                                  onClick={() => {
+                                    handelDescSort(index);
+                                  }}
+                                >
+                                  <Icon>arrow_drop_down</Icon>
+                                </MDBox>
+                              </MDBox>
+                            </MDBox>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <TableCell key={item.name} style={tableCellStyle(item.width)}>
+                            <MDBox display={"flex"} justifyContent={"space-between"}>
+                              {item.name}
+                              <MDBox>{renderBadge(item.name)}</MDBox>
+                            </MDBox>
+                          </TableCell>
+                        </>
+                      )}
+                    </React.Fragment>
+                  ))}
+                  {useDataFunction && (
+                    <TableCell
+                      key={"function"}
+                      style={tableCellStyle("10%")}
+                      sx={{ textAlign: "center" }}
+                    >
+                      데이터 변경
+                    </TableCell>
+                  )}
+                </TableRow>
+              </TableHead>
+              <TableBody sx={{ display: "block", padding: "0px 16px 0px 16px" }}>
+                {displayRowsData.map((row, index) => (
+                  <TableRow key={`table-row-${index}`} style={tableRow}>
+                    {columnsData.map(
+                      (item) =>
+                        row[item.name] && (
+                          <TableCell
+                            key={`table-cell-${row.idx}-${item.name}-${index}`}
+                            style={tableCellStyle(item.width)}
+                            sx={{ fontSize: "0.85rem", fontWeight: "500" }}
+                          >
+                            {item.type === "text" && row[item.name]}
+                            {item.type === "select" && (
+                              <NativeSelect
+                                value={row[item.name]}
+                                variant={"outlined"}
+                                onChange={(event) => {
+                                  item.selectFunction(
+                                    item.selectParam,
+                                    row.idx,
+                                    event.target.value
+                                  );
+                                }}
+                              >
+                                {item.selectList.map((select) => (
+                                  <option
+                                    value={select.value}
+                                    key={`table-cell-${row.idx}-${item.name}-${index}-${select.value}`}
+                                  >
+                                    {select.text}
+                                  </option>
+                                ))}
+                              </NativeSelect>
+                            )}
+                            {item.type === "switch" &&
+                              (row[item.name] === "true" ? (
+                                <Switch
+                                  checked={true}
+                                  onClick={(event) => {
+                                    item.switchFunction(
+                                      item.switchParam,
+                                      row.idx,
+                                      event.target.value
+                                    );
+                                  }}
+                                ></Switch>
+                              ) : (
+                                <Switch
+                                  checked={false}
+                                  onClick={(event) => {
+                                    item.switchFunction(
+                                      item.switchParam,
+                                      row.idx,
+                                      event.target.value
+                                    );
+                                  }}
+                                ></Switch>
+                              ))}
+                          </TableCell>
+                        )
+                    )}
+
+                    {useCustomCell
+                      ? columnsData.map(
+                          (item) =>
+                            item.type === "customCell" && (
+                              <TableCell
+                                key={`table-cell-${row.idx}-customCell-${index}`}
+                                style={tableCellStyle(item.width)}
+                                sx={{ fontSize: "0.85rem", fontWeight: "500" }}
+                              >
+                                {item.customCellContent(item.customCellParam, row.idx)}
+                              </TableCell>
+                            )
+                        )
+                      : null}
+
+                    {useDataFunction && (
+                      <TableCell
+                        key={`table-cell-function-${row.idx}`}
+                        style={tableCellStyle("10%")}
+                        sx={{
+                          fontSize: "0.85rem",
+                          fontWeight: "500",
+                          display: "flex",
+                          justifyContent: "space-evenly",
                         }}
                       >
-                        {column.name}
-                      </MenuItem>
-                    ))}
-                  </MDBox>
-                </Menu>
-                <MDInput
-                  placeholder={
-                    selectSearch
-                      ? `${selectSearch} 키워드 입력 후 enter`
-                      : "검색필터를 선택해 주세요"
-                  }
-                  size="small"
-                  disabled={!selectSearch}
-                  fullWidth
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      handleSerchFilterAdd(event.target.value);
-                      event.target.value = "";
-                    }
-                  }}
-                />
-              </MDBox>
-            )}
+                        {useDel && (
+                          <MDButton
+                            color={"error"}
+                            size={"small"}
+                            onClick={() => {
+                              handleDel(row.idx);
+                            }}
+                          >
+                            삭제
+                          </MDButton>
+                        )}
+                        {useModify && (
+                          <MDButton
+                            color={"info"}
+                            size={"small"}
+                            onClick={() => {
+                              handleModify(row.idx);
+                            }}
+                          >
+                            수정
+                          </MDButton>
+                        )}
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </MDBox>
-        </MDBox>
-      </MDBox>
-      {useSearch && (
-        <MDBox>
-          <MDBox sx={{ marginLeft: "16px" }}>
-            {filterList.map((filter) => (
-              <MDBadge
-                key={`${filter.column} : ${filter.keyword}`}
-                badgeContent={`${filter.column} : ${filter.keyword}\u00A0\u00A0\u00A0X`}
-                sx={{ marginRight: "5px", display: "point", cursor: "pointer", userSelect: "none" }}
-                onClick={() => {
-                  handleSerchFilterDelete(filter);
-                }}
-                container
-              />
-            ))}
-          </MDBox>
-        </MDBox>
-      )}
-      <MDBox sx={{ overflowX: "auto" }}>
-        <Table>
-          <TableHead>
-            <TableRow style={tableRow}>
-              {columnsData.map((item, index) => (
+          <MDBox display={"flex"} justifyContent={"space-between"} sx={{ marginTop: "20px" }}>
+            <MDBox>
+              <MDTypography variant="button" color="secondary" fontWeight="regular">
+                총 {rowsData.length} 개 데이터, {pagination.length} 페이지 중 {selectedPage} 페이지
+                출력중
+              </MDTypography>
+            </MDBox>
+            <MDBox display={"flex"}>
+              {usePagination && (
                 <>
-                  <TableCell key={item.name} style={tableCellStyle(item.width)}>
-                    <MDBox display={"flex"} justifyContent={"space-between"}>
-                      {item.name}
-                      <MDBox>{renderBadge(item.name)}</MDBox>
-                    </MDBox>
-                  </TableCell>
-                  {useSort && (
-                    <MDBox position="relative">
-                      <MDBox
-                        position="absolute"
-                        top={"30%"}
-                        right={"20px"}
-                        sx={({ typography: { size } }) => ({
-                          fontSize: size.lg,
-                        })}
+                  {selectedPage > 1 && (
+                    <MDPagination>
+                      <MDPagination
+                        item
+                        onClick={() => {
+                          setSelectedPage(selectedPage - 1);
+                        }}
                       >
-                        <MDBox
-                          position="absolute"
-                          top={-6}
-                          color={item.sort === "asc" ? "text" : "secondary"}
-                          opacity={item.sort === "asc" ? 1 : 0.5}
-                          onClick={() => {
-                            handelAscSort(index);
-                          }}
+                        <Icon sx={{ fontWeight: "bold" }}>chevron_left</Icon>
+                      </MDPagination>
+                    </MDPagination>
+                  )}
+                  {pagination && (
+                    <MDPagination>
+                      {pagination.map((page) => (
+                        <MDPagination
+                          item
+                          key={page}
+                          onClick={() => setSelectedPage(page)}
+                          active={selectedPage === page}
                         >
-                          <Icon>arrow_drop_up</Icon>
-                        </MDBox>
-                        <MDBox
-                          position="absolute"
-                          top={0}
-                          color={item.sort === "desc" ? "text" : "secondary"}
-                          opacity={item.sort === "desc" ? 1 : 0.5}
-                          onClick={() => {
-                            handelDescSort(index);
-                          }}
-                        >
-                          <Icon>arrow_drop_down</Icon>
-                        </MDBox>
-                      </MDBox>
-                    </MDBox>
+                          {page}
+                        </MDPagination>
+                      ))}
+                    </MDPagination>
+                  )}
+                  {selectedPage < pagination.length && (
+                    <MDPagination>
+                      <MDPagination item onClick={() => setSelectedPage(selectedPage + 1)}>
+                        <Icon sx={{ fontWeight: "bold" }}>chevron_right</Icon>
+                      </MDPagination>
+                    </MDPagination>
                   )}
                 </>
-              ))}
-              {useDataFunction && (
-                <TableCell
-                  key={"function"}
-                  style={tableCellStyle("10%")}
-                  sx={{ textAlign: "center" }}
-                >
-                  데이터 변경
-                </TableCell>
               )}
-            </TableRow>
-          </TableHead>
-          <TableBody sx={{ display: "block", padding: "0px 16px 0px 16px" }}>
-            {displayRowsData.map((row) => (
-              <TableRow key={row.userIdx} style={tableRow}>
-                {columnsData.map(
-                  (item) =>
-                    row[item.name] && (
-                      <TableCell
-                        key={item.name}
-                        style={tableCellStyle(item.width)}
-                        sx={{ fontSize: "0.85rem", fontWeight: "500" }}
-                      >
-                        {row[item.name]}
-                      </TableCell>
-                    )
-                )}
-
-                {useDataFunction && (
-                  <TableCell
-                    key={"function"}
-                    style={tableCellStyle("10%")}
-                    sx={{
-                      fontSize: "0.85rem",
-                      fontWeight: "500",
-                      display: "flex",
-                      justifyContent: "space-evenly",
-                    }}
-                  >
-                    {useDel && (
-                      <MDButton
-                        color={"error"}
-                        size={"small"}
-                        onClick={() => {
-                          handleDel(row.idx);
-                        }}
-                      >
-                        삭제
-                      </MDButton>
-                    )}
-                    {useModify && (
-                      <MDButton
-                        color={"info"}
-                        size={"small"}
-                        onClick={() => {
-                          handleModify(row.idx);
-                        }}
-                      >
-                        수정
-                      </MDButton>
-                    )}
-                  </TableCell>
-                )}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </MDBox>
-      <MDBox display={"flex"} justifyContent={"space-between"} sx={{ marginTop: "20px" }}>
-        <MDBox>
-          <MDTypography variant="button" color="secondary" fontWeight="regular">
-            총 {rowsData.length} 개 데이터, {pagination.length} 페이지 중 {selectedPage} 페이지
-            출력중
-          </MDTypography>
-        </MDBox>
-        <MDBox display={"flex"}>
-          {usePagination && (
-            <>
-              {selectedPage > 1 && (
-                <MDPagination>
-                  <MDPagination
-                    item
-                    onClick={() => {
-                      setSelectedPage(selectedPage - 1);
-                    }}
-                  >
-                    <Icon sx={{ fontWeight: "bold" }}>chevron_left</Icon>
-                  </MDPagination>
-                </MDPagination>
-              )}
-              {pagination && (
-                <MDPagination>
-                  {pagination.map((page) => (
-                    <MDPagination
-                      item
-                      key={page}
-                      onClick={() => setSelectedPage(page)}
-                      active={selectedPage === page}
-                    >
-                      {page}
-                    </MDPagination>
-                  ))}
-                </MDPagination>
-              )}
-              {selectedPage < pagination.length && (
-                <MDPagination>
-                  <MDPagination item onClick={() => setSelectedPage(selectedPage + 1)}>
-                    <Icon sx={{ fontWeight: "bold" }}>chevron_right</Icon>
-                  </MDPagination>
-                </MDPagination>
-              )}
-            </>
-          )}
-        </MDBox>
-      </MDBox>
+            </MDBox>
+          </MDBox>
+        </>
+      )}
     </MDBox>
   );
 }
@@ -547,8 +635,8 @@ DrivenTable.defaultProps = {
   handleDel: () => {},
   useModify: false,
   handleModify: () => {},
-  idx: null,
   useSort: true,
+  useCustomCell: false,
 };
 
 DrivenTable.propTypes = {
@@ -562,4 +650,5 @@ DrivenTable.propTypes = {
   useModify: PropTypes.bool,
   handleModify: PropTypes.func,
   useSort: PropTypes.bool,
+  useCustomCell: PropTypes.bool,
 };

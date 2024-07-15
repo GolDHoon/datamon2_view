@@ -19,8 +19,12 @@ import MemberInvite from "../MemberInvite";
 import { serverCommunicationUtil } from "../../../../../common/util/serverCommunicationUtil";
 import PropTypes from "prop-types";
 import IdxCell from "../../../../landingPage/manage/components/IdxCell";
+import DrivenAlert from "../../../../../components/DrivenAlert";
 
-function Header({ selectedCdbt }) {
+function Header({ selectedCdbt, reLoadHandler }) {
+  const [alertColor, setAlertColor] = useState("info");
+  const [alertText, setAlertText] = useState("");
+  const [useAlert, setUseAlert] = useState(false);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -34,7 +38,15 @@ function Header({ selectedCdbt }) {
       idxs: saveUserList,
     })
       .then((result) => {
+        setSaveUserList([]);
         handleClose();
+        reLoadHandler();
+        setAlertColor("success");
+        setAlertText("생성이 완료되었습니다.");
+        setUseAlert(true);
+        setTimeout(() => {
+          setUseAlert(false);
+        }, 1500);
       })
       .catch((error) => {
         console.log("");
@@ -55,6 +67,7 @@ function Header({ selectedCdbt }) {
 
   return (
     <Card>
+      {useAlert && <DrivenAlert alertColor={alertColor} alertText={alertText} />}
       <MDBox display="flex" justifyContent="space-between">
         <MDBox p={4}>
           <MDTypography variant="h2" fontWeight="medium" style={{ marginBottom: 8 }}>
@@ -100,7 +113,13 @@ function Header({ selectedCdbt }) {
                       >
                         완료
                       </MDButton>
-                      <MDButton color="dark" onClick={handleClose}>
+                      <MDButton
+                        color="dark"
+                        onClick={() => {
+                          setSaveUserList([]);
+                          handleClose();
+                        }}
+                      >
                         취소
                       </MDButton>
                     </MDBox>
@@ -116,6 +135,7 @@ function Header({ selectedCdbt }) {
 }
 Header.propTypes = {
   selectedCdbt: PropTypes.string,
+  reLoadHandler: PropTypes.func,
 };
 
 export default Header;

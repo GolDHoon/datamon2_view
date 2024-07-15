@@ -18,7 +18,7 @@ import MyPage from "./layouts/myPage";
 
 const routes = [
   {
-    title: "DataMon2",
+    title: "데이터몬",
     name: "home",
     key: "home",
     icon: <Icon fontSize="medium">content_paste</Icon>,
@@ -37,7 +37,7 @@ const routes = [
     ],
   },
   {
-    title: "DataMon2 - Login",
+    title: "데이터몬 - Login",
     name: "login",
     key: "login",
     icon: <Icon fontSize="medium">content_paste</Icon>,
@@ -56,7 +56,7 @@ const routes = [
     ],
   },
   {
-    title: "DataMon2 - MyPage",
+    title: "데이터몬 - MyPage",
     name: "MyPage",
     key: "MyPage",
     icon: <Icon fontSize="medium">content_paste</Icon>,

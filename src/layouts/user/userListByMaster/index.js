@@ -39,7 +39,7 @@ function UserInfoListByMaster() {
   const [alertText, setAlertText] = useState("");
   const [useAlert, setUseAlert] = useState(false);
   const [rows, setRows] = useState([]);
-  const [keyList, setKeyList] = useState([]);
+  // const [keyList, setKeyList] = useState([]);
   const [columns, setCoulumns] = useState([]);
   const [showPage, setShowPage] = useState(false);
   const [open, setOpen] = useState(false);
@@ -80,7 +80,7 @@ function UserInfoListByMaster() {
         setUseAlert(true);
         setTimeout(() => {
           setUseAlert(false);
-        }, 3000);
+        }, 1500);
       })
       .catch((error) => {
         console.log("Error occurred while fetching the user list: ", error);
@@ -98,7 +98,7 @@ function UserInfoListByMaster() {
         setUseAlert(true);
         setTimeout(() => {
           setUseAlert(false);
-        }, 3000);
+        }, 1500);
       })
       .catch((error) => {
         console.log("Error occurred while fetching the user list: ", error);
@@ -115,12 +115,10 @@ function UserInfoListByMaster() {
         var columnsData = [];
         for (var i = 0; i < result.keyList.length; i++) {
           var key = result.keyList[i];
-          columnsData.push({ name: key, width: "10%" });
+          columnsData.push({ name: key, width: "10%", type: "text" });
         }
 
         setCoulumns(columnsData);
-
-        setKeyList(result.keyList);
       })
       .catch((error) => {
         console.log("Error occurred while fetching the user list: ", error);
