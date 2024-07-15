@@ -21,11 +21,10 @@ import Switch from "@mui/material/Switch";
 const tableCellStyle = (wdith) => ({
   width: `${wdith}`,
   whiteSpace: "nowrap",
-  overflow: "revert-layer",
+  overflowX: "hidden",
   textOverflow: "ellipsis",
   borderBottom: "none",
-  display: "flex",
-  alignItems: "center",
+  margin: "auto 0px",
 });
 const tableRow = {
   display: "flex",
