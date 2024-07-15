@@ -24,48 +24,64 @@ import {
   serverCommunicationUtil,
   sessionChecker,
 } from "../../../common/util/serverCommunicationUtil";
+import DrivenAlert from "../../../components/DrivenAlert";
+import DrivenTable from "../../../components/DrivenTable";
 
 function CustInfoList() {
-  const navigate = useNavigate();
-  if (getSessionStorage("selectedCustDB") === null) {
-    navigate("/");
-    alert("고객DB를 선택해주세요");
-  }
+  const [alertColor, setAlertColor] = useState("info");
+  const [alertText, setAlertText] = useState("");
+  const [useAlert, setUseAlert] = useState(false);
   const [rows, setRows] = useState([]);
+  const [columns, setColumns] = useState([]);
   const [keyList, setKeyList] = useState([]);
   const [showPage, setShowPage] = useState(false);
 
+  const navigate = useNavigate();
+
+  const useYnSwitch = (switchParam, rowIdx, switchValue) => {
+    console.log("테스트");
+  };
+
+  const delYnSwitch = (switchParam, rowIdx, switchValue) => {
+    console.log("테스트");
+  };
+
+  useEffect(() => {
+    if (
+      getSessionStorage("selectedCustDB") === null ||
+      getSessionStorage("selectedCustDB") === "undefined"
+    ) {
+      setAlertColor("error");
+      setAlertText("고객DB를 선택해주세요");
+      setUseAlert(true);
+      setTimeout(() => {
+        setUseAlert(false);
+        navigate("/");
+      }, 1500);
+      return;
+    }
+  }, []);
+
   function exportToCsv(rows, originalKeys) {
-    let keys = [...originalKeys];
-    keys.push("utmSourse");
-    keys.push("utmMedium");
-    keys.push("utmCampaign");
-    keys.push("utmTerm");
-    keys.push("createDate");
-    keys.push("modifyDate");
-    keys.push("useYn");
+    var headerRow = "";
+    columns.forEach((column) => {
+      if (!(column.name === "허수여부" || column.name === "IP" || column.name === "삭제여부")) {
+        headerRow = headerRow + column.name.toString() + ",";
+      }
+    });
 
-    const headerMap = {
-      createDate: "생성일",
-      modifyDate: "수정일",
-      useYn: "사용여부",
-    };
+    var csvContent = "";
 
-    const headerRow = keys.map((key) => headerMap[key] || key).join(",");
+    rows.forEach((row) => {
+      columns.forEach((column) => {
+        if (!(column.name === "사용여부" || column.name === "IP" || column.name === "삭제여부")) {
+          var cell = row[column.name] !== " " ? row[column.name].toString() : "";
+          csvContent = csvContent + cell + ",";
+        }
+      });
 
-    const dataConverter = {
-      useYn: (value) => (value ? "사용" : "미사용"),
-    };
-
-    const csvContent = rows
-      .map((row) =>
-        keys
-          .map((field) =>
-            JSON.stringify(dataConverter[field] ? dataConverter[field](row[field]) : row[field])
-          )
-          .join(",")
-      )
-      .join("\n");
+      csvContent = csvContent + "\n";
+    });
 
     const csvWithHeaders = `${headerRow}\n${csvContent}`;
 
@@ -91,7 +107,38 @@ function CustInfoList() {
     })
       .then((result) => {
         setRows(result.rows);
-        setKeyList(result.keyList);
+
+        var columnsData = [];
+        for (var i = 0; i < result.keyList.length; i++) {
+          var key = result.keyList[i];
+          columnsData.push({ name: key, width: "150px", type: "text" });
+        }
+        columnsData.push({ name: "sourse", width: "150px", type: "text" });
+        columnsData.push({ name: "medium", width: "150px", type: "text" });
+        columnsData.push({ name: "campaign", width: "250px", type: "text" });
+        columnsData.push({ name: "term", width: "250px", type: "text" });
+        columnsData.push({ name: "content", width: "250px", type: "text" });
+        columnsData.push({ name: "IP", width: "150px", type: "text" });
+        columnsData.push({
+          name: "허수여부",
+          width: "100px",
+          type: "switch",
+          switchParam: [],
+          switchFunction: (switchParam, rowIdx, switchValue) =>
+            useYnSwitch(switchParam, rowIdx, switchValue),
+        });
+        columnsData.push({
+          name: "삭제여부",
+          width: "100px",
+          type: "switch",
+          switchParam: [],
+          switchFunction: (switchParam, rowIdx, switchValue) =>
+            delYnSwitch(switchParam, rowIdx, switchValue),
+        });
+        columnsData.push({ name: "생성일", width: "200px", type: "text" });
+        // columnsData.push({ name: "수정일", width: "200px", type: "text" });
+
+        setColumns(columnsData);
       })
       .catch((error) => {
         console.log("");
@@ -99,15 +146,16 @@ function CustInfoList() {
   };
 
   useEffect(() => {
-    getList();
-  }, []);
-
-  useEffect(() => {
-    sessionChecker().then((checkerResult) => {
-      if (checkerResult === "success") {
-        setShowPage(true);
-      }
-    });
+    sessionChecker()
+      .then((checkerResult) => {
+        if (checkerResult === "success") {
+          setShowPage(true);
+          getList();
+        } else {
+          navigate("/login");
+        }
+      })
+      .catch((error) => navigate("/login"));
   }, []);
 
   if (!showPage) {
@@ -116,31 +164,46 @@ function CustInfoList() {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar />
-      <MDBox my={3}>
-        <MDBox display="flex" justifyContent="space-between" alignItems="center">
-          <MDBox height="100%" mt={0.5} lineHeight={1} p={2}>
-            <MDTypography variant="h4" fontWeight="medium">
-              고객 정보 리스트
-            </MDTypography>
-            <MDTypography variant="body2" color="text" fontWeight="regular">
-              고객 정보 리스트 소개 표시 유고객저 정보 리스트 소개 표시
-            </MDTypography>
-          </MDBox>
-          <MDBox display="flex">
-            <MDBox ml={1}>
-              <MDButton variant="outlined" color="dark" onClick={() => exportToCsv(rows, keyList)}>
-                <Icon>description</Icon>
-                &nbsp;export csv
-              </MDButton>
+      {useAlert ? (
+        <DrivenAlert alertColor={alertColor} alertText={alertText} />
+      ) : (
+        <>
+          <DashboardNavbar />
+          <MDBox my={3}>
+            <MDBox display="flex" justifyContent="space-between" alignItems="center">
+              <MDBox height="100%" mt={0.5} lineHeight={1} p={2}>
+                <MDTypography variant="h4" fontWeight="medium">
+                  고객 정보 리스트
+                </MDTypography>
+                <MDTypography variant="body2" color="text" fontWeight="regular">
+                  고객 정보 리스트 소개 표시 유고객저 정보 리스트 소개 표시
+                </MDTypography>
+              </MDBox>
+              <MDBox display="flex">
+                <MDBox ml={1}>
+                  <MDButton
+                    variant="outlined"
+                    color="dark"
+                    onClick={() => exportToCsv(rows, keyList)}
+                  >
+                    <Icon>description</Icon>
+                    &nbsp;export csv
+                  </MDButton>
+                </MDBox>
+              </MDBox>
             </MDBox>
+            <Card>
+              <DrivenTable
+                rows={rows}
+                columns={columns}
+                useSearch={true}
+                useSort={true}
+                usePaging={true}
+              />
+            </Card>
           </MDBox>
-        </MDBox>
-        <Card>
-          {<DataTable table={dataTableData(rows, keyList)} entriesPerPage={true} canSearch />}
-        </Card>
-      </MDBox>
-      <Footer />
+        </>
+      )}
     </DashboardLayout>
   );
 }

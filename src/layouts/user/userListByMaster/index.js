@@ -33,6 +33,7 @@ import validations from "./schemas/validations";
 import DrivenTable from "../../../components/DrivenTable";
 import MDAlert from "../../../components/MDAlert";
 import DrivenAlert from "../../../components/DrivenAlert";
+import { useNavigate } from "react-router-dom";
 
 function UserInfoListByMaster() {
   const [alertColor, setAlertColor] = useState("info");
@@ -40,7 +41,7 @@ function UserInfoListByMaster() {
   const [useAlert, setUseAlert] = useState(false);
   const [rows, setRows] = useState([]);
   // const [keyList, setKeyList] = useState([]);
-  const [columns, setCoulumns] = useState([]);
+  const [columns, setColumns] = useState([]);
   const [showPage, setShowPage] = useState(false);
   const [open, setOpen] = useState(false);
   const [valueMap, setValueMap] = useState({
@@ -55,7 +56,7 @@ function UserInfoListByMaster() {
     emailValue: "",
   });
   const { formId, formField } = form;
-  let alertRender = null;
+  const navigate = useNavigate();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -118,7 +119,7 @@ function UserInfoListByMaster() {
           columnsData.push({ name: key, width: "10%", type: "text" });
         }
 
-        setCoulumns(columnsData);
+        setColumns(columnsData);
       })
       .catch((error) => {
         console.log("Error occurred while fetching the user list: ", error);
@@ -130,9 +131,23 @@ function UserInfoListByMaster() {
   }, []);
 
   useEffect(() => {
+    sessionChecker()
+      .then((checkerResult) => {
+        if (checkerResult === "success") {
+          setShowPage(true);
+        } else {
+          navigate("/login");
+        }
+      })
+      .catch((error) => navigate("/login"));
+  }, []);
+
+  useEffect(() => {
     sessionChecker().then((checkerResult) => {
       if (checkerResult === "success") {
         setShowPage(true);
+      } else {
+        navigate("/login");
       }
     });
   }, []);

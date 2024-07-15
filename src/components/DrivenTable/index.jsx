@@ -21,14 +21,16 @@ import Switch from "@mui/material/Switch";
 const tableCellStyle = (wdith) => ({
   width: `${wdith}`,
   whiteSpace: "nowrap",
-  overflow: "hidden",
+  overflow: "revert-layer",
   textOverflow: "ellipsis",
   borderBottom: "none",
+  display: "flex",
+  alignItems: "center",
 });
 const tableRow = {
   display: "flex",
-  justifyContent: "space-around",
-  width: "100%",
+  // justifyContent: "space-around",
+  // width: "100%",
   borderBottom: "1px solid rgba(224,224,224,1)",
 };
 
@@ -204,7 +206,7 @@ export default function DrivenTable(props) {
     if (useDel) setUseDataFunction(true);
     if (useModify) setUseDataFunction(true);
     if (!useDel && !useModify) setUseDataFunction(false);
-
+    // debugger;
     setRowsData(rows);
     setEntriesData(entries);
     setSelectedPage(1);
@@ -275,6 +277,29 @@ export default function DrivenTable(props) {
     }
   };
 
+  const headWidthCss = () => {
+    var width = 0;
+    columns.forEach((column) => {
+      if (!column.width.includes("%")) {
+        width = width + Number(column.width.replace("px", ""));
+      }
+    });
+
+    var widthStr = "";
+
+    if (width === 0) {
+      widthStr = "100%";
+    } else {
+      widthStr = width + "px";
+    }
+
+    return {
+      width: widthStr,
+      display: "flex",
+      justifyContent: "space-between",
+    };
+  };
+
   return (
     <MDBox sx={{ padding: "16px", overflowX: "auto" }}>
       {rows.length === 0 ? (
@@ -284,7 +309,7 @@ export default function DrivenTable(props) {
       ) : (
         <>
           <MDBox>
-            <MDBox display="flex" justifyContent={"space-between"}>
+            <MDBox sx={headWidthCss}>
               <MDBox display="flex" alignItems="center">
                 {usePaging && (
                   <>
@@ -382,8 +407,8 @@ export default function DrivenTable(props) {
               </MDBox>
             </MDBox>
           )}
-          <MDBox sx={{ overflowX: "auto" }}>
-            <Table>
+          <MDBox>
+            <Table sx={{ overflowX: "scroll" }}>
               <TableHead>
                 <TableRow style={tableRow}>
                   {columnsData.map((item, index) => (
@@ -489,30 +514,58 @@ export default function DrivenTable(props) {
                                 ))}
                               </NativeSelect>
                             )}
-                            {item.type === "switch" &&
-                              (row[item.name] === "true" ? (
-                                <Switch
-                                  checked={true}
-                                  onClick={(event) => {
-                                    item.switchFunction(
-                                      item.switchParam,
-                                      row.idx,
-                                      event.target.value
-                                    );
-                                  }}
-                                ></Switch>
-                              ) : (
-                                <Switch
-                                  checked={false}
-                                  onClick={(event) => {
-                                    item.switchFunction(
-                                      item.switchParam,
-                                      row.idx,
-                                      event.target.value
-                                    );
-                                  }}
-                                ></Switch>
-                              ))}
+                            {item.type === "switch" && (
+                              <>
+                                {row[item.name] === "true" && (
+                                  <Switch
+                                    checked={true}
+                                    onClick={(event) => {
+                                      item.switchFunction(
+                                        item.switchParam,
+                                        row.idx,
+                                        event.target.checked
+                                      );
+                                    }}
+                                  ></Switch>
+                                )}
+                                {row[item.name] === true && (
+                                  <Switch
+                                    checked={true}
+                                    onClick={(event) => {
+                                      item.switchFunction(
+                                        item.switchParam,
+                                        row.idx,
+                                        event.target.checked
+                                      );
+                                    }}
+                                  ></Switch>
+                                )}
+                                {row[item.name] === "false" && (
+                                  <Switch
+                                    checked={false}
+                                    onClick={(event) => {
+                                      item.switchFunction(
+                                        item.switchParam,
+                                        row.idx,
+                                        event.target.checked
+                                      );
+                                    }}
+                                  ></Switch>
+                                )}
+                                {row[item.name] === false && (
+                                  <Switch
+                                    checked={false}
+                                    onClick={(event) => {
+                                      item.switchFunction(
+                                        item.switchParam,
+                                        row.idx,
+                                        event.target.checked
+                                      );
+                                    }}
+                                  ></Switch>
+                                )}
+                              </>
+                            )}
                           </TableCell>
                         )
                     )}

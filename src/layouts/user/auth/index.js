@@ -11,15 +11,20 @@ import CategoriesList from "layouts/user/auth/components/CategoriesList";
 import Header from "layouts/user/auth/components/Header";
 import dataTableData from "layouts/user/auth/data/dataTableData";
 import { useEffect, useState } from "react";
-import { serverCommunicationUtil } from "../../../common/util/serverCommunicationUtil";
+import {
+  serverCommunicationUtil,
+  sessionChecker,
+} from "../../../common/util/serverCommunicationUtil";
 import MDTypography from "../../../components/MDTypography";
 import DashboardLayout from "../../common/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "../../common/Navbars/DashboardNavbar";
 import DrivenTable from "../../../components/DrivenTable";
 import MDButton from "../../../components/MDButton";
 import DrivenAlert from "../../../components/DrivenAlert";
+import { useNavigate } from "react-router-dom";
 
 function AuthMenagement() {
+  const [showPage, setShowPage] = useState(false);
   const [alertColor, setAlertColor] = useState("info");
   const [alertText, setAlertText] = useState("");
   const [useAlert, setUseAlert] = useState(false);
@@ -27,11 +32,12 @@ function AuthMenagement() {
   const [selectedCdbt, setSelectedCdbt] = useState("");
   const [rows, setRows] = useState([]);
   const [columns, setColumns] = useState([]);
+  const navigate = useNavigate();
 
   const maskingViewSwitch = (param, idx, switchValue) => {
     serverCommunicationUtil("main", "axioPost", "/userAuth/modifyUserAuth", {
       idx: idx,
-      usatCode: "AUTH_USAT_0000000004",
+      usatCode: "AUTH_USAT_0000000005",
       cdbtLowCode: param[0],
       value: switchValue,
     })
@@ -52,7 +58,7 @@ function AuthMenagement() {
   const totalViewSwitch = (param, idx, switchValue) => {
     serverCommunicationUtil("main", "axioPost", "/userAuth/modifyUserAuth", {
       idx: idx,
-      usatCode: "AUTH_USAT_0000000005",
+      usatCode: "AUTH_USAT_0000000004",
       cdbtLowCode: param[0],
       value: switchValue,
     })
@@ -204,6 +210,22 @@ function AuthMenagement() {
         console.log("");
       });
   }, [setCdbtList]);
+
+  useEffect(() => {
+    sessionChecker()
+      .then((checkerResult) => {
+        if (checkerResult === "success") {
+          setShowPage(true);
+        } else {
+          navigate("/login");
+        }
+      })
+      .catch((error) => navigate("/login"));
+  }, []);
+
+  if (!showPage) {
+    return null; // 혹은 로딩 스피너 등을 반환.
+  }
 
   return (
     <DashboardLayout>

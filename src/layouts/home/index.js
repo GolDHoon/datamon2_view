@@ -65,13 +65,15 @@ function Home() {
   };
 
   useEffect(() => {
-    sessionChecker().then((checkerResult) => {
-      if (checkerResult === "success") {
-        setShowPage(true);
-      } else {
-        navigate("/login");
-      }
-    });
+    sessionChecker()
+      .then((checkerResult) => {
+        if (checkerResult === "success") {
+          setShowPage(true);
+        } else {
+          navigate("/login");
+        }
+      })
+      .catch((error) => navigate("/login"));
     getStatistics();
   }, []);
 

@@ -49,6 +49,8 @@ function UserInfoListByMemeber() {
   });
   const { formId, formField } = form;
 
+  const navigate = useNavigate();
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleSubmit = (values, actions) => {};
@@ -104,7 +106,7 @@ function UserInfoListByMemeber() {
         var columnsData = [];
         for (var i = 0; i < result.keyList.length; i++) {
           var key = result.keyList[i];
-          columnsData.push({ name: key, width: "10%", type: "text" });
+          columnsData.push({ name: key, width: "17%", type: "text" });
         }
 
         setCoulumns(columnsData);
@@ -119,11 +121,15 @@ function UserInfoListByMemeber() {
   }, []);
 
   useEffect(() => {
-    sessionChecker().then((checkerResult) => {
-      if (checkerResult === "success") {
-        setShowPage(true);
-      }
-    });
+    sessionChecker()
+      .then((checkerResult) => {
+        if (checkerResult === "success") {
+          setShowPage(true);
+        } else {
+          navigate("/login");
+        }
+      })
+      .catch((error) => navigate("/login"));
   }, []);
 
   if (!showPage) {
