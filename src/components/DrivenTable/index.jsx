@@ -490,91 +490,98 @@ export default function DrivenTable(props) {
               <TableBody sx={{ display: "block", padding: "0px 16px 0px 16px" }}>
                 {displayRowsData.map((row, index) => (
                   <TableRow key={`table-row-${index}`} style={tableRow}>
-                    {columnsData.map(
-                      (item) =>
-                        row[item.name] && (
-                          <TableCell
-                            key={`table-cell-${row.idx}-${item.name}-${index}`}
-                            style={tableCellStyle(item.width)}
-                            sx={{ fontSize: "0.85rem", fontWeight: "500" }}
-                          >
-                            {item.type === "text" && row[item.name]}
-                            {item.type === "select" && (
-                              <NativeSelect
-                                value={row[item.name]}
-                                variant={"outlined"}
-                                onChange={(event) => {
-                                  item.selectFunction(
-                                    item.selectParam,
-                                    row.idx,
-                                    event.target.value
-                                  );
-                                }}
-                              >
-                                {item.selectList.map((select) => (
-                                  <option
-                                    value={select.value}
-                                    key={`table-cell-${row.idx}-${item.name}-${index}-${select.value}`}
-                                  >
-                                    {select.text}
-                                  </option>
-                                ))}
-                              </NativeSelect>
-                            )}
-                            {item.type === "switch" && (
-                              <>
-                                {row[item.name] === "true" && (
-                                  <Switch
-                                    checked={true}
-                                    onClick={(event) => {
-                                      item.switchFunction(
-                                        item.switchParam,
-                                        row.idx,
-                                        event.target.checked
-                                      );
-                                    }}
-                                  ></Switch>
-                                )}
-                                {row[item.name] === true && (
-                                  <Switch
-                                    checked={true}
-                                    onClick={(event) => {
-                                      item.switchFunction(
-                                        item.switchParam,
-                                        row.idx,
-                                        event.target.checked
-                                      );
-                                    }}
-                                  ></Switch>
-                                )}
-                                {row[item.name] === "false" && (
-                                  <Switch
-                                    checked={false}
-                                    onClick={(event) => {
-                                      item.switchFunction(
-                                        item.switchParam,
-                                        row.idx,
-                                        event.target.checked
-                                      );
-                                    }}
-                                  ></Switch>
-                                )}
-                                {row[item.name] === false && (
-                                  <Switch
-                                    checked={false}
-                                    onClick={(event) => {
-                                      item.switchFunction(
-                                        item.switchParam,
-                                        row.idx,
-                                        event.target.checked
-                                      );
-                                    }}
-                                  ></Switch>
-                                )}
-                              </>
-                            )}
-                          </TableCell>
-                        )
+                    {columnsData.map((item) =>
+                      row[item.name] ? (
+                        <TableCell
+                          key={`table-cell-${row.idx}-${item.name}-${index}`}
+                          style={tableCellStyle(item.width)}
+                          sx={{ fontSize: "0.85rem", fontWeight: "500" }}
+                        >
+                          {item.type === "text" && (
+                            <MDTypography variant="caption" fontWeight={"bold"}>
+                              {row[item.name]}
+                            </MDTypography>
+                          )}
+                          {item.type === "select" && (
+                            <NativeSelect
+                              value={row[item.name]}
+                              variant={"outlined"}
+                              onChange={(event) => {
+                                item.selectFunction(item.selectParam, row.idx, event.target.value);
+                              }}
+                            >
+                              {item.selectList.map((select) => (
+                                <option
+                                  value={select.value}
+                                  key={`table-cell-${row.idx}-${item.name}-${index}-${select.value}`}
+                                >
+                                  {select.text}
+                                </option>
+                              ))}
+                            </NativeSelect>
+                          )}
+                          {item.type === "switch" && (
+                            <>
+                              {row[item.name] === "true" && (
+                                <Switch
+                                  checked={true}
+                                  onClick={(event) => {
+                                    item.switchFunction(
+                                      item.switchParam,
+                                      row.idx,
+                                      event.target.checked
+                                    );
+                                  }}
+                                ></Switch>
+                              )}
+                              {row[item.name] === true && (
+                                <Switch
+                                  checked={true}
+                                  onClick={(event) => {
+                                    item.switchFunction(
+                                      item.switchParam,
+                                      row.idx,
+                                      event.target.checked
+                                    );
+                                  }}
+                                ></Switch>
+                              )}
+                              {row[item.name] === "false" && (
+                                <Switch
+                                  checked={false}
+                                  onClick={(event) => {
+                                    item.switchFunction(
+                                      item.switchParam,
+                                      row.idx,
+                                      event.target.checked
+                                    );
+                                  }}
+                                ></Switch>
+                              )}
+                              {row[item.name] === false && (
+                                <Switch
+                                  checked={false}
+                                  onClick={(event) => {
+                                    item.switchFunction(
+                                      item.switchParam,
+                                      row.idx,
+                                      event.target.checked
+                                    );
+                                  }}
+                                ></Switch>
+                              )}
+                            </>
+                          )}
+                        </TableCell>
+                      ) : (
+                        <TableCell
+                          key={`table-cell-${row.idx}-${item.name}-${index}`}
+                          style={tableCellStyle(item.width)}
+                          sx={{ fontSize: "0.85rem", fontWeight: "500" }}
+                        >
+                          <MDTypography variant="caption" fontWeight={"bold"}></MDTypography>
+                        </TableCell>
+                      )
                     )}
 
                     {useCustomCell
