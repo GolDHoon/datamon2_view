@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 // @mui material components
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "components/MDBox";
@@ -12,12 +10,8 @@ import MDButton from "components/MDButton";
 import MDTypography from "../../../components/MDTypography";
 
 // Material Dashboard 2 PRO React examples
-import Checkbox from "@mui/material/Checkbox";
-import Footer from "layouts/common/Footer";
 import DashboardLayout from "layouts/common/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "layouts/common/Navbars/DashboardNavbar";
-import DataTable from "layouts/customer/custList/DataTable";
-import dataTableData from "layouts/customer/custList/data/dataTableData";
 import { useNavigate } from "react-router-dom";
 import { getSessionStorage } from "../../../common/common";
 import {
@@ -38,12 +32,44 @@ function CustInfoList() {
 
   const navigate = useNavigate();
 
-  const useYnSwitch = (switchParam, rowIdx, switchValue) => {
-    console.log("테스트");
+  const useYnSwitch = (switchParam, idx, switchValue) => {
+    serverCommunicationUtil("main", "axioPost", "/custInfo/unUseCustInfo", {
+      idx: idx,
+      value: switchValue,
+    })
+      .then((result) => {
+        setAlertColor("success");
+        setAlertText("허수여부설정이 완료되었습니다.");
+        setUseAlert(true);
+        setTimeout(() => {
+          setUseAlert(false);
+        }, 1500);
+
+        getList();
+      })
+      .catch((error) => {
+        console.log("");
+      });
   };
 
-  const delYnSwitch = (switchParam, rowIdx, switchValue) => {
-    console.log("테스트");
+  const delYnSwitch = (switchParam, idx, switchValue) => {
+    serverCommunicationUtil("main", "axioPost", "/custInfo/deleteCustInfo", {
+      idx: idx,
+      value: switchValue,
+    })
+      .then((result) => {
+        setAlertColor("success");
+        setAlertText("삭제가 완료되었습니다.");
+        setUseAlert(true);
+        setTimeout(() => {
+          setUseAlert(false);
+        }, 1500);
+
+        getList();
+      })
+      .catch((error) => {
+        console.log("");
+      });
   };
 
   useEffect(() => {
@@ -199,6 +225,7 @@ function CustInfoList() {
                 useSearch={true}
                 useSort={true}
                 usePaging={true}
+                entries={["10", "25", "50", "100", "200"]}
               />
             </Card>
           </MDBox>

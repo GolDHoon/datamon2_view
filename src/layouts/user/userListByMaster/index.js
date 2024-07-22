@@ -13,80 +13,30 @@ import MDButton from "components/MDButton";
 import Footer from "layouts/common/Footer";
 import DashboardLayout from "layouts/common/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "layouts/common/Navbars/DashboardNavbar";
-import DataTable from "layouts/user/userListByMaster/DataTable";
-import dataTableData from "layouts/user/userListByMaster/data/dataTableData";
 import {
   serverCommunicationUtil,
   sessionChecker,
 } from "../../../common/util/serverCommunicationUtil";
 import MDTypography from "../../../components/MDTypography";
 
-import { Modal } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import { Form, Formik } from "formik";
-
-import UserInfo from "./components/UserInfo";
-
-import form from "./schemas/form";
-import initialValues from "./schemas/initialValues";
-import validations from "./schemas/validations";
 import DrivenTable from "../../../components/DrivenTable";
-import MDAlert from "../../../components/MDAlert";
 import DrivenAlert from "../../../components/DrivenAlert";
 import { useNavigate } from "react-router-dom";
+import Modal from "./components/Modal";
 
 function UserInfoListByMaster() {
   const [alertColor, setAlertColor] = useState("info");
   const [alertText, setAlertText] = useState("");
   const [useAlert, setUseAlert] = useState(false);
   const [rows, setRows] = useState([]);
-  // const [keyList, setKeyList] = useState([]);
   const [columns, setColumns] = useState([]);
   const [showPage, setShowPage] = useState(false);
   const [open, setOpen] = useState(false);
-  const [valueMap, setValueMap] = useState({
-    idValue: "",
-    pwValue: "",
-    companyValue: "",
-    corporateNumberValue: "",
-    nameValue: "",
-    addressValue: "",
-    itemValue: "",
-    statusValue: "",
-    emailValue: "",
-  });
-  const { formId, formField } = form;
+
   const navigate = useNavigate();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const handleSubmit = (values, actions) => {};
-  const saveHandler = () => {
-    serverCommunicationUtil("main", "axioPost", "/user/createCompanyUser", {
-      userId: valueMap.idValue,
-      pw: valueMap.pwValue,
-      name: valueMap.companyValue,
-      ceo: valueMap.nameValue,
-      corporateNumber: valueMap.corporateNumberValue,
-      corporateAddress: valueMap.addressValue,
-      corporateMail: valueMap.emailValue,
-      businessStatus: valueMap.statusValue,
-      businessItem: valueMap.itemValue,
-    })
-      .then((result) => {
-        getList();
-        handleClose();
-        setAlertColor("success");
-        setAlertText("생성이 완료되었습니다.");
-        setUseAlert(true);
-        setTimeout(() => {
-          setUseAlert(false);
-        }, 1500);
-      })
-      .catch((error) => {
-        console.log("Error occurred while fetching the user list: ", error);
-      });
-  };
 
   const deleteHandler = (idx) => {
     serverCommunicationUtil("main", "axioPost", "/user/deleteCompanyUser", {
@@ -204,55 +154,19 @@ function UserInfoListByMaster() {
             useSearch={true}
             useSort={true}
             usePaging={true}
+            entries={["10", "25", "50", "100"]}
           />
-          {/*<DataTable table={dataTableData(rows, keyList)} entriesPerPage={true} canSearch />*/}
         </Card>
       </MDBox>
       <Footer />
-      <div style={{ margin: "25%" }}>
-        <Modal
-          open={open}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Card sx={style} id="popup">
-            <Grid container justifyContent="center" alignItems="center">
-              <Grid width="100%">
-                <Formik
-                  initialValues={initialValues}
-                  validationSchema={validations[0]}
-                  onSubmit={handleSubmit}
-                >
-                  {({ values, errors, touched, isSubmitting }) => (
-                    <Form id={formId} autoComplete="off">
-                      <MDBox>
-                        <UserInfo
-                          formData={{ values, touched, formField, errors }}
-                          valueMap={valueMap}
-                          setValueMap={setValueMap}
-                        />
-                        <MDBox mt={2} width="100%" display="flex" justifyContent="flex-end">
-                          <MDButton
-                            variant="gradient"
-                            color="info"
-                            style={{ margin: "0 2% 0 0" }}
-                            onClick={saveHandler}
-                          >
-                            완료
-                          </MDButton>
-                          <MDButton color="dark" onClick={handleClose}>
-                            취소
-                          </MDButton>
-                        </MDBox>
-                      </MDBox>
-                    </Form>
-                  )}
-                </Formik>
-              </Grid>
-            </Grid>
-          </Card>
-        </Modal>
-      </div>
+      <Modal
+        open={open}
+        handleClose={handleClose}
+        setAlertColor={setAlertColor}
+        setAlertText={setAlertText}
+        setUseAlert={setUseAlert}
+        getList={getList}
+      />
     </DashboardLayout>
   );
 }

@@ -12,7 +12,6 @@ const AlertContent = ({ alertColor, alertText }) => (
     <MDAlert
       color={alertColor}
       dismissible={false}
-      fullWidth
       style={{
         top: "5px",
         position: "absolute",

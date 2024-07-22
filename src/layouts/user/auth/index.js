@@ -6,10 +6,8 @@ import MDBox from "components/MDBox";
 
 // Settings page components
 import Card from "@mui/material/Card";
-import DataTable from "layouts/user/auth/DataTable/index";
 import CategoriesList from "layouts/user/auth/components/CategoriesList";
 import Header from "layouts/user/auth/components/Header";
-import dataTableData from "layouts/user/auth/data/dataTableData";
 import { useEffect, useState } from "react";
 import {
   serverCommunicationUtil,
@@ -22,6 +20,7 @@ import DrivenTable from "../../../components/DrivenTable";
 import MDButton from "../../../components/MDButton";
 import DrivenAlert from "../../../components/DrivenAlert";
 import { useNavigate } from "react-router-dom";
+import Tooltip from "@mui/material/Tooltip";
 
 function AuthMenagement() {
   const [showPage, setShowPage] = useState(false);
@@ -115,12 +114,35 @@ function AuthMenagement() {
       });
   };
 
-  const customCellContents = (param, idx) => {
+  const customCellContents = (param1, param2, idx) => {
+    var allowYn;
+
+    if (param2 === "true") {
+      allowYn = true;
+    } else {
+      allowYn = false;
+    }
+
     return (
       <MDBox display="flex" justifyContent={"space-evenly"}>
-        <MDButton variant="outlined" color="dark" onClick={(evnet) => outHandler(param, idx)}>
-          내보내기
-        </MDButton>
+        {allowYn ? (
+          <MDButton variant="outlined" color="dark" onClick={(evnet) => outHandler(param1, idx)}>
+            내보내기
+          </MDButton>
+        ) : (
+          <Tooltip title={"해당 유저에 대한 권한이 없습니다."}>
+            <span>
+              <MDButton
+                variant="outlined"
+                color="dark"
+                disabled={true}
+                onClick={(evnet) => outHandler(param1, idx)}
+              >
+                내보내기
+              </MDButton>
+            </span>
+          </Tooltip>
+        )}
       </MDBox>
     );
   };
@@ -132,6 +154,8 @@ function AuthMenagement() {
     })
       .then((result) => {
         setRows(result.rows);
+
+        // debugger;
 
         var columnsData = [];
         for (var i = 0; i < result.keyList.length; i++) {

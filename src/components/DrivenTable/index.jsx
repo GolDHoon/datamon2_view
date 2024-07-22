@@ -30,7 +30,7 @@ const tableRow = {
   display: "flex",
   // justifyContent: "space-around",
   // width: "100%",
-  borderBottom: "1px solid rgba(224,224,224,1)",
+  borderBottom: "1px solid rgb(224,224,224,1)",
 };
 
 export default function DrivenTable(props) {
@@ -574,13 +574,15 @@ export default function DrivenTable(props) {
                           )}
                         </TableCell>
                       ) : (
-                        <TableCell
-                          key={`table-cell-${row.idx}-${item.name}-${index}`}
-                          style={tableCellStyle(item.width)}
-                          sx={{ fontSize: "0.85rem", fontWeight: "500" }}
-                        >
-                          <MDTypography variant="caption" fontWeight={"bold"}></MDTypography>
-                        </TableCell>
+                        item.type !== "customCell" && (
+                          <TableCell
+                            key={`table-cell-${row.idx}-${item.name}-${index}`}
+                            style={tableCellStyle(item.width)}
+                            sx={{ fontSize: "0.85rem", fontWeight: "500" }}
+                          >
+                            <MDTypography variant="caption" fontWeight={"bold"}></MDTypography>
+                          </TableCell>
+                        )
                       )
                     )}
 
@@ -593,7 +595,11 @@ export default function DrivenTable(props) {
                                 style={tableCellStyle(item.width)}
                                 sx={{ fontSize: "0.85rem", fontWeight: "500" }}
                               >
-                                {item.customCellContent(item.customCellParam, row.idx)}
+                                {item.customCellContent(
+                                  item.customCellParam,
+                                  row.customCellParam,
+                                  row.idx
+                                )}
                               </TableCell>
                             )
                         )
@@ -668,16 +674,18 @@ export default function DrivenTable(props) {
                   )}
                   {pagination && (
                     <MDPagination>
-                      {pagination.map((page) => (
-                        <MDPagination
-                          item
-                          key={page}
-                          onClick={() => setSelectedPage(page)}
-                          active={selectedPage === page}
-                        >
-                          {page}
-                        </MDPagination>
-                      ))}
+                      {pagination
+                        .slice(Math.max(0, selectedPage - 3), selectedPage + 2)
+                        .map((page) => (
+                          <MDPagination
+                            item
+                            key={page}
+                            onClick={() => setSelectedPage(page)}
+                            active={selectedPage === page}
+                          >
+                            {page}
+                          </MDPagination>
+                        ))}
                     </MDPagination>
                   )}
                   {selectedPage < pagination.length && (

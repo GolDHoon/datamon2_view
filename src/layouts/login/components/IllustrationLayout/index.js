@@ -30,7 +30,7 @@ import PageLayout from "layouts/common/LayoutContainers/PageLayout";
 import { useMaterialUIController } from "context";
 import logo from "../../../../assets/images/login_logo.png";
 
-function IllustrationLayout({ header, title, description, illustration, children }) {
+function IllustrationLayout({ header, title, description, companyName, illustration, children }) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
@@ -78,6 +78,11 @@ function IllustrationLayout({ header, title, description, illustration, children
             <MDBox py={3} px={3} textAlign="center">
               {!header ? (
                 <>
+                  <MDBox mb={3} textAlign="center">
+                    <MDTypography variant="h2" fontWeight="bold">
+                      {companyName}
+                    </MDTypography>
+                  </MDBox>
                   <MDBox mb={1} textAlign="center">
                     <MDTypography variant="h4" fontWeight="bold">
                       {title}
@@ -103,6 +108,7 @@ function IllustrationLayout({ header, title, description, illustration, children
 IllustrationLayout.defaultProps = {
   header: "",
   title: "",
+  companyName: "",
   description: "",
   illustration: "",
 };
@@ -112,6 +118,7 @@ IllustrationLayout.propTypes = {
   header: PropTypes.node,
   title: PropTypes.string,
   description: PropTypes.string,
+  companyName: PropTypes.string,
   children: PropTypes.node.isRequired,
   illustration: PropTypes.string,
 };

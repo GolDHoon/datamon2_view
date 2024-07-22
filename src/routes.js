@@ -41,7 +41,7 @@ const routes = [
     name: "login",
     key: "login",
     icon: <Icon fontSize="medium">content_paste</Icon>,
-    route: "/login",
+    route: ":companyId/login",
     component: <Login />,
     auth: [
       getConst("MAST"),

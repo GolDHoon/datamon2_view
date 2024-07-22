@@ -11,27 +11,13 @@ import MDTypography from "components/MDTypography";
 import DashboardLayout from "layouts/common/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "layouts/common/Navbars/DashboardNavbar";
 import Footer from "layouts/common/Footer";
-import ReportsBarChart from "layouts/common/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "layouts/common/Charts/LineCharts/ReportsLineChart";
-import ComplexStatisticsCard from "layouts/common/Cards/StatisticsCards/ComplexStatisticsCard";
-import BookingCard from "layouts/common/Cards/BookingCard";
-
-// Anaytics dashboard components
-import SalesByCountry from "layouts/home/components/SalesByCountry";
-
-// Data
-import reportsBarChartData from "layouts/home/data/reportsBarChartData";
-import reportsLineChartData from "layouts/home/data/reportsLineChartData";
-
-// Images
-import booking1 from "assets/images/products/product-1-min.jpg";
-import booking2 from "assets/images/products/product-2-min.jpg";
-import booking3 from "assets/images/products/product-3-min.jpg";
 
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { serverCommunicationUtil, sessionChecker } from "../../common/util/serverCommunicationUtil";
 import { useNavigate } from "react-router-dom";
+import { getSessionStorage } from "../../common/common";
 
 function Home() {
   const [showPage, setShowPage] = useState(false);
@@ -70,10 +56,10 @@ function Home() {
         if (checkerResult === "success") {
           setShowPage(true);
         } else {
-          navigate("/login");
+          navigate("/" + getSessionStorage("companyId") + "/login");
         }
       })
-      .catch((error) => navigate("/login"));
+      .catch((error) => navigate("/" + getSessionStorage("companyId") + "/login"));
     getStatistics();
   }, []);
 
