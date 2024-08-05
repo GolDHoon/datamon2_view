@@ -15,6 +15,7 @@ import AuthMenagement from "./layouts/user/auth";
 import UserInfoListByMaster from "./layouts/user/userListByMaster";
 import UserInfoListByMemeber from "./layouts/user/userListByMember";
 import MyPage from "./layouts/myPage";
+import OutBoundDistribution from "./layouts/outbound/distribution";
 
 const routes = [
   {
@@ -191,7 +192,7 @@ const routes = [
     name: "랜딩페이지 관리",
     key: "landingPageList",
     icon: <Icon fontSize="medium">newspaper</Icon>,
-    route: "/cust-db/landing-page/list",
+    route: "/cust-db/landing-page",
     component: <LandingPageManagement />,
     noCollapse: true,
     auth: [
@@ -202,6 +203,36 @@ const routes = [
       getConst("ADAC"),
       getConst("CLME"),
       getConst("AAME"),
+      getConst("CRAC"),
+      getConst("CAME"),
+    ],
+  },
+  {
+    type: "title",
+    title: "Call 관리",
+    key: "title-Call 정보",
+    auth: [
+      getConst("MAST"),
+      getConst("DEVL"),
+      getConst("CLNT"),
+      getConst("CLME"),
+      getConst("CRAC"),
+      getConst("CAME"),
+    ],
+  },
+  {
+    type: "collapse",
+    name: "outbound 분배",
+    key: "outboundDistribution",
+    icon: <Icon fontSize="medium">share</Icon>,
+    route: "/call/outbound/distribution",
+    component: <OutBoundDistribution />,
+    noCollapse: true,
+    auth: [
+      getConst("MAST"),
+      getConst("DEVL"),
+      getConst("CLNT"),
+      getConst("CLME"),
       getConst("CRAC"),
       getConst("CAME"),
     ],

@@ -178,10 +178,10 @@ function CustInfoList() {
           setShowPage(true);
           getList();
         } else {
-          navigate("/login");
+          navigate("/" + getSessionStorage("companyId") + "/login");
         }
       })
-      .catch((error) => navigate("/login"));
+      .catch((error) => navigate("/" + getSessionStorage("companyId") + "/login"));
   }, []);
 
   if (!showPage) {

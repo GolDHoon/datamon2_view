@@ -21,6 +21,7 @@ import MDTypography from "../../../components/MDTypography";
 import DrivenTable from "../../../components/DrivenTable";
 import DrivenAlert from "../../../components/DrivenAlert";
 import Modal from "./components/Modal";
+import { getSessionStorage } from "../../../common/common";
 
 function UserInfoListByMemeber() {
   const [alertColor, setAlertColor] = useState("info");
@@ -85,10 +86,10 @@ function UserInfoListByMemeber() {
         if (checkerResult === "success") {
           setShowPage(true);
         } else {
-          navigate("/login");
+          navigate("/" + getSessionStorage("companyId") + "/login");
         }
       })
-      .catch((error) => navigate("/login"));
+      .catch((error) => navigate("/" + getSessionStorage("companyId") + "/login"));
   }, []);
 
   if (!showPage) {

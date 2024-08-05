@@ -177,7 +177,7 @@ export default function DrivenTable(props) {
     setRowsData(newRowsData);
   };
 
-  const handleSortOrderDelet = (itemName) => {
+  const handleSortOrderDelete = (itemName) => {
     var newSortOrder = [...sortOrder];
 
     for (var i = 0; i < newSortOrder.length; i++) {
@@ -266,7 +266,7 @@ export default function DrivenTable(props) {
           badgeContent={`정렬순서 : ${sortIndex}`}
           sx={{ marginRight: "5px", display: "point", cursor: "pointer", userSelect: "none" }}
           onClick={() => {
-            handleSortOrderDelet(itemName);
+            handleSortOrderDelete(itemName);
           }}
           container
           // color="primary"
@@ -358,17 +358,20 @@ export default function DrivenTable(props) {
                       keepMounted
                     >
                       <MDBox>
-                        {columnsData.map((column) => (
-                          <MenuItem
-                            key={column.name}
-                            onClick={() => {
-                              setSelectSearch(column.name);
-                              closeMenu();
-                            }}
-                          >
-                            {column.name}
-                          </MenuItem>
-                        ))}
+                        {columnsData.map(
+                          (column) =>
+                            column.type !== "customCell" && (
+                              <MenuItem
+                                key={column.name}
+                                onClick={() => {
+                                  setSelectSearch(column.name);
+                                  closeMenu();
+                                }}
+                              >
+                                {column.name}
+                              </MenuItem>
+                            )
+                        )}
                       </MDBox>
                     </Menu>
                     <MDInput

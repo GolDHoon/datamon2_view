@@ -23,6 +23,7 @@ import DrivenTable from "../../../components/DrivenTable";
 import DrivenAlert from "../../../components/DrivenAlert";
 import { useNavigate } from "react-router-dom";
 import Modal from "./components/Modal";
+import { getSessionStorage } from "../../../common/common";
 
 function UserInfoListByMaster() {
   const [alertColor, setAlertColor] = useState("info");
@@ -86,20 +87,10 @@ function UserInfoListByMaster() {
         if (checkerResult === "success") {
           setShowPage(true);
         } else {
-          navigate("/login");
+          navigate("/" + getSessionStorage("companyId") + "/login");
         }
       })
-      .catch((error) => navigate("/login"));
-  }, []);
-
-  useEffect(() => {
-    sessionChecker().then((checkerResult) => {
-      if (checkerResult === "success") {
-        setShowPage(true);
-      } else {
-        navigate("/login");
-      }
-    });
+      .catch((error) => navigate("/" + getSessionStorage("companyId") + "/login"));
   }, []);
 
   if (!showPage) {

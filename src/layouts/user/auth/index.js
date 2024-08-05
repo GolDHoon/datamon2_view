@@ -21,6 +21,7 @@ import MDButton from "../../../components/MDButton";
 import DrivenAlert from "../../../components/DrivenAlert";
 import { useNavigate } from "react-router-dom";
 import Tooltip from "@mui/material/Tooltip";
+import { getSessionStorage } from "../../../common/common";
 
 function AuthMenagement() {
   const [showPage, setShowPage] = useState(false);
@@ -241,10 +242,10 @@ function AuthMenagement() {
         if (checkerResult === "success") {
           setShowPage(true);
         } else {
-          navigate("/login");
+          navigate("/" + getSessionStorage("companyId") + "/login");
         }
       })
-      .catch((error) => navigate("/login"));
+      .catch((error) => navigate("/" + getSessionStorage("companyId") + "/login"));
   }, []);
 
   if (!showPage) {

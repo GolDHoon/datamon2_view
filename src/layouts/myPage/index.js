@@ -11,6 +11,8 @@ import MDButton from "../../components/MDButton";
 import MDInput from "../../components/MDInput";
 import Grid from "@mui/material/Grid";
 import DrivenAlert from "../../components/DrivenAlert";
+import { getSessionStorage } from "../../common/common";
+import { useNavigate } from "react-router-dom";
 
 function MyPage() {
   const [showPage, setShowPage] = useState(false);
@@ -34,6 +36,7 @@ function MyPage() {
   const [alertColor, setAlertColor] = useState("info");
   const [alertText, setAlertText] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const passwordSetHandle = () => {
     serverCommunicationUtil("main", "axioPost", "/myPage/setPassword", {
@@ -83,12 +86,15 @@ function MyPage() {
   };
 
   useEffect(() => {
-    sessionChecker().then((checkerResult) => {
-      if (checkerResult === "success") {
-        setShowPage(true);
-      }
-    });
-    getValue();
+    sessionChecker()
+      .then((checkerResult) => {
+        if (checkerResult === "success") {
+          setShowPage(true);
+        } else {
+          navigate("/" + getSessionStorage("companyId") + "/login");
+        }
+      })
+      .catch((error) => navigate("/" + getSessionStorage("companyId") + "/login"));
   }, []);
 
   if (!showPage) {

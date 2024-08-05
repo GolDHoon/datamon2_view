@@ -10,7 +10,7 @@ export default function DrivenInput(props) {
 
   return (
     <MDBox sx={{ width: "100%" }}>
-      {type !== "select" && (
+      {type !== "select" && type !== "multiline" && (
         <>
           <MDInput
             fullWidth
@@ -19,6 +19,26 @@ export default function DrivenInput(props) {
             {...(variant && { variant })}
             {...(valiBool !== undefined && { error: !valiBool, success: valiBool })}
             {...(size && { size })}
+            {...(onChange && {
+              onChange: (event) => {
+                onChange(event);
+              },
+            })}
+          />
+          {errorMessage && !valiBool && (
+            <MDTypography variant="caption" color={valiBool ? "success" : "error"}>
+              {errorMessage}
+            </MDTypography>
+          )}
+        </>
+      )}
+      {type === "multiline" && (
+        <>
+          <MDInput
+            fullWidth
+            multiline
+            {...(label && { label })}
+            {...(valiBool !== undefined && { error: !valiBool, success: valiBool })}
             {...(onChange && {
               onChange: (event) => {
                 onChange(event);

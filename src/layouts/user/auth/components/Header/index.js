@@ -3,22 +3,18 @@ import { useState } from "react";
 // @mui material components
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import Switch from "@mui/material/Switch";
 
 // Material Dashboard 2 PRO React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDAvatar from "components/MDAvatar";
 
 // Images
-import burceMars from "assets/images/bruce-mars.jpg";
 import MDButton from "../../../../../components/MDButton";
 import Icon from "@mui/material/Icon";
 import { Modal } from "@mui/material";
 import MemberInvite from "../MemberInvite";
 import { serverCommunicationUtil } from "../../../../../common/util/serverCommunicationUtil";
 import PropTypes from "prop-types";
-import IdxCell from "../../../../landingPage/manage/components/IdxCell";
 import DrivenAlert from "../../../../../components/DrivenAlert";
 
 function Header({ selectedCdbt, reLoadHandler }) {
