@@ -13,23 +13,45 @@ import MDTypography from "../../../components/MDTypography";
 import Card from "@mui/material/Card";
 import CategoriesList from "./components/CustDBList";
 import EmployeeList from "./components/EmployeeList";
+import CustsList from "./components/CustList";
+import MDButton from "../../../components/MDButton";
+import Icon from "@mui/material/Icon";
+import CustClickModal from "./components/CustClickModal";
+import CustSelectModal from "./components/CustSelectModal";
 
 function OutBoundDistribution() {
   const [alertColor, setAlertColor] = useState("info");
   const [alertText, setAlertText] = useState("");
   const [useAlert, setUseAlert] = useState(false);
   const [showPage, setShowPage] = useState(false);
+  const [custClickModalOpen, setCustClickModalOpen] = useState(false);
+  const [custSelectModalOpen, setCustSelectModalOpen] = useState(false);
 
   const [custDbList, setCustDbList] = useState([]);
   const [selectCode, setSelectCode] = useState();
-  const [custList, setCustList] = useState([]);
+  const [custList, setCustList] = useState({});
   const [employeeList, setEmployeeList] = useState([]);
+  const [selectCustIdx, setSelectCustIdx] = useState();
+  const [selectCustIdxs, setSelectCustIdxs] = useState([]);
 
   const navigate = useNavigate();
+
+  const handleCustClickModalOpen = () => setCustClickModalOpen(true);
+  const handleCustClickModalClose = () => {
+    setCustClickModalOpen(false);
+    setSelectCustIdx(null);
+  };
+  const handleCustSelectModalOpen = () => setCustSelectModalOpen(true);
+  const handleCustSelectModalClose = () => {
+    setCustSelectModalOpen(false);
+    setSelectCustIdx(null);
+    setSelectCustIdxs([]);
+  };
 
   const getCustDbList = () => {
     serverCommunicationUtil("main", "axioGet", "/call/custDbList", {})
       .then((result) => {
+        setSelectCode(null);
         var tempCustDbList = [];
 
         for (var i = 0; i < result.length; i++) {
@@ -49,15 +71,52 @@ function OutBoundDistribution() {
       });
   };
 
-  const getCustList = () => {
+  const getCustList = (code) => {
     serverCommunicationUtil("main", "axioPost", "/call/custList", {
-      cdbtCode: selectCode,
+      cdbtCode: code,
     })
       .then((result) => {
-        console.log(result);
+        setSelectCode(code);
+        if (result.length != 0) {
+          let columnList = [];
+          let custInfoList = [];
+          result[0].detail.forEach((detail) => {
+            columnList.push({ value: detail.key, sort: detail.displayOrdering });
+          });
+
+          result.forEach((data) => {
+            let custInfo = {};
+            data.detail.forEach((detail) => {
+              custInfo[detail.key] = detail.value;
+            });
+            custInfo["idx"] = data.idx;
+            custInfoList.push(custInfo);
+          });
+
+          columnList.sort((a, b) => {
+            return a.sort - b.sort;
+          });
+
+          setCustList({
+            columnList: columnList,
+            custInfo: custInfoList,
+          });
+        } else {
+          setCustList({
+            columnList: [],
+            custInfo: [],
+          });
+
+          throw DOMException("not pound");
+        }
       })
       .catch((error) => {
-        console.log("");
+        setAlertColor("error");
+        setAlertText("데이터가 없습니다.");
+        setUseAlert(true);
+        setTimeout(() => {
+          setUseAlert(false);
+        }, 1500);
       });
   };
 
@@ -72,7 +131,13 @@ function OutBoundDistribution() {
           tempEmployee.name = result[i].name;
           tempEmployee.role = result[i].role;
           tempEmployee.useYn = result[i].useYn;
-          tempEmployee.assignedCustomer = [];
+          tempEmployee.assignedCustomer = result[i].outboundList;
+
+          tempEmployee.assignedCustomer.forEach((data) => {
+            data.setting.sort((a, b) => {
+              return a.displayOrderingNumber - b.displayOrderingNumber;
+            });
+          });
 
           tempEmployeeList.push(tempEmployee);
         }
@@ -83,9 +148,7 @@ function OutBoundDistribution() {
       });
   };
 
-  useEffect(() => {
-    getCustList();
-  }, [selectCode]);
+  useEffect(() => {}, [custList]);
 
   useEffect(() => {
     getCustDbList();
@@ -108,6 +171,15 @@ function OutBoundDistribution() {
     return null; // 혹은 로딩 스피너 등을 반환.
   }
 
+  const selectSaveHandle = () => {
+    handleCustSelectModalOpen();
+  };
+
+  const custClickModalOpenHandle = (idx) => {
+    setSelectCustIdx(idx);
+    handleCustClickModalOpen();
+  };
+
   return (
     <DashboardLayout>
       {useAlert && <DrivenAlert alertColor={alertColor} alertText={alertText} />}
@@ -122,31 +194,76 @@ function OutBoundDistribution() {
               수집된 고객 DB에서 각 직원들에게 OutBound를 분배
             </MDTypography>
           </MDBox>
+          <MDBox display="block" style={{ textAlign: "center" }} p={2}>
+            <MDButton
+              variant="gradient"
+              color="info"
+              style={{ whiteSpace: "nowrap", marginTop: "20%" }}
+              size="large"
+              disabled={selectCustIdxs.length === 0}
+              onClick={() => selectSaveHandle()}
+            >
+              <Icon>add</Icon>
+              &nbsp;선택저장
+            </MDButton>
+          </MDBox>
         </MDBox>
         <MDBox display="flex" justifyContent="space-between">
           <MDBox sx={{ width: "100%" }}>
             <CategoriesList
               custDBs={custDbList}
               title="고객 DB 목록"
-              clickFunction={setSelectCode}
+              getListFunction={getCustList}
             />
           </MDBox>
-          <Card sx={{ width: "100%", marginX: "1%" }}>
-            {selectCode ? (
-              <MDTypography variant="body2" color="text" fontWeight="regular">
-                고객 DB를 선택해 주세요
-              </MDTypography>
+          <MDBox sx={{ width: "100%", marginX: "1%" }}>
+            {custList?.custInfo?.length > 0 ? (
+              <CustsList
+                custs={custList}
+                title={"고객 목록"}
+                rowClickFunction={custClickModalOpenHandle}
+                selectCustIdxs={selectCustIdxs}
+                setSelectCustIdxs={setSelectCustIdxs}
+              />
             ) : (
-              <MDTypography variant="body2" color="text" fontWeight="regular">
-                고객 DB를 선택해 주세요
-              </MDTypography>
+              <Card sx={{ width: "100%", marginX: "1%" }}>
+                <MDTypography variant="body2" color="text" fontWeight="regular">
+                  고객 DB를 선택해 주세요
+                </MDTypography>
+              </Card>
             )}
-          </Card>
+          </MDBox>
           <MDBox sx={{ width: "100%" }}>
             <EmployeeList title={"직원 목록"} employees={employeeList} />
           </MDBox>
         </MDBox>
       </MDBox>
+      {custClickModalOpen && (
+        <CustClickModal
+          open={custClickModalOpen}
+          handleClose={handleCustClickModalClose}
+          setAlertColor={setAlertColor}
+          setAlertText={setAlertText}
+          setUseAlert={setUseAlert}
+          selectCustIdx={selectCustIdx}
+          employeeList={employeeList}
+          getList={getCustDbList}
+          getList2={getEmployeeList}
+        />
+      )}
+      {custSelectModalOpen && (
+        <CustSelectModal
+          open={custSelectModalOpen}
+          handleClose={handleCustSelectModalClose}
+          setAlertColor={setAlertColor}
+          setAlertText={setAlertText}
+          setUseAlert={setUseAlert}
+          selectCustIdxs={selectCustIdxs}
+          employeeList={employeeList}
+          getList={getCustDbList}
+          getList2={getEmployeeList}
+        />
+      )}
     </DashboardLayout>
   );
 }

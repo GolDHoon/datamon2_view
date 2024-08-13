@@ -39,6 +39,7 @@ function LandingPageManagement() {
   const [blockKeywordModalOpen, setBlockKeywordModalOpen] = useState(false);
   const [detailSettingsModalOpen, setDetailSettingsModalOpen] = useState();
   const [selectCode, setSelectCode] = useState();
+
   const navigate = useNavigate();
 
   const handleCreatModalOpen = () => setCreatModalOpen(true);

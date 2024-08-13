@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 PRO React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-pro-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 // react-router-dom components
 import { Link } from "react-router-dom";
 
@@ -27,7 +12,7 @@ import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
-function CustDBList({ title, custDBs, clickFunction }) {
+function CustDBList({ title, custDBs, getListFunction }) {
   const renderItems = custDBs.map(({ color, icon, name, code }, key) => (
     <MDBox
       key={name}
@@ -36,7 +21,9 @@ function CustDBList({ title, custDBs, clickFunction }) {
       justifyContent="space-between"
       alignItems="center"
       borderRadius="lg"
-      onClick={() => clickFunction(code)}
+      onClick={() => {
+        getListFunction(code);
+      }}
       sx={{ cursor: "pointer" }}
       py={1}
       pr={2}
@@ -101,7 +88,14 @@ function CustDBList({ title, custDBs, clickFunction }) {
         </MDTypography>
       </MDBox>
       <MDBox p={2}>
-        <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+        <MDBox
+          component="ul"
+          display="flex"
+          flexDirection="column"
+          p={0}
+          m={0}
+          sx={{ maxHeight: "316px", overflowY: "auto" }}
+        >
           {renderItems}
         </MDBox>
       </MDBox>
@@ -113,7 +107,7 @@ function CustDBList({ title, custDBs, clickFunction }) {
 CustDBList.propTypes = {
   title: PropTypes.string.isRequired,
   custDBs: PropTypes.arrayOf(PropTypes.object).isRequired,
-  clickFunction: PropTypes.func,
+  getListFunction: PropTypes.func,
 };
 
 export default CustDBList;

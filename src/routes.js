@@ -16,6 +16,7 @@ import UserInfoListByMaster from "./layouts/user/userListByMaster";
 import UserInfoListByMemeber from "./layouts/user/userListByMember";
 import MyPage from "./layouts/myPage";
 import OutBoundDistribution from "./layouts/outbound/distribution";
+import OutboundList from "./layouts/outbound/list";
 
 const routes = [
   {
@@ -227,6 +228,16 @@ const routes = [
     icon: <Icon fontSize="medium">share</Icon>,
     route: "/call/outbound/distribution",
     component: <OutBoundDistribution />,
+    noCollapse: true,
+    auth: [getConst("MAST"), getConst("DEVL"), getConst("CLNT"), getConst("CRAC")],
+  },
+  {
+    type: "collapse",
+    name: "outbound 목록",
+    key: "outboundList",
+    icon: <Icon fontSize="medium">call</Icon>,
+    route: "/call/outbound/List",
+    component: <OutboundList />,
     noCollapse: true,
     auth: [
       getConst("MAST"),

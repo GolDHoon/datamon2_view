@@ -121,7 +121,7 @@ function CustInfoList() {
     const link = document.createElement("a");
     link.href = url;
     link.style.visibility = "hidden";
-    link.download = "Export.csv";
+    link.download = "고객정보목록.csv";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -139,6 +139,10 @@ function CustInfoList() {
           var key = result.keyList[i];
           columnsData.push({ name: key, width: "150px", type: "text" });
         }
+        columnsData.push({ name: "품질", width: "150px", type: "text" });
+        columnsData.push({ name: "품질변경사유", width: "150px", type: "text" });
+        columnsData.push({ name: "상태", width: "150px", type: "text" });
+        columnsData.push({ name: "상태변경사유", width: "150px", type: "text" });
         columnsData.push({ name: "sourse", width: "150px", type: "text" });
         columnsData.push({ name: "medium", width: "150px", type: "text" });
         columnsData.push({ name: "campaign", width: "250px", type: "text" });

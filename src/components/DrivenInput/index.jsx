@@ -6,7 +6,8 @@ import { InputLabel, Select } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 
 export default function DrivenInput(props) {
-  const { type, label, variant, size, onChange, valiBool, errorMessage, selectItems } = props;
+  const { type, label, variant, size, onChange, valiBool, errorMessage, selectItems, value } =
+    props;
 
   return (
     <MDBox sx={{ width: "100%" }}>
@@ -16,8 +17,10 @@ export default function DrivenInput(props) {
             fullWidth
             {...(type && { type })}
             {...(label && { label })}
+            {...(value && { value })}
             {...(variant && { variant })}
-            {...(valiBool !== undefined && { error: !valiBool, success: valiBool })}
+            {...(valiBool !== undefined && { error: !valiBool })}
+            {...(valiBool === undefined && { success: valiBool })}
             {...(size && { size })}
             {...(onChange && {
               onChange: (event) => {
@@ -38,7 +41,9 @@ export default function DrivenInput(props) {
             fullWidth
             multiline
             {...(label && { label })}
-            {...(valiBool !== undefined && { error: !valiBool, success: valiBool })}
+            {...(value && { value })}
+            {...(valiBool !== undefined && { error: !valiBool })}
+            {...(valiBool === undefined && { success: valiBool })}
             {...(onChange && {
               onChange: (event) => {
                 onChange(event);
@@ -62,8 +67,10 @@ export default function DrivenInput(props) {
             {...(type && { type })}
             {...(label && { label })}
             {...(variant && { variant })}
+            {...(value && { value })}
             {...(size && { size })}
-            {...(valiBool !== undefined && { error: !valiBool, success: valiBool })}
+            {...(valiBool !== undefined && { error: !valiBool })}
+            {...(valiBool === undefined && { success: valiBool })}
             {...(onChange && {
               onChange: (event) => {
                 onChange(event);
@@ -102,4 +109,5 @@ DrivenInput.propTypes = {
   onChange: PropTypes.func,
   errorMessage: PropTypes.string,
   selectItems: PropTypes.array,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };

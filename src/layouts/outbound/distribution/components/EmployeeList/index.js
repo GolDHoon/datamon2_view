@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 PRO React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-pro-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
@@ -40,6 +25,9 @@ const Accordion = styled((props) => (
 }));
 
 function EmployeeList({ title, employees }) {
+  if (employees === undefined) {
+    return null;
+  }
   const renderItems = employees.map(({ name, role, useYn, assignedCustomer }, key) => (
     <Accordion key={key} sx={{ border: "0px solid #ffffff" }}>
       <AccordionSummary>
@@ -51,9 +39,15 @@ function EmployeeList({ title, employees }) {
               </MDTypography>
             </MDBox>
             <MDBox>
-              <MDTypography variant="button" fontWeight="medium" gutterBottom color={"error"}>
-                {assignedCustomer.length}
-              </MDTypography>
+              {assignedCustomer?.length > 0 ? (
+                <MDTypography variant="button" fontWeight="medium" gutterBottom color={"error"}>
+                  {assignedCustomer.length}
+                </MDTypography>
+              ) : (
+                <MDTypography variant="button" fontWeight="medium" gutterBottom color={"error"}>
+                  0
+                </MDTypography>
+              )}
             </MDBox>
           </MDBox>
           <MDBox display="flex" justifyContent={"center"} sx={{ width: "100%" }}>
@@ -61,7 +55,17 @@ function EmployeeList({ title, employees }) {
           </MDBox>
         </MDBox>
       </AccordionSummary>
-      <AccordionDetails>테스트 details</AccordionDetails>
+      <AccordionDetails>
+        {assignedCustomer.map((data, index) => (
+          <MDBox key={index}>
+            {data.setting.map((setting, index2) => (
+              <MDTypography variant="button" fontWeight="regular" key={index2}>
+                [{setting.columnName} : {data.custInfo[setting.columnName]}]&nbsp;
+              </MDTypography>
+            ))}
+          </MDBox>
+        ))}
+      </AccordionDetails>
     </Accordion>
   ));
 
@@ -73,7 +77,14 @@ function EmployeeList({ title, employees }) {
         </MDTypography>
       </MDBox>
       <MDBox p={2}>
-        <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+        <MDBox
+          component="ul"
+          display="flex"
+          flexDirection="column"
+          p={0}
+          m={0}
+          sx={{ maxHeight: "316px", overflowY: "auto" }}
+        >
           {renderItems}
         </MDBox>
       </MDBox>

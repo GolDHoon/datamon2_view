@@ -11,31 +11,47 @@ import MDTypography from "../../../../../components/MDTypography";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
+import Icon from "@mui/material/Icon";
+import TextField from "@mui/material/TextField";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 export default function DetailSettingsModal(props) {
   const { open, handleClose, setAlertColor, setAlertText, setUseAlert, code } = props;
   const [columnList, setColumnList] = useState([]);
+  const [subTitle, setSubTitle] = useState("");
   const [landingPageInfo, setLandingPageInfo] = useState();
   const [included, setIncluded] = useState([]);
   const [notIncluded, setNotIncluded] = useState([]);
-  const [existInColumnList, setExistInColumnList] = useState([]);
   const [checkedLeftItems, setCheckedLeftItems] = useState([]);
   const [checkedRightItems, setCheckedRightItems] = useState([]);
+  const [columnExpand, setColumnExpand] = useState(false);
 
   const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
   const [saveButtonTooltip, setSaveButtonTooltip] = useState("생성가능");
 
+  const handleColumnExpandChange = (panel) => (event, isExpanded) => {
+    setColumnExpand(isExpanded ? panel : false);
+  };
+
   const saveHandler = () => {
-    console.log("columnList");
-    console.log(columnList);
-    console.log("landingPageInfo");
-    console.log(landingPageInfo);
-    console.log("checkedLeftItems");
-    console.log(checkedLeftItems);
-    console.log("checkedRightItems");
-    console.log(checkedRightItems);
+    serverCommunicationUtil("main", "axioPost", "/landingPageManage/updateLandingPageSettings", {
+      lpgeCode: code,
+      subTitle: subTitle,
+      saveSettings: included,
+    })
+      .then((result) => {
+        handleClose();
+        setAlertColor("success");
+        setAlertText("랜딩페이지 상세정보가 수정되었습니다.");
+        setUseAlert(true);
+        setTimeout(() => {
+          setUseAlert(false);
+        }, 1500);
+      })
+      .catch((error) => {
+        console.log("");
+      });
   };
 
   const getColumnList = () => {
@@ -55,6 +71,7 @@ export default function DetailSettingsModal(props) {
       lpgeCode: code,
     })
       .then((result) => {
+        setSubTitle(result.landingPageInfomation.subTitle);
         setLandingPageInfo(result);
       })
       .catch((error) => {
@@ -67,7 +84,6 @@ export default function DetailSettingsModal(props) {
     setCheckedRightItems([]);
     setIncluded([]);
     setNotIncluded([]);
-    setExistInColumnList([]);
     getInfo();
     getColumnList();
   }, []);
@@ -89,13 +105,14 @@ export default function DetailSettingsModal(props) {
 
   const handleAllRight = () => {
     notIncluded.forEach((value) => {
-      setIncluded((prevItems) => [...prevItems, value]);
+      setIncluded((prevItems) => [...prevItems, { value: value }]);
     });
     setNotIncluded([]);
+    setCheckedLeftItems([]);
   };
   const handleCheckedRight = () => {
     checkedLeftItems.forEach((value) => {
-      setIncluded((prevItems) => [...prevItems, value]);
+      setIncluded((prevItems) => [...prevItems, { value: value }]);
       setNotIncluded((prevItems) => prevItems.filter((item) => item !== value));
     });
     setCheckedLeftItems([]);
@@ -103,25 +120,81 @@ export default function DetailSettingsModal(props) {
   const handleCheckedLeft = () => {
     checkedRightItems.forEach((value) => {
       setNotIncluded((prevItems) => [...prevItems, value]);
-      setIncluded((prevItems) => prevItems.filter((item) => item !== value));
+      setIncluded((prevItems) => prevItems.filter((item) => value !== item.value));
     });
     setCheckedRightItems([]);
   };
   const handleAllLeft = () => {
     included.forEach((value) => {
-      setNotIncluded((prevItems) => [...prevItems, value]);
+      setNotIncluded((prevItems) => [...prevItems, value.value]);
     });
     setIncluded([]);
+    setCheckedRightItems([]);
+  };
+  const displayReSortOnClick = (name, action) => {
+    var index;
+    var sliceIncluded;
+    var tempIncluded = [...included];
+    var changeValue;
+    if (action === "up") {
+      changeValue = -1;
+    } else {
+      changeValue = +1;
+    }
+    for (var i = 0; i < tempIncluded.length; i++) {
+      if (tempIncluded[i].value === name) {
+        index = i;
+        sliceIncluded = tempIncluded[i];
+      }
+    }
+    tempIncluded.splice(index, 1);
+    tempIncluded.splice(index + changeValue, 0, sliceIncluded);
+    setIncluded(tempIncluded);
+  };
+  const prefixOnChange = (name, prefix) => {
+    var tempIncluded = [...included];
+    tempIncluded.forEach((item) => {
+      if (item.value === name) {
+        item["prefix"] = prefix;
+      }
+    });
+    setIncluded(tempIncluded);
+  };
+  const suffixOnChange = (name, suffix) => {
+    var tempIncluded = [...included];
+    tempIncluded.forEach((item) => {
+      if (item.value === name) {
+        item["suffix"] = suffix;
+      }
+    });
+    setIncluded(tempIncluded);
   };
 
   useEffect(() => {
+    setIncluded([]);
+    setNotIncluded([]);
     if (landingPageInfo !== undefined && columnList !== undefined) {
-      let columnNameInLandingPage = landingPageInfo.landingPageSettingList.map((i) => i.columnName);
-      setIncluded(columnList.filter((column) => columnNameInLandingPage.includes(column)));
-      setNotIncluded(columnList.filter((column) => !columnNameInLandingPage.includes(column)));
-      setExistInColumnList(
-        columnNameInLandingPage.filter((column) => !columnList.includes(column))
-      );
+      let tempIncluded = [];
+      for (let i = 0; i < landingPageInfo.landingPageSettingList.length; i++) {
+        let value = landingPageInfo.landingPageSettingList[i].columnName;
+        if (columnList.includes(value)) {
+          let getPrefix = landingPageInfo.landingPageSettingList[i].displayPrefix;
+          let getSuffix = landingPageInfo.landingPageSettingList[i].displaySuffix;
+
+          let includedItem = {};
+          includedItem["value"] = value;
+          if (getPrefix !== undefined) {
+            includedItem["prefix"] = getPrefix;
+          }
+          if (getSuffix !== undefined) {
+            includedItem["suffix"] = getSuffix;
+          }
+
+          setIncluded((prevItems) => [...prevItems, includedItem]);
+          tempIncluded.push(value);
+        }
+      }
+      setNotIncluded(columnList.filter((item) => !tempIncluded.includes(item)));
     }
   }, [landingPageInfo, columnList]);
 
@@ -132,14 +205,18 @@ export default function DetailSettingsModal(props) {
           label={"서브타이틀"}
           variant={"standard"}
           size={"small"}
+          value={subTitle}
           onChange={(event) => {
-            let landingInfo = landingPageInfo;
-            landingInfo.landingPageInfomation.subTitle = event.target.value;
-            setLandingPageInfo(landingInfo);
+            setSubTitle(event.target.value);
           }}
         />
       </MDBox>
-      <MDBox mt={1.625} display={"flex"} sx={{ width: "100%", marginTop: "20px" }}>
+      <MDBox
+        mt={1.625}
+        display={"flex"}
+        justifyContent={"space-between"}
+        sx={{ width: "100%", marginTop: "20px" }}
+      >
         <MDBox sx={{ maxWidth: "50%" }}>
           <MDBox display={"flex"} justifyContent={"center"}>
             <MDTypography
@@ -167,20 +244,28 @@ export default function DetailSettingsModal(props) {
                   미포함 칼럼
                 </MDTypography>
               </MDBox>
-              {notIncluded.length > 0 &&
-                notIncluded.map((value, index) => (
-                  <MDBox
-                    key={`notIncluded-${index}`}
-                    display={"flex"}
-                    justifyContent={"spaceBetween"}
-                  >
-                    <Checkbox
-                      onChange={(event) => leftCheckBoxOnChange(event, value)}
-                      checked={checkedLeftItems.includes(value)}
-                    />
-                    {value}
-                  </MDBox>
-                ))}
+              <MDBox
+                sx={{
+                  width: "100%",
+                  maxHeight: "298px",
+                  overflowY: "auto",
+                }}
+              >
+                {notIncluded.length > 0 &&
+                  notIncluded.map((value, index) => (
+                    <MDBox
+                      key={`notIncluded-${index}`}
+                      display={"flex"}
+                      justifyContent={"spaceBetween"}
+                    >
+                      <Checkbox
+                        onChange={(event) => leftCheckBoxOnChange(event, value)}
+                        checked={checkedLeftItems.includes(value)}
+                      />
+                      {value}
+                    </MDBox>
+                  ))}
+              </MDBox>
             </MDBox>
             <MDBox
               display={"flex"}
@@ -260,7 +345,12 @@ export default function DetailSettingsModal(props) {
             <MDBox
               display={"flex"}
               flexDirection={"column"}
-              sx={{ border: "1px solid black", padding: "5px", borderRadius: "10px" }}
+              sx={{
+                border: "1px solid black",
+                padding: "5px",
+                borderRadius: "10px",
+                maxWidth: "50%",
+              }}
             >
               <MDBox display={"flex"} justifyContent={"center"}>
                 <MDTypography
@@ -272,61 +362,173 @@ export default function DetailSettingsModal(props) {
                   포함 칼럼
                 </MDTypography>
               </MDBox>
-              {included.length > 0 &&
-                included.map((value, index) => (
-                  <MDBox key={`included-${index}`} display={"flex"} justifyContent={"spaceBetween"}>
-                    <Checkbox
-                      onChange={(event) => rightCheckBoxOnChange(event, value)}
-                      checked={checkedRightItems.includes(value)}
-                    />
-                    {value}
-                  </MDBox>
-                ))}
+              <MDBox
+                sx={{
+                  width: "100%",
+                  maxHeight: "298px",
+                  overflowY: "auto",
+                }}
+              >
+                {included.length > 0 &&
+                  included.map((item, index) => (
+                    <MDBox
+                      key={`included-${index}`}
+                      display={"flex"}
+                      justifyContent={"space-between"}
+                      alignItems={"center"}
+                      sx={{ width: "100%", marginY: "10px" }}
+                    >
+                      <Accordion
+                        expanded={columnExpand === `panel${index}`}
+                        onChange={handleColumnExpandChange(`panel${index}`)}
+                      >
+                        <AccordionSummary sx={{ width: "100%", padding: "0" }}>
+                          <MDBox
+                            display={"flex"}
+                            justifyContent={"space-between"}
+                            sx={{ width: "100%" }}
+                          >
+                            <Checkbox
+                              onChange={(event) => rightCheckBoxOnChange(event, item.value)}
+                              checked={checkedRightItems.includes(item.value)}
+                            />
+                            <MDBox
+                              display={"flex"}
+                              justifyContent={"center"}
+                              alignItems={"center"}
+                              sx={{ width: "100%" }}
+                            >
+                              {item.value}
+                            </MDBox>
+                          </MDBox>
+                        </AccordionSummary>
+                        <AccordionDetails sx={{ padding: "0" }}>
+                          <MDBox display={"flex"} flexDirection={"column"}>
+                            <TextField
+                              variant="standard"
+                              label="접두어"
+                              size="small"
+                              sx={{ marginX: "10px" }}
+                              value={item.prefix ? item.prefix : ""}
+                              onChange={(event) => prefixOnChange(item.value, event.target.value)}
+                            />
+                            <TextField
+                              variant="standard"
+                              label="접미어"
+                              size="small"
+                              sx={{ marginX: "10px" }}
+                              value={item.suffix ? item.suffix : ""}
+                              onChange={(event) => suffixOnChange(item.value, event.target.value)}
+                            />
+                          </MDBox>
+                        </AccordionDetails>
+                      </Accordion>
+                      <MDBox display={"flex"} flexDirection={"column"} alignItems={"center"}>
+                        <Icon
+                          onClick={() => displayReSortOnClick(item.value, "up")}
+                          sx={{ cursor: "pointer" }}
+                        >
+                          expand_less
+                        </Icon>
+                        <Icon
+                          onClick={() => displayReSortOnClick(item.value, "down")}
+                          sx={{ cursor: "pointer" }}
+                        >
+                          expand_more
+                        </Icon>
+                      </MDBox>
+                    </MDBox>
+                  ))}
+              </MDBox>
             </MDBox>
           </MDBox>
         </MDBox>
-        <MDBox display={"flex"} sx={{ width: "50%" }}>
-          <MDBox sx={{ width: "100%" }}>
+        <MDBox sx={{ width: "50%" }}>
+          <MDTypography
+            display={"flex"}
+            justifyContent={"center"}
+            variant="body2"
+            color="text"
+            fontWeight="regular"
+            sx={{ color: "black", fontWeight: "bold" }}
+          >
+            display 미리보기
+          </MDTypography>
+          <MDBox
+            display={"flex"}
+            sx={{ width: "100%", backgroundColor: "#f0f2f5", padding: "20px", marginTop: "10px" }}
+          >
             <Accordion sx={{ width: "100%" }}>
-              <AccordionSummary display={"flex"} flexDirection={"column"}>
-                <MDBox display={"flex"} justifyContent={"space-between"}>
-                  <MDTypography
-                    variant="body2"
-                    color="text"
-                    fontWeight="regular"
-                    sx={{ color: "black", fontWeight: "bold" }}
-                  >
-                    {included.length > 0 && included[0]}
-                  </MDTypography>
-                  <MDTypography
-                    variant="body2"
-                    color="text"
-                    fontWeight="regular"
-                    sx={{ color: "black", fontWeight: "bold" }}
-                  >
-                    {included.length > 1 && included[1]}
-                  </MDTypography>
-                </MDBox>
-                <MDBox display={"flex"} justifyContent={"space-between"}>
-                  <MDTypography
-                    variant="overline"
-                    color="text"
-                    fontWeight="regular"
-                    sx={{ color: "black", fontWeight: "bold" }}
-                  >
-                    재통화 예약일 : XXXX-XX-XX
-                  </MDTypography>
-                  <MDTypography
-                    variant="overline"
-                    color="text"
-                    fontWeight="regular"
-                    sx={{ color: "black", fontWeight: "bold" }}
-                  >
-                    상태
-                  </MDTypography>
+              <AccordionSummary sx={{ width: "100%" }}>
+                <MDBox sx={{ width: "100%" }}>
+                  <MDBox display={"flex"} justifyContent={"space-between"} sx={{ width: "100%" }}>
+                    <MDTypography
+                      variant="body2"
+                      color="text"
+                      fontWeight="regular"
+                      sx={{ color: "black", fontWeight: "bold" }}
+                    >
+                      {included.length > 0 &&
+                        (included[0].prefix !== undefined ? included[0].prefix : "") +
+                          included[0].value +
+                          (included[0].suffix !== undefined ? included[0].suffix : "")}
+                    </MDTypography>
+                    <MDTypography
+                      variant="body2"
+                      color="text"
+                      fontWeight="regular"
+                      sx={{ color: "black", fontWeight: "bold" }}
+                    >
+                      {included.length > 1 &&
+                        (included[1].prefix !== undefined ? included[1].prefix : "") +
+                          included[1].value +
+                          (included[1].suffix !== undefined ? included[1].suffix : "")}
+                    </MDTypography>
+                  </MDBox>
+                  <MDBox display={"flex"} justifyContent={"space-between"} sx={{ width: "100%" }}>
+                    <MDTypography
+                      variant="overline"
+                      color="text"
+                      fontWeight="regular"
+                      sx={{ color: "black", fontWeight: "bold" }}
+                    >
+                      재통화 예약일 : XXXX.XX.XX.
+                    </MDTypography>
+                    <MDTypography
+                      variant="overline"
+                      color="text"
+                      fontWeight="regular"
+                      sx={{ color: "black", fontWeight: "bold" }}
+                    >
+                      상태
+                    </MDTypography>
+                  </MDBox>
+                  <MDBox display={"flex"} justifyContent={"center"}>
+                    <Icon>swap_vert</Icon>
+                  </MDBox>
                 </MDBox>
               </AccordionSummary>
-              <AccordionDetails>테스트 디테일스</AccordionDetails>
+              {included.length > 2 && (
+                <AccordionDetails>
+                  {included.map(
+                    (item, index) =>
+                      index > 1 && (
+                        <MDBox key={`${item}-${index}`} display={"flex"} alignItems={"normal"}>
+                          <MDTypography
+                            variant="overline"
+                            color="text"
+                            fontWeight="regular"
+                            sx={{ color: "black", fontWeight: "bold" }}
+                          >
+                            {(item.prefix !== undefined ? item.prefix : "") +
+                              item.value +
+                              (item.suffix !== undefined ? item.suffix : "")}
+                          </MDTypography>
+                        </MDBox>
+                      )
+                  )}
+                </AccordionDetails>
+              )}
             </Accordion>
           </MDBox>
         </MDBox>
@@ -351,6 +553,7 @@ export default function DetailSettingsModal(props) {
     </DrivenModal>
   );
 }
+
 DetailSettingsModal.defaultProps = {
   open: false,
   handleClose: () => {},
