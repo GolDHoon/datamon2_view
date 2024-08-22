@@ -143,7 +143,7 @@ function CustInfoList() {
         columnsData.push({ name: "품질변경사유", width: "150px", type: "text" });
         columnsData.push({ name: "상태", width: "150px", type: "text" });
         columnsData.push({ name: "상태변경사유", width: "150px", type: "text" });
-        columnsData.push({ name: "sourse", width: "150px", type: "text" });
+        columnsData.push({ name: "source", width: "150px", type: "text" });
         columnsData.push({ name: "medium", width: "150px", type: "text" });
         columnsData.push({ name: "campaign", width: "250px", type: "text" });
         columnsData.push({ name: "term", width: "250px", type: "text" });
