@@ -1,7 +1,7 @@
 import DrivenAlert from "../../../components/DrivenAlert";
 import DashboardNavbar from "../../common/Navbars/DashboardNavbar";
 import DashboardLayout from "../../common/LayoutContainers/DashboardLayout";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   serverCommunicationUtil,
   sessionChecker,
@@ -15,6 +15,7 @@ import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import DrivenInput from "../../../components/DrivenInput";
 import MDInput from "../../../components/MDInput";
 import MDButton from "../../../components/MDButton";
+import DrivenDateTimePicker from "../../../components/DrivenDateTimePicker";
 
 function OutboundList() {
   const [showPage, setShowPage] = useState(false);
@@ -40,10 +41,115 @@ function OutboundList() {
   const navigate = useNavigate();
 
   const saveHandle = (idx) => {
-    console.log(idx);
-    console.log(selectCdbsCode);
-    console.log(selectCdbqCode);
-    console.log(memo);
+    outboundSave(
+      {
+        mode: "all",
+        idx: priorStatus.idx,
+        memo: memo,
+        callBackDate: callbackDate,
+        conversionDate: conversionDate,
+        cdbsCode: selectCdbsCode,
+        statusChangeReason: statusChangeReason,
+        cdbqCode: selectCdbqCode,
+        qualityChangeReason: qualityChangeReason,
+      },
+      "상담 정보 저장 완료",
+      true
+    );
+  };
+
+  const saveCdbqHandle = () => {
+    outboundSave(
+      {
+        mode: "cdbq",
+        idx: priorStatus.idx,
+        cdbqCode: selectCdbqCode,
+        qualityChangeReason: qualityChangeReason,
+      },
+      "고객DB품질 저장 완료",
+      true
+    );
+  };
+
+  const saveCdbsHandle = () => {
+    outboundSave(
+      {
+        mode: "cdbs",
+        idx: priorStatus.idx,
+        cdbsCode: selectCdbsCode,
+        statusChangeReason: statusChangeReason,
+      },
+      "고객DB상태 저장 완료",
+      true
+    );
+  };
+
+  const saveConversionDateHandle = () => {
+    outboundSave(
+      {
+        mode: "conversionDate",
+        idx: priorStatus.idx,
+        conversionDate: conversionDate,
+      },
+      "전환 예정일 저장 완료",
+      false
+    );
+  };
+
+  const saveCallbackDateHandle = () => {
+    outboundSave(
+      {
+        mode: "callBackDate",
+        idx: priorStatus.idx,
+        callBackDate: callbackDate,
+      },
+      "재통화 예정일 저장 완료",
+      false
+    );
+  };
+
+  const saveMemoHandle = () => {
+    outboundSave(
+      {
+        mode: "memo",
+        idx: priorStatus.idx,
+        memo: memo,
+      },
+      "상담 메모 저장 완료",
+      false
+    );
+  };
+
+  const outboundSave = (data, successMessage, getListChecker) => {
+    serverCommunicationUtil("main", "axioPost", "/call/outbound/updateOutbound", data)
+      .then((result) => {
+        if (result === "success") {
+          setAlertColor("success");
+          setAlertText(successMessage);
+          setUseAlert(true);
+          setTimeout(() => {
+            setUseAlert(false);
+          }, 1500);
+          if (getListChecker) {
+            getList();
+          }
+        } else {
+          setAlertColor("error");
+          setAlertText("저장 실패");
+          setUseAlert(true);
+          setTimeout(() => {
+            setUseAlert(false);
+          }, 1500);
+        }
+      })
+      .catch((error) => {
+        setAlertColor("error");
+        setAlertText("저장 실패");
+        setUseAlert(true);
+        setTimeout(() => {
+          setUseAlert(false);
+        }, 1500);
+      });
   };
 
   const getCdbsCode = () => {
@@ -122,6 +228,7 @@ function OutboundList() {
 
     updateCdbsCode(outboundList[index].custIdx, "CDBS_ICST");
   };
+
   const updateCdbsCode = (custId, cdbsCode) => {
     serverCommunicationUtil("main", "axioPost", "/call/outbound/updateCdbsCode", {
       custId: custId,
@@ -165,7 +272,7 @@ function OutboundList() {
           <MDBox display="flex" justifyContent="space-between">
             <MDBox height="100%" mt={0.5} lineHeight={1} p={2}>
               <MDTypography variant="h4" fontWeight="medium">
-                Outbound 분배
+                Outbound 목록
               </MDTypography>
               <MDTypography variant="body2" color="text" fontWeight="regular">
                 Outbound 처리 목록
@@ -174,7 +281,7 @@ function OutboundList() {
             <MDBox display="block" style={{ textAlign: "center" }} p={2}></MDBox>
           </MDBox>
           <MDBox display={"flex"} justifyContent={"space-around"}>
-            <MDBox sx={{ width: "20%" }}>
+            <MDBox sx={{ width: "20%", maxHeight: "calc(100vh - 270px)", overflowY: "auto" }}>
               <Card sx={{ padding: "10px", marginBottom: "10px" }}>
                 <MDTypography variant="body2" fontWeight="medium">
                   지시사항
@@ -189,29 +296,48 @@ function OutboundList() {
               </Card>
               <Card sx={{ padding: "10px", marginBottom: "10px" }}>
                 <MDTypography variant="body2" fontWeight="medium">
-                  고객메모
+                  상담메모
                 </MDTypography>
                 <MDBox sx={{ marginTop: "10px" }}>
-                  <DrivenInput
-                    type={"multiline"}
-                    label={"고객 메모"}
+                  <MDInput
+                    multiline
+                    rows={2}
                     size={"large"}
+                    fullWidth
                     value={memo}
                     onChange={(event) => setMemo(event.target.value)}
                   />
+                </MDBox>
+                <MDBox display={"flex"} flexDirection={"row-reverse"} sx={{ marginTop: "10px" }}>
+                  <MDButton variant="gradient" color="info" onClick={(event) => saveMemoHandle()}>
+                    저장
+                  </MDButton>
                 </MDBox>
               </Card>
               <Card sx={{ padding: "10px", marginBottom: "10px" }}>
                 <MDTypography variant="body2" fontWeight="medium">
                   재통화 예정일
                 </MDTypography>
-                <MDBox sx={{ marginTop: "10px" }}>
-                  <MDInput
-                    type="date"
-                    fullWidth
+                <MDBox display="flex" sx={{ marginTop: "10px" }}>
+                  <DrivenDateTimePicker
+                    ampm={false}
+                    type={"list"}
+                    timeSteps={{ hours: 1, minutes: 5 }}
                     value={callbackDate}
-                    onChange={(event) => setCallbackDate(event.target.value)}
+                    onChange={(event) => {
+                      var datetime = new Date(event.$d);
+                      setCallbackDate(datetime.toISOString().substring(0, 19));
+                    }}
                   />
+                </MDBox>
+                <MDBox display={"flex"} flexDirection={"row-reverse"} sx={{ marginTop: "10px" }}>
+                  <MDButton
+                    variant="gradient"
+                    color="info"
+                    onClick={(event) => saveCallbackDateHandle()}
+                  >
+                    저장
+                  </MDButton>
                 </MDBox>
               </Card>
               <Card sx={{ padding: "10px", marginBottom: "10px" }}>
@@ -219,12 +345,25 @@ function OutboundList() {
                   전환 예정일
                 </MDTypography>
                 <MDBox sx={{ marginTop: "10px" }}>
-                  <MDInput
-                    type="date"
-                    fullWidth
+                  <DrivenDateTimePicker
+                    ampm={false}
+                    type={"list"}
+                    timeSteps={{ hours: 1, minutes: 5 }}
                     value={conversionDate}
-                    onChange={(event) => setConversionDate(event.target.value)}
+                    onChange={(event) => {
+                      var datetime = new Date(event.$d);
+                      setConversionDate(datetime.toISOString().substring(0, 19));
+                    }}
                   />
+                </MDBox>
+                <MDBox display={"flex"} flexDirection={"row-reverse"} sx={{ marginTop: "10px" }}>
+                  <MDButton
+                    variant="gradient"
+                    color="info"
+                    onClick={(event) => saveConversionDateHandle()}
+                  >
+                    저장
+                  </MDButton>
                 </MDBox>
               </Card>
             </MDBox>
@@ -268,7 +407,7 @@ function OutboundList() {
                             justifyContent={"space-between"}
                             sx={{ width: "100%" }}
                           >
-                            <MDBox>재통화 예약일 : {outbound.callbackDate}</MDBox>
+                            <MDBox>재통화 예약일 : {outbound.callbackDateDisplay}</MDBox>
                             <MDBox>{cardExpanded === index ? `상담중` : outbound.상태}</MDBox>
                           </MDBox>
                         </MDBox>
@@ -288,10 +427,14 @@ function OutboundList() {
                       </AccordionDetails>
                     </Accordion>
                     {cardExpanded === index && (
-                      <MDBox display={"flex"} flexDirection={"row-reverse"}>
+                      <MDBox display={"flex"} justifyContent={"flex-end"}>
+                        <MDButton variant="gradient" color="secondary" sx={{ marginX: "10px" }}>
+                          이전 상담 이력 보기
+                        </MDButton>
                         <MDButton
                           variant="gradient"
                           color="info"
+                          sx={{ marginX: "10px" }}
                           onClick={(event) => saveHandle(outbound.idx)}
                         >
                           상담완료
@@ -318,13 +461,25 @@ function OutboundList() {
                   />
                 </MDBox>
                 <MDBox>
-                  <DrivenInput
-                    type={"multiline"}
+                  <MDInput
+                    multiline
+                    rows={2}
+                    fullWidth
+                    size={"small"}
                     label={"변경사유"}
-                    size={"large"}
                     value={statusChangeReason}
                     onChange={(event) => setStatusChangeReason(event.target.value)}
                   />
+                </MDBox>
+                <MDBox display={"flex"} flexDirection={"row-reverse"} sx={{ marginTop: "10px" }}>
+                  <MDButton
+                    variant="gradient"
+                    color="info"
+                    disabled={selectCdbsCode === "init"}
+                    onClick={(event) => saveCdbsHandle()}
+                  >
+                    저장
+                  </MDButton>
                 </MDBox>
               </Card>
               <Card sx={{ padding: "10px", marginBottom: "10px" }}>
@@ -342,13 +497,25 @@ function OutboundList() {
                   />
                 </MDBox>
                 <MDBox>
-                  <DrivenInput
-                    type={"multiline"}
+                  <MDInput
+                    multiline
+                    rows={2}
+                    size={"small"}
+                    fullWidth
                     label={"변경사유"}
-                    size={"large"}
                     value={qualityChangeReason}
                     onChange={(event) => setQualityChangeReason(event.target.value)}
                   />
+                </MDBox>
+                <MDBox display={"flex"} flexDirection={"row-reverse"} sx={{ marginTop: "10px" }}>
+                  <MDButton
+                    variant="gradient"
+                    color="info"
+                    disabled={selectCdbqCode === "init"}
+                    onClick={(event) => saveCdbqHandle()}
+                  >
+                    저장
+                  </MDButton>
                 </MDBox>
               </Card>
             </MDBox>

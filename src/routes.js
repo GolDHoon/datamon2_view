@@ -17,6 +17,8 @@ import UserInfoListByMemeber from "./layouts/user/userListByMember";
 import MyPage from "./layouts/myPage";
 import OutBoundDistribution from "./layouts/outbound/distribution";
 import OutboundList from "./layouts/outbound/list";
+import DeveloperTool from "./layouts/developer/Tool";
+import OutboundTotalList from "./layouts/outbound/totalList";
 
 const routes = [
   {
@@ -75,6 +77,22 @@ const routes = [
       getConst("CRAC"),
       getConst("CAME"),
     ],
+  },
+  {
+    type: "title",
+    title: "개발자도구",
+    key: "title-개발자도구",
+    auth: [getConst("DEVL")],
+  },
+  {
+    type: "collapse",
+    name: "개발자도구",
+    key: "DeveloperToll",
+    icon: <Icon fontSize="medium">developer_board</Icon>,
+    route: "/developer/tool",
+    component: <DeveloperTool />,
+    noCollapse: true,
+    auth: [getConst("DEVL")],
   },
   {
     type: "title",
@@ -236,8 +254,25 @@ const routes = [
     name: "outbound 목록",
     key: "outboundList",
     icon: <Icon fontSize="medium">call</Icon>,
-    route: "/call/outbound/List",
+    route: "/call/outbound/list",
     component: <OutboundList />,
+    noCollapse: true,
+    auth: [
+      getConst("MAST"),
+      getConst("DEVL"),
+      getConst("CLNT"),
+      getConst("CLME"),
+      getConst("CRAC"),
+      getConst("CAME"),
+    ],
+  },
+  {
+    type: "collapse",
+    name: "outbound 전체목록",
+    key: "outboundTotalList",
+    icon: <Icon fontSize="medium">library_books</Icon>,
+    route: "/call/outbound/totalList",
+    component: <OutboundTotalList />,
     noCollapse: true,
     auth: [
       getConst("MAST"),
