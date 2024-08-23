@@ -100,7 +100,6 @@ function CustInfoListByCrm() {
 
     rows.forEach((row) => {
       columns.forEach((column) => {
-        debugger;
         if (!(column.name === "사용여부" || column.name === "IP" || column.name === "삭제여부")) {
           var cell = row[column.name] !== " " ? row[column.name].toString() : "";
           csvContent = csvContent + cell + ",";
