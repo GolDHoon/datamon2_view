@@ -258,7 +258,7 @@ const routes = [
     route: "/call/outbound/distribution",
     component: <OutBoundDistribution />,
     noCollapse: true,
-    auth: [getConst("MAST"), getConst("DEVL")getConst("CRAC")],
+    auth: [getConst("MAST"), getConst("DEVL"), getConst("CRAC")],
   },
   {
     type: "collapse",
