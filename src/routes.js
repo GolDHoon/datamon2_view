@@ -189,7 +189,7 @@ const routes = [
     route: "/cust-info/client/list",
     component: <CustInfoListByClient />,
     noCollapse: true,
-    auth: [getConst("DEVL"), getConst("CRAC"), getConst("CAME")],
+    auth: [getConst("DEVL"), getConst("CLNT"), getConst("CLME")],
   },
   {
     type: "collapse",
@@ -199,7 +199,7 @@ const routes = [
     route: "/cust-info/crm/list",
     component: <CustInfoListByCrm />,
     noCollapse: true,
-    auth: [getConst("DEVL"), getConst("ADAC"), getConst("AAME")],
+    auth: [getConst("DEVL"), getConst("CRAC"), getConst("CAME")],
   },
   {
     type: "title",
@@ -258,7 +258,7 @@ const routes = [
     route: "/call/outbound/distribution",
     component: <OutBoundDistribution />,
     noCollapse: true,
-    auth: [getConst("MAST"), getConst("DEVL"), getConst("CLNT"), getConst("CRAC")],
+    auth: [getConst("MAST"), getConst("DEVL")getConst("CRAC")],
   },
   {
     type: "collapse",
