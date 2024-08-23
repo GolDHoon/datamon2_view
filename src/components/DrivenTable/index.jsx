@@ -19,7 +19,7 @@ import { NativeSelect } from "@mui/material";
 import Switch from "@mui/material/Switch";
 
 const tableCellStyle = (wdith) => ({
-  width: `${wdith}`,
+  minWidth: `${wdith}`,
   whiteSpace: "nowrap",
   overflowX: "hidden",
   textOverflow: "ellipsis",
@@ -294,13 +294,13 @@ export default function DrivenTable(props) {
 
     if (key === "head") {
       return {
-        width: widthStr,
+        width: "100%",
         display: "flex",
         justifyContent: "space-between",
       };
     } else if (key === "common") {
       return {
-        width: widthStr,
+        width: "100%",
       };
     } else {
       return null;
@@ -308,14 +308,14 @@ export default function DrivenTable(props) {
   };
 
   return (
-    <MDBox sx={{ padding: "16px", overflowX: "auto" }}>
+    <MDBox sx={{ padding: "16px", overflowX: "auto", width: "100%" }}>
       {rows.length === 0 ? (
         <MDBox display={"flex"} justifyContent={"space-evenly"}>
           <MDTypography>데이터가 없습니다.</MDTypography>
         </MDBox>
       ) : (
         <>
-          <MDBox>
+          <MDBox sx={{ width: "100%" }}>
             <MDBox sx={widthCss("head")}>
               <MDBox>
                 {usePaging && (
@@ -418,7 +418,7 @@ export default function DrivenTable(props) {
             </MDBox>
           )}
           <MDBox sx={widthCss("common")}>
-            <Table sx={{ overflowX: "scroll" }}>
+            <Table sx={{ overflowX: "scroll", width: "100%" }}>
               <TableHead>
                 <TableRow style={tableRow}>
                   {columnsData.map((item, index) => (

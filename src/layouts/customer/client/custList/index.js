@@ -199,7 +199,7 @@ function CustInfoListByClient() {
       ) : (
         <>
           <DashboardNavbar />
-          <MDBox my={3} sx={{ maxWidth: "2300px" }}>
+          <MDBox my={3} sx={{ maxWidth: "100%" }}>
             <MDBox display="flex" justifyContent="space-between" alignItems="center">
               <MDBox height="100%" mt={0.5} lineHeight={1} p={2}>
                 <MDTypography variant="h4" fontWeight="medium">
