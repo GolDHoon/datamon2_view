@@ -91,7 +91,7 @@ function CustInfoListForAd() {
   function exportToCsv(rows, originalKeys) {
     var headerRow = "";
     columns.forEach((column) => {
-      if (!(column.name === "허수여부" || column.name === "IP" || column.name === "삭제여부")) {
+      if (!(column.name === "사용여부" || column.name === "IP" || column.name === "삭제여부")) {
         headerRow = headerRow + column.name.toString() + ",";
       }
     });
@@ -100,7 +100,7 @@ function CustInfoListForAd() {
 
     rows.forEach((row) => {
       columns.forEach((column) => {
-        if (!(column.name === "허수여부" || column.name === "IP" || column.name === "삭제여부")) {
+        if (!(column.name === "사용여부" || column.name === "IP" || column.name === "삭제여부")) {
           var cell = row[column.name] !== " " ? row[column.name].toString() : "";
           csvContent = csvContent + cell + ",";
         }

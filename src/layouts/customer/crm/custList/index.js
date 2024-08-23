@@ -91,7 +91,7 @@ function CustInfoListByCrm() {
   function exportToCsv(rows, originalKeys) {
     var headerRow = "";
     columns.forEach((column) => {
-      if (!(column.name === "허수여부" || column.name === "IP" || column.name === "삭제여부")) {
+      if (!(column.name === "사용여부" || column.name === "IP" || column.name === "삭제여부")) {
         headerRow = headerRow + column.name.toString() + ",";
       }
     });
@@ -100,7 +100,8 @@ function CustInfoListByCrm() {
 
     rows.forEach((row) => {
       columns.forEach((column) => {
-        if (!(column.name === "허수여부" || column.name === "IP" || column.name === "삭제여부")) {
+        debugger;
+        if (!(column.name === "사용여부" || column.name === "IP" || column.name === "삭제여부")) {
           var cell = row[column.name] !== " " ? row[column.name].toString() : "";
           csvContent = csvContent + cell + ",";
         }
@@ -144,10 +145,7 @@ function CustInfoListByCrm() {
         columnsData.push({ name: "상태", width: "150px", type: "text" });
         columnsData.push({ name: "상태변경사유", width: "150px", type: "text" });
         columnsData.push({ name: "source", width: "150px", type: "text" });
-        columnsData.push({ name: "medium", width: "150px", type: "text" });
         columnsData.push({ name: "campaign", width: "250px", type: "text" });
-        columnsData.push({ name: "term", width: "250px", type: "text" });
-        columnsData.push({ name: "content", width: "250px", type: "text" });
         columnsData.push({ name: "IP", width: "150px", type: "text" });
         columnsData.push({
           name: "사용여부",
