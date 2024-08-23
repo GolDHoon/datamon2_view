@@ -9,7 +9,7 @@ import Icon from "@mui/material/Icon";
 
 // Images
 import { getConst } from "./common/common";
-import CustInfoList from "./layouts/customer/custList";
+import CustInfoList from "./layouts/customer/ad/custList";
 import LandingPageManagement from "./layouts/landingPage/manage";
 import AuthMenagement from "./layouts/user/auth";
 import UserInfoListByMaster from "./layouts/user/userListByMaster";
@@ -19,6 +19,9 @@ import OutBoundDistribution from "./layouts/outbound/distribution";
 import OutboundList from "./layouts/outbound/list";
 import DeveloperTool from "./layouts/developer/Tool";
 import OutboundTotalList from "./layouts/outbound/totalList";
+import CustInfoListForAd from "./layouts/customer/ad/custList";
+import CustInfoListByClient from "./layouts/customer/client/custList";
+import CustInfoListByCrm from "./layouts/customer/crm/custList";
 
 const routes = [
   {
@@ -159,9 +162,7 @@ const routes = [
     title: "고객 정보",
     key: "title-고객정보",
     auth: [
-      getConst("MAST"),
       getConst("DEVL"),
-      getConst("INME"),
       getConst("CLNT"),
       getConst("ADAC"),
       getConst("CLME"),
@@ -173,22 +174,32 @@ const routes = [
   {
     type: "collapse",
     name: "고객정보 목록",
-    key: "custInfoList",
+    key: "CustInfoListForAd",
     icon: <Icon fontSize="medium">person</Icon>,
-    route: "/cust-info/list",
-    component: <CustInfoList />,
+    route: "/cust-info/ad/list",
+    component: <CustInfoListForAd />,
     noCollapse: true,
-    auth: [
-      getConst("MAST"),
-      getConst("DEVL"),
-      getConst("INME"),
-      getConst("CLNT"),
-      getConst("ADAC"),
-      getConst("CLME"),
-      getConst("AAME"),
-      getConst("CRAC"),
-      getConst("CAME"),
-    ],
+    auth: [getConst("DEVL"), getConst("ADAC"), getConst("AAME")],
+  },
+  {
+    type: "collapse",
+    name: "고객정보 목록",
+    key: "CustInfoListByClient",
+    icon: <Icon fontSize="medium">person</Icon>,
+    route: "/cust-info/client/list",
+    component: <CustInfoListByClient />,
+    noCollapse: true,
+    auth: [getConst("DEVL"), getConst("CRAC"), getConst("CAME")],
+  },
+  {
+    type: "collapse",
+    name: "고객정보 목록",
+    key: "CustInfoListByCrm",
+    icon: <Icon fontSize="medium">person</Icon>,
+    route: "/cust-info/crm/list",
+    component: <CustInfoListByCrm />,
+    noCollapse: true,
+    auth: [getConst("DEVL"), getConst("ADAC"), getConst("AAME")],
   },
   {
     type: "title",
@@ -233,8 +244,8 @@ const routes = [
     auth: [
       getConst("MAST"),
       getConst("DEVL"),
-      getConst("CLNT"),
-      getConst("CLME"),
+      // getConst("CLNT"),
+      // getConst("CLME"),
       getConst("CRAC"),
       getConst("CAME"),
     ],
@@ -260,8 +271,8 @@ const routes = [
     auth: [
       getConst("MAST"),
       getConst("DEVL"),
-      getConst("CLNT"),
-      getConst("CLME"),
+      // getConst("CLNT"),
+      // getConst("CLME"),
       getConst("CRAC"),
       getConst("CAME"),
     ],
@@ -277,8 +288,8 @@ const routes = [
     auth: [
       getConst("MAST"),
       getConst("DEVL"),
-      getConst("CLNT"),
-      getConst("CLME"),
+      // getConst("CLNT"),
+      // getConst("CLME"),
       getConst("CRAC"),
       getConst("CAME"),
     ],

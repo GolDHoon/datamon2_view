@@ -5,23 +5,23 @@ import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 
 // Material Dashboard 2 PRO React components
-import MDBox from "components/MDBox";
-import MDButton from "components/MDButton";
-import MDTypography from "../../../components/MDTypography";
+import MDBox from "../../../../components/MDBox";
+import MDButton from "../../../../components/MDButton";
+import MDTypography from "../../../../components/MDTypography";
 
 // Material Dashboard 2 PRO React examples
-import DashboardLayout from "layouts/common/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "layouts/common/Navbars/DashboardNavbar";
+import DashboardLayout from "../../../common/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "../../../common/Navbars/DashboardNavbar";
 import { useNavigate } from "react-router-dom";
-import { getSessionStorage } from "../../../common/common";
+import { getSessionStorage } from "../../../../common/common";
 import {
   serverCommunicationUtil,
   sessionChecker,
-} from "../../../common/util/serverCommunicationUtil";
-import DrivenAlert from "../../../components/DrivenAlert";
-import DrivenTable from "../../../components/DrivenTable";
+} from "../../../../common/util/serverCommunicationUtil";
+import DrivenAlert from "../../../../components/DrivenAlert";
+import DrivenTable from "../../../../components/DrivenTable";
 
-function CustInfoList() {
+function CustInfoListForAd() {
   const [alertColor, setAlertColor] = useState("info");
   const [alertText, setAlertText] = useState("");
   const [useAlert, setUseAlert] = useState(false);
@@ -39,7 +39,7 @@ function CustInfoList() {
     })
       .then((result) => {
         setAlertColor("success");
-        setAlertText("허수여부설정이 완료되었습니다.");
+        setAlertText("사용여부설정이 완료되었습니다.");
         setUseAlert(true);
         setTimeout(() => {
           setUseAlert(false);
@@ -141,8 +141,6 @@ function CustInfoList() {
         }
         columnsData.push({ name: "품질", width: "150px", type: "text" });
         columnsData.push({ name: "품질변경사유", width: "150px", type: "text" });
-        columnsData.push({ name: "상태", width: "150px", type: "text" });
-        columnsData.push({ name: "상태변경사유", width: "150px", type: "text" });
         columnsData.push({ name: "source", width: "150px", type: "text" });
         columnsData.push({ name: "medium", width: "150px", type: "text" });
         columnsData.push({ name: "campaign", width: "250px", type: "text" });
@@ -150,7 +148,7 @@ function CustInfoList() {
         columnsData.push({ name: "content", width: "250px", type: "text" });
         columnsData.push({ name: "IP", width: "150px", type: "text" });
         columnsData.push({
-          name: "허수여부",
+          name: "사용여부",
           width: "100px",
           type: "switch",
           switchParam: [],
@@ -239,4 +237,4 @@ function CustInfoList() {
   );
 }
 
-export default CustInfoList;
+export default CustInfoListForAd;
